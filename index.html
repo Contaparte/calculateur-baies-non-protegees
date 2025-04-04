@@ -12,7 +12,7 @@
       padding: 0;
       background-color: #f8f9fa;
     }
-
+    
     .container {
       max-width: 1000px;
       margin: 0 auto;
@@ -21,37 +21,37 @@
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
+    
     h1 {
       font-size: 24px;
       margin-bottom: 20px;
       color: #333;
       text-align: center;
     }
-
+    
     .grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
     }
-
+    
     @media (min-width: 768px) {
       .grid {
         grid-template-columns: 1fr 1fr;
       }
     }
-
+    
     .form-group {
       margin-bottom: 15px;
     }
-
+    
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
       color: #444;
     }
-
+    
     input[type="number"],
     select {
       width: 100%;
@@ -60,7 +60,7 @@
       border-radius: 4px;
       font-size: 16px;
     }
-
+    
     button {
       background-color: #2271b1;
       color: white;
@@ -73,24 +73,24 @@
       width: 100%;
       margin-top: 20px;
     }
-
+    
     button:hover {
       background-color: #135e96;
     }
-
+    
     .results {
       background-color: #f0f0f1;
       padding: 20px;
       border-radius: 8px;
       min-height: 250px;
     }
-
+    
     .message {
       text-align: center;
       color: #666;
       padding: 20px 0;
     }
-
+    
     .details {
       background-color: #e4e4e7;
       padding: 15px;
@@ -100,100 +100,294 @@
       font-size: 14px;
       margin-top: 15px;
     }
-
+    
     .highlight {
       color: #2271b1;
       font-weight: bold;
     }
-
+    
     .footer {
       margin-top: 20px;
       font-size: 13px;
       color: #666;
       text-align: center;
     }
+    
+    /* Style pour les onglets */
+    .tab-container {
+      overflow: hidden;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    
+    .tab-button {
+      background-color: #f1f1f1;
+      float: left;
+      border: 1px solid #ccc;
+      border-bottom: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      border-radius: 5px 5px 0 0;
+      margin-right: 5px;
+    }
+    
+    .tab-button:hover {
+      background-color: #ddd;
+    }
+    
+    .tab-button.active {
+      background-color: #2271b1;
+      color: white;
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 20px 0;
+    }
+    
+    .subtitle {
+      font-size: 16px;
+      margin-top: -10px;
+      margin-bottom: 20px;
+      color: #666;
+      text-align: center;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Calculateur de baies non protégées (CNB)</h1>
-
-    <div class="grid">
-      <div>
-        <div class="form-group">
-          <label for="usage-batiment">Usage du bâtiment</label>
-          <select id="usage-batiment">
-            <option value="habitation">Habitation (Groupe C)</option>
-            <option value="affaires">Affaires/Division 3 (Groupe A, B, D, F3)</option>
-            <option value="commercial">Commercial (Groupe E)</option>
-            <option value="industriel">Industriel div. 1 et 2 (Groupe F1, F2)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Protection par gicleurs</label>
-          <div>
-            <input type="checkbox" id="gicleurs">
-            <span>Bâtiment entièrement protégé par gicleurs</span>
+    
+    <div class="tab-container">
+      <button class="tab-button active" onclick="openTab(event, 'tab-general')">3.2.3.1 Général</button>
+      <button class="tab-button" onclick="openTab(event, 'tab-91014')">9.10.14 Bâtiments</button>
+      <button class="tab-button" onclick="openTab(event, 'tab-91015')">9.10.15 Maisons</button>
+    </div>
+    
+    <!-- Onglet Général -->
+    <div id="tab-general" class="tab-content" style="display: block;">
+      <div class="subtitle">Calcul basé sur la section 3.2.3 du CNB</div>
+      <div class="grid">
+        <div>
+          <div class="form-group">
+            <label for="usage-batiment">Usage du bâtiment</label>
+            <select id="usage-batiment">
+              <option value="habitation">Habitation (Groupe C)</option>
+              <option value="affaires">Affaires/Division 3 (Groupe A, B, D, F3)</option>
+              <option value="commercial">Commercial (Groupe E)</option>
+              <option value="industriel">Industriel div. 1 et 2 (Groupe F1, F2)</option>
+            </select>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="distance">Distance limitative (m)</label>
-          <input type="number" id="distance" min="0" step="0.1" value="1.2">
-        </div>
-
-        <div class="form-group">
-          <label for="surface">Surface de la façade de rayonnement (m²)</label>
-          <input type="number" id="surface" min="1" value="30">
-        </div>
-
-        <div class="form-group" id="rapport-container">
-          <label for="rapport">Rapport L/H ou H/L</label>
-          <select id="rapport">
-            <option value="moins3">Moins de 3:1</option>
-            <option value="3a10">3:1 à 10:1</option>
-            <option value="plus10">Plus de 10:1</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Délai d'intervention du service d'incendie</label>
-          <div>
-            <input type="checkbox" id="intervention">
-            <span>Plus de 10 min dans 10% ou plus des cas</span>
+          
+          <div class="form-group">
+            <label>Protection par gicleurs</label>
+            <div>
+              <input type="checkbox" id="gicleurs" onclick="toggleRapport()">
+              <span>Bâtiment entièrement protégé par gicleurs</span>
+            </div>
           </div>
+          
+          <div class="form-group">
+            <label for="distance">Distance limitative (m)</label>
+            <input type="number" id="distance" min="0" step="0.1" value="1.2">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface">Surface de la façade de rayonnement (m²)</label>
+            <input type="number" id="surface" min="1" value="30">
+          </div>
+          
+          <div class="form-group" id="rapport-container">
+            <label for="rapport">Rapport L/H ou H/L</label>
+            <select id="rapport">
+              <option value="moins3">Moins de 3:1</option>
+              <option value="3a10">3:1 à 10:1</option>
+              <option value="plus10">Plus de 10:1</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <button onclick="calculerGeneral()">Calculer</button>
         </div>
-
-        <button id="calculer">Calculer</button>
-      </div>
-
-      <div class="results" id="resultats">
-        <div class="message">
-          Les résultats s'afficheront ici après le calcul
+        
+        <div class="results" id="resultats">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
+          </div>
         </div>
       </div>
     </div>
-
+    
+    <!-- Onglet 9.10.14 -->
+    <div id="tab-91014" class="tab-content">
+      <div class="subtitle">Calcul basé sur la sous-section 9.10.14 du CNB (Séparation spatiale entre les bâtiments)</div>
+      <div class="grid">
+        <div>
+          <div class="form-group">
+            <label for="usage-91014">Usage du bâtiment</label>
+            <select id="usage-91014">
+              <option value="habitation">Habitation, établissement d'affaires ou établissement industriel à risques faibles</option>
+              <option value="commercial">Établissement commercial ou établissement industriel à risques moyens</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Protection par gicleurs</label>
+            <div>
+              <input type="checkbox" id="gicleurs-91014" onclick="toggleRapport91014()">
+              <span>Bâtiment entièrement protégé par gicleurs</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="distance-91014">Distance limitative (m)</label>
+            <input type="number" id="distance-91014" min="0" step="0.01" value="2.45">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-91014">Surface de la façade de rayonnement (m²)</label>
+            <input type="number" id="surface-91014" min="1" value="77">
+          </div>
+          
+          <div class="form-group" id="rapport-container-91014">
+            <label for="rapport-91014">Rapport L/H ou H/L</label>
+            <select id="rapport-91014">
+              <option value="moins3">Moins de 3:1</option>
+              <option value="3a10">3:1 à 10:1</option>
+              <option value="plus10">Plus de 10:1</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention-91014">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-fenetres-91014">Surface des baies vitrées existantes (m²)</label>
+            <input type="number" id="surface-fenetres-91014" min="0" step="0.01" value="7.8">
+          </div>
+          
+          <button onclick="calculer91014()">Calculer</button>
+        </div>
+        
+        <div class="results" id="resultats-91014">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Onglet 9.10.15 -->
+    <div id="tab-91015" class="tab-content">
+      <div class="subtitle">Calcul basé sur la sous-section 9.10.15 du CNB (Séparation spatiale entre les maisons)</div>
+      <div class="grid">
+        <div>
+          <div class="form-group">
+            <label for="distance-91015">Distance limitative (m)</label>
+            <input type="number" id="distance-91015" min="0" step="0.01" value="2.45">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-91015">Surface de la façade de rayonnement (m²)</label>
+            <input type="number" id="surface-91015" min="1" value="11">
+          </div>
+          
+          <div class="form-group">
+            <label>Protection par gicleurs</label>
+            <div>
+              <input type="checkbox" id="gicleurs-91015">
+              <span>Bâtiment entièrement protégé par gicleurs</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention-91015">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-fenetres-91015">Surface des baies vitrées existantes (m²)</label>
+            <input type="number" id="surface-fenetres-91015" min="0" step="0.01" value="3.34">
+          </div>
+          
+          <button onclick="calculer91015()">Calculer</button>
+        </div>
+        
+        <div class="results" id="resultats-91015">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="footer">
       <p>Note: Cet outil utilise les tableaux du Code national du bâtiment du Canada pour déterminer la surface maximale des baies non protégées dans une façade de rayonnement.</p>
-      <p>Les valeurs calculées sont basées sur les tableaux 3.2.3.1.-B, 3.2.3.1.-C, 3.2.3.1.-D et 3.2.3.1.-E du CNB 2015 (intégrant les modifications du Québec).</p>
+      <p>Les valeurs calculées sont basées sur les tableaux du CNB 2015 (intégrant les modifications du Québec).</p>
     </div>
   </div>
-
+  
   <script>
-    // Référence aux éléments du DOM
-    const usageBatiment = document.getElementById('usage-batiment');
-    const gicleurs = document.getElementById('gicleurs');
-    const distance = document.getElementById('distance');
-    const surface = document.getElementById('surface');
-    const rapport = document.getElementById('rapport');
-    const rapportContainer = document.getElementById('rapport-container');
-    const intervention = document.getElementById('intervention');
-    const calculer = document.getElementById('calculer');
-    const resultats = document.getElementById('resultats');
-
-    // Tableaux des valeurs du CNB
+    // Fonction pour changer d'onglet
+    function openTab(evt, tabName) {
+      // Masquer tous les contenus d'onglets
+      var tabContents = document.getElementsByClassName("tab-content");
+      for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+      }
+      
+      // Désactiver tous les boutons d'onglets
+      var tabButtons = document.getElementsByClassName("tab-button");
+      for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+      }
+      
+      // Afficher le contenu de l'onglet actif et activer le bouton
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    
+    // Fonction pour afficher/masquer le champ Rapport L/H
+    function toggleRapport() {
+      var gicleurs = document.getElementById("gicleurs");
+      var rapportContainer = document.getElementById("rapport-container");
+      
+      if (gicleurs.checked) {
+        rapportContainer.style.display = "none";
+      } else {
+        rapportContainer.style.display = "block";
+      }
+    }
+    
+    function toggleRapport91014() {
+      var gicleurs = document.getElementById("gicleurs-91014");
+      var rapportContainer = document.getElementById("rapport-container-91014");
+      
+      if (gicleurs.checked) {
+        rapportContainer.style.display = "none";
+      } else {
+        rapportContainer.style.display = "block";
+      }
+    }
+    
+    // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
     // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
     const tableauABCDF3 = {
       'moins3': {
@@ -215,7 +409,84 @@
         100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
       }
     };
-
+    
+    // Fonctions utilitaires
+    function getSurfaceProche(surface, tableau) {
+      const surfaces = Object.keys(tableau)
+        .filter(key => key !== 'plus100')
+        .map(Number)
+        .sort((a, b) => a - b);
+      
+      if (surface <= surfaces[0]) {
+        return surfaces[0];
+      }
+      
+      for (let i = 0; i < surfaces.length - 1; i++) {
+        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
+          return surfaces[i + 1];
+        }
+      }
+      
+      return 'plus100';
+    }
+    
+    function getDistanceProche(distance, tableauDistance) {
+      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
+      
+      if (distance <= distances[0]) {
+        return distances[0];
+      }
+      
+      for (let i = 0; i < distances.length - 1; i++) {
+        if (distance > distances[i] && distance <= distances[i + 1]) {
+          return distances[i];
+        }
+      }
+      
+      return distances[distances.length - 1];
+    }
+    
+    // Fonction d'interpolation
+    function interpolation(x, x1, x2, y1, y2) {
+      return y1 + ((x - x1) * (y2 - y1)) / (x2 - x1);
+    }
+    
+    // Fonction pour obtenir le pourcentage par interpolation pour 9.10.14 et 9.10.15
+    function calculerPourcentageInterpolation(distance, surface, tableau, usage = null) {
+      let tableauUsage;
+      
+      // Sélectionner le tableau en fonction de l'usage (pour 9.10.14)
+      if (typeof tableau === 'object' && tableau.hasOwnProperty('habitation')) {
+        tableauUsage = tableau[usage || 'habitation'];
+      } else {
+        tableauUsage = tableau;
+      }
+      
+      const surfaces = Object.keys(tableauUsage)
+        .map(s => s === 'plus100' ? 150 : Number(s))
+        .sort((a, b) => a - b);
+      
+      // Identifier les surfaces pour interpolation
+      let surfaceInf, surfaceSup;
+      
+      if (surface <= surfaces[0]) {
+        surfaceInf = surfaces[0];
+        surfaceSup = surfaces[0];
+      } else if (surface >= surfaces[surfaces.length - 1]) {
+        surfaceInf = surfaces[surfaces.length - 2];
+        surfaceSup = surfaces[surfaces.length - 1];
+      } else {
+        for (let i = 0; i < surfaces.length - 1; i++) {
+          if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
+            surfaceInf = surfaces[i];
+            surfaceSup = surfaces[i + 1];
+            break;
+          }
+        }
+      }
+      
+      //
+    
     // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
     const tableauEF1F2 = {
       'moins3': {
@@ -237,7 +508,7 @@
         100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
       }
     };
-
+    
     // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
     const tableauGicleursABCDF3 = {
       10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
@@ -252,7 +523,7 @@
       100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
       150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
     };
-
+    
     // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
     const tableauGicleursEF1F2 = {
       10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
@@ -267,135 +538,30 @@
       100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
       150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
     };
-
-    // Fonction pour afficher/masquer le champ Rapport L/H selon la protection par gicleurs
-    gicleurs.addEventListener('change', function() {
-      if (this.checked) {
-        rapportContainer.style.display = 'none';
-      } else {
-        rapportContainer.style.display = 'block';
+    
+    // Tableau 9.10.14.4.-A - Surface maximale globale des baies non protégées dans les murs extérieurs
+    const tableau91014 = {
+      'habitation': {
+        30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        100: {1.2: 7, 1.5: 8, 2.0: 9, 4.0: 18, 6.0: 34, 8.0: 56, 10.0: 84, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        'plus100': {1.2: 7, 1.5: 7, 2.0: 8, 4.0: 12, 6.0: 19, 8.0: 28, 10.0: 40, 12.0: 55, 16.0: 92, 20.0: 100, 25.0: 100}
+      },
+      'commercial': {
+        30: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 20, 6.0: 44, 8.0: 80, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        40: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 16, 6.0: 34, 8.0: 61, 10.0: 97, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        50: {1.2: 4, 1.5: 4, 2.0: 5, 4.0: 14, 6.0: 29, 8.0: 50, 10.0: 79, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        100: {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 9, 6.0: 17, 8.0: 28, 10.0: 42, 12.0: 60, 16.0: 100, 20.0: 100, 25.0: 100},
+        'plus100': {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 6, 6.0: 10, 8.0: 14, 10.0: 20, 12.0: 27, 16.0: 46, 20.0: 70, 25.0: 100}
       }
-    });
-
-    // Fonctions utilitaires
-    const getSurfaceProche = (surface, tableau) => {
-      const surfaces = Object.keys(tableau).map(Number).sort((a, b) => a - b);
-
-      if (surface <= surfaces[0]) {
-        return surfaces[0];
-      }
-
-      for (let i = 0; i < surfaces.length - 1; i++) {
-        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
-          return surfaces[i + 1];
-        }
-      }
-
-      return surfaces[surfaces.length - 1];
     };
-
-    const getDistanceProche = (distance, tableauDistance) => {
-      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
-
-      if (distance <= distances[0]) {
-        return distances[0];
-      }
-
-      for (let i = 0; i < distances.length - 1; i++) {
-        if (distance > distances[i] && distance <= distances[i + 1]) {
-          return distances[i];
-        }
-      }
-
-      return distances[distances.length - 1];
+    
+    // Tableau 9.10.15.4 - Surface maximale des baies vitrées dans les murs extérieurs des maisons
+    const tableau91015 = {
+      30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+      40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+      50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+      100: {1.2: 7, 1.5: 8, 2.0: 9, 4.0: 18, 6.0: 34, 8.0: 56, 10.0: 84, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+      'plus100': {1.2: 7, 1.5: 7, 2.0: 8, 4.0: 12, 6.0: 19, 8.0: 28, 10.0: 40, 12.0: 55, 16.0: 92, 20.0: 100, 25.0: 100}
     };
-
-    // Fonction de calcul
-    calculer.addEventListener('click', function() {
-      let distanceCalcul = parseFloat(distance.value);
-      let surfaceVal = parseFloat(surface.value);
-      let details = "";
-
-      // Vérifier si la distance limitative doit être ajustée
-      if (intervention.checked && !gicleurs.checked) {
-        distanceCalcul = distanceCalcul / 2;
-        details += Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n;
-      }
-
-      // Sélectionner le tableau approprié
-      let tableauUtilise;
-      let surfaceProche;
-      let tableauDistances;
-      let pourcentage;
-
-      if (gicleurs.checked) {
-        // Utiliser les tableaux pour bâtiments protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauGicleursABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauGicleursEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, tableauUtilise);
-        tableauDistances = tableauUtilise[surfaceProche];
-        details += Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n;
-
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n;
-
-      } else {
-        // Utiliser les tableaux pour bâtiments non protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-
-        // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
-        const sousTableau = tableauUtilise[rapport.value];
-        details += Rapport L/H ou H/L utilisé: ${rapport.value === 'moins3' ? '< 3:1' : rapport.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n;
-
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, sousTableau);
-        tableauDistances = sousTableau[surfaceProche];
-        details += Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n;
-
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n;
-      }
-
-      // Calculer la surface maximale des baies non protégées
-      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
-
-      // Afficher les résultats
-      resultats.innerHTML = 
-        <h2>Résultats</h2>
-        <p style="font-weight: bold; font-size: 18px;">
-          Surface maximale des baies non protégées autorisée: 
-          <span class="highlight">${pourcentage}%</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px;">
-          Soit une surface de: 
-          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
-        </p>
-        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
-        <div class="details">${details}</div>
-      ;
-    });
-
-    // Initialiser l'état du champ Rapport L/H
-    if (gicleurs.checked) {
-      rapportContainer.style.display = 'none';
-    }
-  </script>
-</body>
-</html>
