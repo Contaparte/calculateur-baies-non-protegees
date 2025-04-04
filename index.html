@@ -1,4 +1,654 @@
-<!DOCTYPE html>
+2000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 16: 16, 18: 18, 20: 20, 25: 26, 30: 33, 35: 41, 40: 50, 45: 59, 50: 70, 55: 81, 60: 94, 65: 100, 70: 100}
+      }
+    };
+    
+    // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
+    const tableauGicleursABCDF3 = {
+      10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+      15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+      20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+      25: {0: 0, 1.2: 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+      30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+      40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
+      50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
+      60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
+      80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
+      100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
+      150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
+    };
+    
+    // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
+    const tableauGicleursEF1F2 = {
+      10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+      15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+      20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+      25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+      30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
+      40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
+      50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
+      60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
+      80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
+      100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
+      150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
+    };
+    
+    // Tableau 9.10.15.4. - Maisons
+    const tableauMaisons = {
+      10: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 39, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      15: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      20: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 49, 5: 81, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      25: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 13, 3: 21, 4: 34, 5: 56, 6: 83, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      30: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 12, 3: 19, 4: 30, 5: 49, 6: 71, 7: 95, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 16, 4: 27, 5: 41, 6: 60, 7: 80, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 10, 3: 14, 4: 24, 5: 37, 6: 53, 7: 69, 8: 88, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      60: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 10, 3: 13, 4: 22, 5: 33, 6: 47, 7: 62, 8: 79, 9: 97, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      80: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 10, 3: 12, 4: 19, 5: 30, 6: 41, 7: 54, 8: 69, 9: 85, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+      100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 10, 3: 12, 4: 18, 5: 27, 6: 38, 7: 50, 8: 64, 9: 79, 10: 95, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100}
+    };
+    
+    // Tableau 9.10.14.5.-A - Exigences minimales de construction pour les façades de rayonnement
+    const tableauConstructionFacades = {
+      "Habitation": {
+        "0-10": { resistance: "1 h", construction: "Incombustible", revetement: "Incombustible" },
+        "10-25": { resistance: "1 h", construction: "Combustible ou incombustible", revetement: "Incombustible" },
+        "25-50": { resistance: "45 min", construction: "Combustible ou incombustible", revetement: "Incombustible" },
+        "50-100": { resistance: "45 min", construction: "Combustible ou incombustible", revetement: "Combustible ou incombustible" }
+      },
+      "Commercial": {
+        "0-10": { resistance: "2 h", construction: "Incombustible", revetement: "Incombustible" },
+        "10-25": { resistance: "2 h", construction: "Combustible ou incombustible", revetement: "Incombustible" },
+        "25-50": { resistance: "1 h", construction: "Combustible ou incombustible", revetement: "Incombustible" },
+        "50-100": { resistance: "1 h", construction: "Combustible ou incombustible", revetement: "Combustible ou incombustible" }
+      }
+    };
+    
+    // Fonctions utilitaires
+    const getSurfaceProche = (surface, tableau) => {
+      const surfaces = Object.keys(tableau).map(Number).sort((a, b) => a - b);
+      
+      if (surface <= surfaces[0]) {
+        return surfaces[0];
+      }
+      
+      for (let i = 0; i < surfaces.length - 1; i++) {
+        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
+          return surfaces[i + 1];
+        }
+      }
+      
+      return surfaces[surfaces.length - 1];
+    };
+    
+    const getSurfacesProches = (surface, tableau) => {
+      const surfaces = Object.keys(tableau).map(Number).sort((a, b) => a - b);
+      
+      if (surface <= surfaces[0]) {
+        return { lower: surfaces[0], upper: surfaces[0] };
+      }
+      
+      for (let i = 0; i < surfaces.length - 1; i++) {
+        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
+          return { lower: surfaces[i], upper: surfaces[i + 1] };
+        }
+      }
+      
+      return { lower: surfaces[surfaces.length - 1], upper: surfaces[surfaces.length - 1] };
+    };
+    
+    const getDistanceProche = (distance, tableauDistance) => {
+      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
+      
+      if (distance <= distances[0]) {
+        return distances[0];
+      }
+      
+      for (let i = 0; i < distances.length - 1; i++) {
+        if (distance > distances[i] && distance <= distances[i + 1]) {
+          return distances[i];
+        }
+      }
+      
+      return distances[distances.length - 1];
+    };
+    
+    const getDistancesProches = (distance, tableauDistance) => {
+      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
+      
+      if (distance <= distances[0]) {
+        return { lower: distances[0], upper: distances[0] };
+      }
+      
+      for (let i = 0; i < distances.length - 1; i++) {
+        if (distance > distances[i] && distance <= distances[i + 1]) {
+          return { lower: distances[i], upper: distances[i + 1] };
+        }
+      }
+      
+      return { lower: distances[distances.length - 1], upper: distances[distances.length - 1] };
+    };
+    
+    const interpolationLineaire = (x, x0, x1, y0, y1) => {
+      // Protection contre la division par zéro
+      if (x1 - x0 === 0) return y0;
+      
+      // Formule d'interpolation linéaire: y = y0 + (x - x0) * (y1 - y0) / (x1 - x0)
+      return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
+    };
+    
+    const getCategorieConstruction = (pourcentage) => {
+      if (pourcentage <= 10) return "0-10";
+      if (pourcentage <= 25) return "10-25";
+      if (pourcentage <= 50) return "25-50";
+      return "50-100";
+    };
+    
+    // Fonction de calcul standard
+    calculer.addEventListener('click', function() {
+      let distanceCalcul = parseFloat(distance.value);
+      let surfaceVal = parseFloat(surface.value);
+      let details = "";
+      
+      // Vérifier si la distance limitative doit être ajustée
+      if (intervention.checked && !gicleurs.checked) {
+        distanceCalcul = distanceCalcul / 2;
+        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+      }
+      
+      // Sélectionner le tableau approprié
+      let tableauUtilise;
+      let surfaceProche;
+      let tableauDistances;
+      let pourcentage;
+      let nomTableau;
+      let typeUsage;
+      
+      if (gicleurs.checked) {
+        // Utiliser les tableaux pour bâtiments protégés par gicleurs
+        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
+          tableauUtilise = tableauGicleursABCDF3;
+          nomTableau = "3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)";
+          typeUsage = "Habitation";
+        } else {
+          tableauUtilise = tableauGicleursEF1F2;
+          nomTableau = "3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)";
+          typeUsage = "Commercial";
+        }
+        
+        details += `Tableau utilisé: ${nomTableau}\n`;
+        
+        // Trouver la surface la plus proche dans le tableau
+        surfaceProche = getSurfaceProche(surfaceVal, tableauUtilise);
+        tableauDistances = tableauUtilise[surfaceProche];
+        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
+        
+        // Trouver la distance limitative la plus proche
+        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
+        pourcentage = tableauDistances[distanceProche];
+        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+        
+      } else {
+        // Utiliser les tableaux pour bâtiments non protégés par gicleurs
+        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
+          tableauUtilise = tableauABCDF3;
+          nomTableau = "3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)";
+          typeUsage = "Habitation";
+        } else {
+          tableauUtilise = tableauEF1F2;
+          nomTableau = "3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)";
+          typeUsage = "Commercial";
+        }
+        
+        // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
+        const sousTableau = tableauUtilise[rapport.value];
+        details += `Tableau utilisé: ${nomTableau}\n`;
+        details += `Rapport L/H ou H/L utilisé: ${rapport.value === 'moins3' ? '< 3:1' : rapport.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
+        
+        // Trouver la surface la plus proche dans le tableau
+        surfaceProche = getSurfaceProche(surfaceVal, sousTableau);
+        tableauDistances = sousTableau[surfaceProche];
+        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
+        
+        // Trouver la distance limitative la plus proche
+        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
+        pourcentage = tableauDistances[distanceProche];
+        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+      }
+      
+      // Calculer la surface maximale des baies non protégées
+      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+      
+      // Déterminer les exigences de construction
+      const categorie = getCategorieConstruction(pourcentage);
+      const exigencesConstruction = tableauConstructionFacades[typeUsage][categorie];
+      
+      // Afficher les résultats
+      resultats.innerHTML = `
+        <h2>Résultats</h2>
+        <p style="font-weight: bold; font-size: 18px;">
+          Surface maximale des baies non protégées autorisée: 
+          <span class="highlight">${pourcentage}%</span>
+        </p>
+        <p style="font-weight: bold; font-size: 18px;">
+          Soit une surface de: 
+          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+        </p>
+        
+        <div class="construction-requirements">
+          <h3>Exigences de construction:</h3>
+          <table>
+            <tr>
+              <th>Élément</th>
+              <th>Exigence</th>
+            </tr>
+            <tr>
+              <td>Degré de résistance au feu</td>
+              <td>${exigencesConstruction.resistance}</td>
+            </tr>
+            <tr>
+              <td>Type de construction</td>
+              <td>${exigencesConstruction.construction}</td>
+            </tr>
+            <tr>
+              <td>Type de revêtement</td>
+              <td>${exigencesConstruction.revetement}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+        <div class="details">${details}</div>
+      `;
+    });
+    
+    // Afficher/masquer le champ Rapport L/H selon la protection par gicleurs
+    gicleurs.addEventListener('change', function() {
+      if (this.checked) {
+        rapportContainer.style.display = 'none';
+      } else {
+        rapportContainer.style.display = 'block';
+      }
+    });
+    
+    gicleursInterpolation.addEventListener('change', function() {
+      if (this.checked) {
+        rapportContainerInterpolation.style.display = 'none';
+      } else {
+        rapportContainerInterpolation.style.display = 'block';
+      }
+    });
+    
+    // Fonction de calcul pour les maisons (9.10.15)
+    calculerMaison.addEventListener('click', function() {
+      let distanceCalcul = parseFloat(distanceMaison.value);
+      let surfaceVal = parseFloat(surfaceMaison.value);
+      let details = "";
+      
+      // Vérifier si la distance limitative doit être ajustée
+      if (interventionMaison.checked) {
+        distanceCalcul = distanceCalcul / 2;
+        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+      }
+      
+      // Utiliser le tableau pour les maisons
+      details += "Tableau utilisé: 9.10.15.4. (Maisons)\n";
+      
+      // Trouver la surface la plus proche dans le tableau
+      const surfaceProche = getSurfaceProche(surfaceVal, tableauMaisons);
+      const tableauDistances = tableauMaisons[surfaceProche];
+      details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
+      
+      // Trouver la distance limitative la plus proche
+      const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
+      const pourcentage = tableauDistances[distanceProche];
+      details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+      
+      // Calculer la surface maximale des baies non protégées
+      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+      
+      // Afficher les résultats
+      resultatsMaison.innerHTML = `
+        <h2>Résultats</h2>
+        <p style="font-weight: bold; font-size: 18px;">
+          Surface maximale des baies non protégées autorisée: 
+          <span class="highlight">${pourcentage}%</span>
+        </p>
+        <p style="font-weight: bold; font-size: 18px;">
+          Soit une surface de: 
+          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+        </p>
+        
+        <div class="construction-requirements">
+          <h3>Exigences de construction:</h3>
+          <p>Selon l'article 9.10.15.5 pour les maisons.</p>
+        </div>
+        
+        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+        <div class="details">${details}</div>
+      `;
+    });
+    
+    // Fonction de calcul avec interpolation linéaire
+    calculerInterpolation.addEventListener('click', function() {
+      let distanceCalcul = parseFloat(distanceInterpolation.value);
+      let surfaceVal = parseFloat(surfaceInterpolation.value);
+      let details = "";
+      
+      // Vérifier si la distance limitative doit être ajustée
+      if (interventionInterpolation.checked && !gicleursInterpolation.checked) {
+        distanceCalcul = distanceCalcul / 2;
+        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+      }
+      
+      // Sélectionner le tableau approprié
+      let tableauUtilise;
+      let nomTableau;
+      let typeUsage;
+      let pourcentage;
+      
+      if (gicleursInterpolation.checked) {
+        // Utiliser les tableaux pour bâtiments protégés par gicleurs
+        if (usageInterpolation.value === 'habitation' || usageInterpolation.value === 'affaires') {
+          tableauUtilise = tableauGicleursABCDF3;
+          nomTableau = "3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)";
+          typeUsage = "Habitation";
+          
+          // Trouver les surfaces les plus proches
+          const { lower: surfaceLower, upper: surfaceUpper } = getSurfacesProches(surfaceVal, tableauUtilise);
+          
+          // Trouver les distances les plus proches pour la surface inférieure
+          const tableauDistancesLower = tableauUtilise[surfaceLower];
+          const { lower: distanceLower, upper: distanceUpper } = getDistancesProches(distanceCalcul, tableauDistancesLower);
+          
+          // Pourcentage pour surface inférieure, distance inférieure
+          const pourcentageLowerLower = tableauDistancesLower[distanceLower];
+          
+          // Pourcentage pour surface inférieure, distance supérieure
+          const pourcentageLowerUpper = tableauDistancesLower[distanceUpper];
+          
+          // Interpoler pour la surface inférieure
+          const pourcentageLower = interpolationLineaire(
+            distanceCalcul,
+            distanceLower,
+            distanceUpper,
+            pourcentageLowerLower,
+            pourcentageLowerUpper
+          );
+          
+          // Si les surfaces sont différentes, interpoler également pour la surface supérieure
+          let pourcentageInterpoleFinal;
+          
+          if (surfaceLower === surfaceUpper) {
+            pourcentageInterpoleFinal = pourcentageLower;
+          } else {
+            // Trouver les distances les plus proches pour la surface supérieure
+            const tableauDistancesUpper = tableauUtilise[surfaceUpper];
+            
+            // Pourcentage pour surface supérieure, distance inférieure
+            const pourcentageUpperLower = tableauDistancesUpper[distanceLower];
+            
+            // Pourcentage pour surface supérieure, distance supérieure
+            const pourcentageUpperUpper = tableauDistancesUpper[distanceUpper];
+            
+            // Interpoler pour la surface supérieure
+            const pourcentageUpper = interpolationLineaire(
+              distanceCalcul,
+              distanceLower,
+              distanceUpper,
+              pourcentageUpperLower,
+              pourcentageUpperUpper
+            );
+            
+            // Interpoler entre les surfaces
+            pourcentageInterpoleFinal = interpolationLineaire(
+              surfaceVal,
+              surfaceLower,
+              surfaceUpper,
+              pourcentageLower,
+              pourcentageUpper
+            );
+          }
+          
+          // Limiter le pourcentage à 100%
+          pourcentage = Math.min(pourcentageInterpoleFinal, 100);
+          
+          details += `Tableau utilisé: ${nomTableau}\n`;
+          details += `Surfaces de référence: ${surfaceLower} m² et ${surfaceUpper} m² (surface réelle: ${surfaceVal} m²)\n`;
+          details += `Distances limitatives de référence: ${distanceLower} m et ${distanceUpper} m (distance réelle: ${distanceCalcul} m)\n`;
+          details += `Valeur interpolée: ${pourcentage.toFixed(2)}%\n`;
+          
+        } else {
+          tableauUtilise = tableauGicleursEF1F2;
+          nomTableau = "3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)";
+          typeUsage = "Commercial";
+          
+          // Même logique d'interpolation que précédemment
+          const { lower: surfaceLower, upper: surfaceUpper } = getSurfacesProches(surfaceVal, tableauUtilise);
+          
+          const tableauDistancesLower = tableauUtilise[surfaceLower];
+          const { lower: distanceLower, upper: distanceUpper } = getDistancesProches(distanceCalcul, tableauDistancesLower);
+          
+          const pourcentageLowerLower = tableauDistancesLower[distanceLower];
+          const pourcentageLowerUpper = tableauDistancesLower[distanceUpper];
+          
+          const pourcentageLower = interpolationLineaire(
+            distanceCalcul,
+            distanceLower,
+            distanceUpper,
+            pourcentageLowerLower,
+            pourcentageLowerUpper
+          );
+          
+          let pourcentageInterpoleFinal;
+          
+          if (surfaceLower === surfaceUpper) {
+            pourcentageInterpoleFinal = pourcentageLower;
+          } else {
+            const tableauDistancesUpper = tableauUtilise[surfaceUpper];
+            
+            const pourcentageUpperLower = tableauDistancesUpper[distanceLower];
+            const pourcentageUpperUpper = tableauDistancesUpper[distanceUpper];
+            
+            const pourcentageUpper = interpolationLineaire(
+              distanceCalcul,
+              distanceLower,
+              distanceUpper,
+              pourcentageUpperLower,
+              pourcentageUpperUpper
+            );
+            
+            pourcentageInterpoleFinal = interpolationLineaire(
+              surfaceVal,
+              surfaceLower,
+              surfaceUpper,
+              pourcentageLower,
+              pourcentageUpper
+            );
+          }
+          
+          pourcentage = Math.min(pourcentageInterpoleFinal, 100);
+          
+          details += `Tableau utilisé: ${nomTableau}\n`;
+          details += `Surfaces de référence: ${surfaceLower} m² et ${surfaceUpper} m² (surface réelle: ${surfaceVal} m²)\n`;
+          details += `Distances limitatives de référence: ${distanceLower} m et ${distanceUpper} m (distance réelle: ${distanceCalcul} m)\n`;
+          details += `Valeur interpolée: ${pourcentage.toFixed(2)}%\n`;
+        }
+      } else {
+        // Utiliser les tableaux pour bâtiments non protégés par gicleurs
+        if (usageInterpolation.value === 'habitation' || usageInterpolation.value === 'affaires') {
+          tableauUtilise = tableauABCDF3;
+          nomTableau = "3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)";
+          typeUsage = "Habitation";
+        } else {
+          tableauUtilise = tableauEF1F2;
+          nomTableau = "3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)";
+          typeUsage = "Commercial";
+        }
+        
+        // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
+        const sousTableau = tableauUtilise[rapportInterpolation.value];
+        details += `Tableau utilisé: ${nomTableau}\n`;
+        details += `Rapport L/H ou H/L utilisé: ${rapportInterpolation.value === 'moins3' ? '< 3:1' : rapportInterpolation.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
+        
+        // Logique d'interpolation
+        const { lower: surfaceLower, upper: surfaceUpper } = getSurfacesProches(surfaceVal, sousTableau);
+        
+        const tableauDistancesLower = sousTableau[surfaceLower];
+        const { lower: distanceLower, upper: distanceUpper } = getDistancesProches(distanceCalcul, tableauDistancesLower);
+        
+        const pourcentageLowerLower = tableauDistancesLower[distanceLower];
+        const pourcentageLowerUpper = tableauDistancesLower[distanceUpper];
+        
+        const pourcentageLower = interpolationLineaire(
+          distanceCalcul,
+          distanceLower,
+          distanceUpper,
+          pourcentageLowerLower,
+          pourcentageLowerUpper
+        );
+        
+        let pourcentageInterpoleFinal;
+        
+        if (surfaceLower === surfaceUpper) {
+          pourcentageInterpoleFinal = pourcentageLower;
+        } else {
+          const tableauDistancesUpper = sousTableau[surfaceUpper];
+          
+          const pourcentageUpperLower = tableauDistancesUpper[distanceLower];
+          const pourcentageUpperUpper = tableauDistancesUpper[distanceUpper];
+          
+          const pourcentageUpper = interpolationLineaire(
+            distanceCalcul,
+            distanceLower,
+            distanceUpper,
+            pourcentageUpperLower,
+            pourcentageUpperUpper
+          );
+          
+          pourcentageInterpoleFinal = interpolationLineaire(
+            surfaceVal,
+            surfaceLower,
+            surfaceUpper,
+            pourcentageLower,
+            pourcentageUpper
+          );
+        }
+        
+        pourcentage = Math.min(pourcentageInterpoleFinal, 100);
+        
+        details += `Surfaces de référence: ${surfaceLower} m² et ${surfaceUpper} m² (surface réelle: ${surfaceVal} m²)\n`;
+        details += `Distances limitatives de référence: ${distanceLower} m et ${distanceUpper} m (distance réelle: ${distanceCalcul} m)\n`;
+        details += `Valeur interpolée: ${pourcentage.toFixed(2)}%\n`;
+      }
+      
+      // Calculer la surface maximale des baies non protégées
+      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+      
+      // Déterminer les exigences de construction
+      const categorie = getCategorieConstruction(pourcentage);
+      const exigencesConstruction = tableauConstructionFacades[typeUsage][categorie];
+      
+      // Afficher les résultats
+      resultatsInterpolation.innerHTML = `
+        <h2>Résultats</h2>
+        <p style="font-weight: bold; font-size: 18px;">
+          Surface maximale des baies non protégées autorisée: 
+          <span class="highlight">${pourcentage.toFixed(2)}%</span>
+        </p>
+        <p style="font-weight: bold; font-size: 18px;">
+          Soit une surface de: 
+          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+        </p>
+        
+        <div class="construction-requirements">
+          <h3>Exigences de construction:</h3>
+          <table>
+            <tr>
+              <th>Élément</th>
+              <th>Exigence</th>
+            </tr>
+            <tr>
+              <td>Degré de résistance au feu</td>
+              <td>${exigencesConstruction.resistance}</td>
+            </tr>
+            <tr>
+              <td>Type de construction</td>
+              <td>${exigencesConstruction.construction}</td>
+            </tr>
+            <tr>
+              <td>Type de revêtement</td>
+              <td>${exigencesConstruction.revetement}</td>
+            </tr>
+          </table>
+        </div>
+        
+        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+        <div class="details">${details}</div>
+      `;
+    });
+    
+    // Initialiser l'état du champ Rapport L/H
+    if (gicleurs.checked) {
+      rapportContainer.style.display = 'none';
+    }
+    
+    if (gicleursInterpolation.checked) {
+      rapportContainerInterpolation.style.display = 'none';
+    }
+  </script>
+</body>
+</html>      'moins3': {
+        10: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 16, 4: 32, 5: 53, 6: 79, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 9, 3: 13, 4: 25, 5: 40, 6: 61, 7: 85, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 8, 3: 11, 4: 20, 5: 33, 6: 49, 7: 69, 8: 92, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 7, 3: 10, 4: 18, 5: 28, 6: 42, 7: 58, 8: 77, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 8, 4: 14, 5: 22, 6: 32, 7: 44, 8: 59, 9: 76, 10: 94, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 7, 4: 12, 5: 18, 6: 26, 7: 36, 8: 48, 9: 61, 10: 76, 11: 93, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 7, 4: 11, 5: 16, 6: 23, 7: 31, 8: 40, 9: 52, 10: 64, 11: 78, 12: 94, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 6, 4: 9, 5: 13, 6: 18, 7: 24, 8: 31, 9: 40, 10: 49, 11: 60, 12: 71, 13: 84, 14: 98, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 5, 4: 8, 5: 11, 6: 15, 7: 20, 8: 26, 9: 32, 10: 40, 11: 48, 12: 58, 13: 68, 14: 79, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 5, 4: 6, 5: 8, 6: 11, 7: 14, 8: 18, 9: 23, 10: 28, 11: 33, 12: 40, 13: 46, 14: 54, 16: 70, 18: 89, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 7, 6: 8, 7: 10, 8: 12, 9: 15, 10: 18, 11: 22, 12: 25, 13: 29, 14: 34, 16: 44, 18: 55, 20: 68, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 12, 10: 14, 11: 16, 12: 19, 13: 22, 14: 25, 16: 32, 18: 40, 20: 49, 25: 77, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 11, 11: 13, 12: 14, 13: 16, 14: 19, 16: 24, 18: 29, 20: 36, 25: 55, 30: 78, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 4, 6: 5, 7: 5, 8: 6, 9: 6, 10: 7, 11: 8, 12: 9, 13: 10, 14: 11, 16: 14, 18: 16, 20: 20, 25: 29, 30: 41, 35: 55, 40: 71, 45: 89, 50: 100, 55: 100, 60: 100, 65: 100, 70: 100},
+        2000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 5, 9: 5, 10: 5, 11: 6, 12: 6, 13: 7, 14: 7, 16: 9, 18: 10, 20: 12, 25: 16, 30: 22, 35: 29, 40: 37, 45: 46, 50: 56, 55: 68, 60: 80, 65: 94, 70: 100}
+      },
+      '3a10': {
+        10: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 9, 3: 13, 4: 22, 5: 35, 6: 51, 7: 71, 8: 94, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 9, 3: 12, 4: 20, 5: 30, 6: 44, 7: 60, 8: 80, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 8, 3: 10, 4: 16, 5: 24, 6: 34, 7: 47, 8: 61, 9: 78, 10: 97, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 7, 3: 9, 4: 14, 5: 20, 6: 29, 7: 38, 8: 50, 9: 63, 10: 79, 11: 95, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 8, 4: 12, 5: 18, 6: 25, 7: 33, 8: 43, 9: 54, 10: 66, 11: 81, 12: 96, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 7, 4: 10, 5: 15, 6: 20, 7: 26, 8: 33, 9: 42, 10: 51, 11: 62, 12: 74, 13: 86, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 6, 4: 9, 5: 13, 6: 17, 7: 22, 8: 28, 9: 35, 10: 42, 11: 51, 12: 60, 13: 70, 14: 81, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 6, 4: 8, 5: 10, 6: 13, 7: 16, 8: 20, 9: 25, 10: 30, 11: 36, 12: 42, 13: 49, 14: 56, 16: 73, 18: 92, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 5, 4: 6, 5: 8, 6: 10, 7: 12, 8: 14, 9: 17, 10: 20, 11: 24, 12: 27, 13: 32, 14: 36, 16: 46, 18: 57, 20: 70, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 7, 6: 8, 7: 10, 8: 12, 9: 14, 10: 16, 11: 18, 12: 21, 13: 24, 14: 27, 16: 34, 18: 43, 20: 52, 25: 79, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: 11, 10: 13, 11: 14, 12: 16, 13: 18, 14: 21, 16: 26, 18: 31, 20: 38, 25: 57, 30: 80, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 5, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9, 11: 10, 12: 11, 13: 12, 14: 13, 16: 15, 18: 18, 20: 22, 25: 31, 30: 43, 35: 57, 40: 73, 45: 91, 50: 100, 55: 100, 60: 100, 65: 100, 70: 100},
+        2000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 5, 6: 5, 7: 5, 8: 6, 9: 6, 10: 6, 11: 7, 12: 7, 13: 8, 14: 9, 16: 10, 18: 12, 20: 13, 25: 18, 30: 24, 35: 31, 40: 39, 45: 49, 50: 59, 55: 70, 60: 83, 65: 96, 70: 100}
+      },
+      'plus10': {
+        10: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 54, 7: 71, 8: 91, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 12, 3: 15, 4: 23, 5: 33, 6: 44, 7: 57, 8: 72, 9: 89, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 14, 4: 21, 5: 29, 6: 38, 7: 48, 8: 61, 9: 74, 10: 90, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 10, 3: 13, 4: 19, 5: 26, 6: 34, 7: 43, 8: 53, 9: 64, 10: 77, 11: 92, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 9, 3: 11, 4: 16, 5: 22, 6: 28, 7: 35, 8: 43, 9: 52, 10: 62, 11: 73, 12: 85, 13: 98, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 8, 3: 10, 4: 14, 5: 19, 6: 25, 7: 31, 8: 37, 9: 44, 10: 52, 11: 61, 12: 71, 13: 81, 14: 92, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 7, 3: 8, 4: 12, 5: 16, 6: 20, 7: 24, 8: 29, 9: 34, 10: 39, 11: 46, 12: 52, 13: 59, 14: 67, 16: 84, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 7, 4: 9, 5: 12, 6: 15, 7: 18, 8: 21, 9: 25, 10: 28, 11: 32, 12: 37, 13: 41, 14: 46, 16: 56, 18: 68, 20: 81, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 6, 4: 8, 5: 10, 6: 13, 7: 15, 8: 18, 9: 21, 10: 23, 11: 26, 12: 30, 13: 33, 14: 36, 16: 44, 18: 53, 20: 62, 25: 90, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 5, 4: 7, 5: 9, 6: 11, 7: 13, 8: 15, 9: 17, 10: 19, 11: 21, 12: 24, 13: 26, 14: 29, 16: 35, 18: 41, 20: 48, 25: 68, 30: 92, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 5, 4: 6, 5: 7, 6: 8, 7: 9, 8: 11, 9: 12, 10: 13, 11: 15, 12: 16, 13: 18, 14: 20, 16: 23, 18: 26, 20: 30, 25: 41, 30: 53, 35: 68, 40: 84, 45: 100, 50: 100, 55: 100, 60: 100, 65: 100, 70: 100},
+        2000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -14,7 +664,7 @@
     }
     
     .container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
       background-color: #fff;
@@ -22,10 +672,13 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     
+    h1, h2, h3 {
+      color: #333;
+    }
+    
     h1 {
       font-size: 24px;
       margin-bottom: 20px;
-      color: #333;
       text-align: center;
     }
     
@@ -35,7 +688,7 @@
       gap: 20px;
     }
     
-    @media (min-width: 768px) {
+    @media (min-width: 992px) {
       .grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -112,72 +765,275 @@
       color: #666;
       text-align: center;
     }
+    
+    .tabs {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .tab {
+      display: inline-block;
+      padding: 10px 15px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px;
+      background-color: #f8f9fa;
+    }
+    
+    .tab.active {
+      border-color: #ddd;
+      background-color: white;
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .construction-requirements {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      border-left: 4px solid #2271b1;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f0f0f1;
+      font-weight: 500;
+    }
+    
+    .info-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      border-radius: 50%;
+      background-color: #2271b1;
+      color: white;
+      font-size: 12px;
+      margin-left: 5px;
+      cursor: help;
+    }
+    
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; 
+      left: 50%;
+      margin-left: -150px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Calculateur de baies non protégées (CNB)</h1>
     
-    <div class="grid">
-      <div>
-        <div class="form-group">
-          <label for="usage-batiment">Usage du bâtiment</label>
-          <select id="usage-batiment">
-            <option value="habitation">Habitation (Groupe C)</option>
-            <option value="affaires">Affaires/Division 3 (Groupe A, B, D, F3)</option>
-            <option value="commercial">Commercial (Groupe E)</option>
-            <option value="industriel">Industriel div. 1 et 2 (Groupe F1, F2)</option>
-          </select>
+    <div class="tabs">
+      <div class="tab active" data-tab="tab-calcul">Calcul standard</div>
+      <div class="tab" data-tab="tab-maisons">Maisons (9.10.15)</div>
+      <div class="tab" data-tab="tab-interpolation">Interpolation linéaire</div>
+    </div>
+    
+    <div id="tab-calcul" class="tab-content active">
+      <div class="grid">
+        <div>
+          <div class="form-group">
+            <label for="usage-batiment">Usage du bâtiment</label>
+            <select id="usage-batiment">
+              <option value="habitation">Habitation (Groupe C)</option>
+              <option value="affaires">Affaires/Division 3 (Groupe A, B, D, F3)</option>
+              <option value="commercial">Commercial (Groupe E)</option>
+              <option value="industriel">Industriel div. 1 et 2 (Groupe F1, F2)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Protection par gicleurs</label>
+            <div>
+              <input type="checkbox" id="gicleurs">
+              <span>Bâtiment entièrement protégé par gicleurs</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="distance">Distance limitative (m) <span class="tooltip info-icon">i<span class="tooltiptext">Distance entre la façade et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre 2 bâtiments.</span></span></label>
+            <input type="number" id="distance" min="0" step="0.1" value="1.2">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface">Surface de la façade de rayonnement (m²) <span class="tooltip info-icon">i<span class="tooltiptext">Surface totale du mur extérieur, mesurée à partir du niveau du sol fini jusqu'au plafond du dernier étage.</span></span></label>
+            <input type="number" id="surface" min="1" value="30">
+          </div>
+          
+          <div class="form-group" id="rapport-container">
+            <label for="rapport">Rapport L/H ou H/L <span class="tooltip info-icon">i<span class="tooltiptext">Rapport entre la longueur et la hauteur (ou hauteur et longueur) de la façade de rayonnement. Choisir le plus élevé des deux rapports.</span></span></label>
+            <select id="rapport">
+              <option value="moins3">Moins de 3:1</option>
+              <option value="3a10">3:1 à 10:1</option>
+              <option value="plus10">Plus de 10:1</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <button id="calculer">Calculer</button>
         </div>
         
-        <div class="form-group">
-          <label>Protection par gicleurs</label>
-          <div>
-            <input type="checkbox" id="gicleurs">
-            <span>Bâtiment entièrement protégé par gicleurs</span>
+        <div class="results" id="resultats">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
           </div>
         </div>
-        
-        <div class="form-group">
-          <label for="distance">Distance limitative (m)</label>
-          <input type="number" id="distance" min="0" step="0.1" value="1.2">
-        </div>
-        
-        <div class="form-group">
-          <label for="surface">Surface de la façade de rayonnement (m²)</label>
-          <input type="number" id="surface" min="1" value="30">
-        </div>
-        
-        <div class="form-group" id="rapport-container">
-          <label for="rapport">Rapport L/H ou H/L</label>
-          <select id="rapport">
-            <option value="moins3">Moins de 3:1</option>
-            <option value="3a10">3:1 à 10:1</option>
-            <option value="plus10">Plus de 10:1</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label>Délai d'intervention du service d'incendie</label>
-          <div>
-            <input type="checkbox" id="intervention">
-            <span>Plus de 10 min dans 10% ou plus des cas</span>
-          </div>
-        </div>
-        
-        <button id="calculer">Calculer</button>
       </div>
-      
-      <div class="results" id="resultats">
-        <div class="message">
-          Les résultats s'afficheront ici après le calcul
+    </div>
+    
+    <div id="tab-maisons" class="tab-content">
+      <div class="grid">
+        <div>
+          <p>Cette section concerne les calculs selon la sous-section 9.10.15 pour les maisons.</p>
+          
+          <div class="form-group">
+            <label for="distance-maison">Distance limitative (m)</label>
+            <input type="number" id="distance-maison" min="0" step="0.1" value="3.0">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-maison">Surface de la façade de rayonnement (m²)</label>
+            <input type="number" id="surface-maison" min="1" value="30">
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention-maison">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <button id="calculer-maison">Calculer</button>
+        </div>
+        
+        <div class="results" id="resultats-maison">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="tab-interpolation" class="tab-content">
+      <div class="grid">
+        <div>
+          <p>Cette section utilise l'interpolation linéaire pour obtenir des résultats plus précis.</p>
+          
+          <div class="form-group">
+            <label for="usage-interpolation">Usage du bâtiment</label>
+            <select id="usage-interpolation">
+              <option value="habitation">Habitation (Groupe C)</option>
+              <option value="affaires">Affaires/Division 3 (Groupe A, B, D, F3)</option>
+              <option value="commercial">Commercial (Groupe E)</option>
+              <option value="industriel">Industriel div. 1 et 2 (Groupe F1, F2)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Protection par gicleurs</label>
+            <div>
+              <input type="checkbox" id="gicleurs-interpolation">
+              <span>Bâtiment entièrement protégé par gicleurs</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="distance-interpolation">Distance limitative (m)</label>
+            <input type="number" id="distance-interpolation" min="0" step="0.01" value="2.45">
+          </div>
+          
+          <div class="form-group">
+            <label for="surface-interpolation">Surface de la façade de rayonnement (m²)</label>
+            <input type="number" id="surface-interpolation" min="1" step="0.1" value="77">
+          </div>
+          
+          <div class="form-group" id="rapport-container-interpolation">
+            <label for="rapport-interpolation">Rapport L/H ou H/L</label>
+            <select id="rapport-interpolation">
+              <option value="moins3">Moins de 3:1</option>
+              <option value="3a10">3:1 à 10:1</option>
+              <option value="plus10">Plus de 10:1</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>Délai d'intervention du service d'incendie</label>
+            <div>
+              <input type="checkbox" id="intervention-interpolation">
+              <span>Plus de 10 min dans 10% ou plus des cas</span>
+            </div>
+          </div>
+          
+          <button id="calculer-interpolation">Calculer</button>
+        </div>
+        
+        <div class="results" id="resultats-interpolation">
+          <div class="message">
+            Les résultats s'afficheront ici après le calcul
+          </div>
         </div>
       </div>
     </div>
     
     <div class="footer">
       <p>Note: Cet outil utilise les tableaux du Code national du bâtiment du Canada pour déterminer la surface maximale des baies non protégées dans une façade de rayonnement.</p>
-      <p>Les valeurs calculées sont basées sur les tableaux 3.2.3.1.-B, 3.2.3.1.-C, 3.2.3.1.-D et 3.2.3.1.-E du CNB 2015 (intégrant les modifications du Québec).</p>
+      <p>Les valeurs calculées sont basées sur les tableaux 3.2.3.1.-B, 3.2.3.1.-C, 3.2.3.1.-D, 3.2.3.1.-E, 9.10.14.5.-A et 9.10.15.4. du CNB 2015 (intégrant les modifications du Québec).</p>
     </div>
   </div>
   
@@ -193,209 +1049,121 @@
     const calculer = document.getElementById('calculer');
     const resultats = document.getElementById('resultats');
     
-    // Tableaux des valeurs du CNB
+    // Éléments DOM pour l'onglet maisons
+    const distanceMaison = document.getElementById('distance-maison');
+    const surfaceMaison = document.getElementById('surface-maison');
+    const interventionMaison = document.getElementById('intervention-maison');
+    const calculerMaison = document.getElementById('calculer-maison');
+    const resultatsMaison = document.getElementById('resultats-maison');
+    
+    // Éléments DOM pour l'onglet interpolation
+    const usageInterpolation = document.getElementById('usage-interpolation');
+    const gicleursInterpolation = document.getElementById('gicleurs-interpolation');
+    const distanceInterpolation = document.getElementById('distance-interpolation');
+    const surfaceInterpolation = document.getElementById('surface-interpolation');
+    const rapportInterpolation = document.getElementById('rapport-interpolation');
+    const rapportContainerInterpolation = document.getElementById('rapport-container-interpolation');
+    const interventionInterpolation = document.getElementById('intervention-interpolation');
+    const calculerInterpolation = document.getElementById('calculer-interpolation');
+    const resultatsInterpolation = document.getElementById('resultats-interpolation');
+    
+    // Gestion des onglets
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    
     // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
     const tableauABCDF3 = {
       'moins3': {
-        30: {0: 0, 1.2: 8, 1.5: 10, 2.0: 18, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 40, 5: 55, 6: 92, 7: 100, 8: 100, 9: 100, 10: 100}
+        10: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 16, 4: 32, 5: 53, 6: 79, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 9, 3: 13, 4: 25, 5: 40, 6: 61, 7: 85, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 8, 3: 11, 4: 20, 5: 33, 6: 49, 7: 69, 8: 92, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 7, 3: 10, 4: 18, 5: 28, 6: 42, 7: 58, 8: 77, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 8, 4: 14, 5: 22, 6: 32, 7: 44, 8: 59, 9: 76, 10: 94, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 6, 3: 7, 4: 12, 5: 18, 6: 26, 7: 36, 8: 48, 9: 61, 10: 76, 11: 93, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 7, 4: 11, 5: 16, 6: 23, 7: 31, 8: 40, 9: 52, 10: 64, 11: 78, 12: 94, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 6, 4: 9, 5: 13, 6: 18, 7: 24, 8: 31, 9: 40, 10: 49, 11: 60, 12: 71, 13: 84, 14: 98, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 5, 3: 5, 4: 8, 5: 11, 6: 15, 7: 20, 8: 26, 9: 32, 10: 40, 11: 48, 12: 58, 13: 68, 14: 79, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 5, 4: 6, 5: 8, 6: 11, 7: 14, 8: 18, 9: 23, 10: 28, 11: 33, 12: 40, 13: 46, 14: 54, 16: 70, 18: 89, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 7, 6: 8, 7: 10, 8: 12, 9: 15, 10: 18, 11: 22, 12: 25, 13: 29, 14: 34, 16: 44, 18: 55, 20: 68, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 12, 10: 14, 11: 16, 12: 19, 13: 22, 14: 25, 16: 32, 18: 40, 20: 49, 25: 77, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 11, 11: 13, 12: 14, 13: 16, 14: 19, 16: 24, 18: 29, 20: 36, 25: 55, 30: 78, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 4, 6: 5, 7: 5, 8: 6, 9: 6, 10: 7, 11: 8, 12: 9, 13: 10, 14: 11, 16: 14, 18: 16, 20: 20, 25: 29, 30: 41, 35: 55, 40: 71, 45: 89, 50: 100, 55: 100, 60: 100, 65: 100, 70: 100},
+        2000: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 5, 9: 5, 10: 5, 11: 6, 12: 6, 13: 7, 14: 7, 16: 9, 18: 10, 20: 12, 25: 16, 
+        10: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 7, 1.5: 9, 2.0: 14, 2.5: 22, 3: 33, 4: 63, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 18, 3: 26, 4: 49, 5: 81, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 16, 3: 23, 4: 41, 5: 66, 6: 98, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 15, 3: 20, 4: 35, 5: 56, 6: 83, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 13, 3: 17, 4: 28, 5: 44, 6: 64, 7: 89, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 12, 3: 15, 4: 24, 5: 37, 6: 53, 7: 72, 8: 96, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 14, 4: 21, 5: 32, 6: 45, 7: 62, 8: 81, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 36, 7: 48, 8: 62, 9: 79, 10: 98, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 9, 3: 11, 4: 16, 5: 22, 6: 30, 7: 40, 8: 51, 9: 65, 10: 80, 11: 97, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 9, 3: 10, 4: 13, 5: 17, 6: 22, 7: 29, 8: 37, 9: 46, 10: 56, 11: 67, 12: 79, 13: 93, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 8, 3: 9, 4: 10, 5: 13, 6: 16, 7: 20, 8: 25, 9: 30, 10: 36, 11: 43, 12: 51, 13: 59, 14: 68, 16: 87, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 8, 3: 8, 4: 9, 5: 11, 6: 14, 7: 16, 8: 20, 9: 24, 10: 28, 11: 33, 12: 38, 13: 44, 14: 50, 16: 64, 18: 81, 20: 99, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 8, 4: 9, 5: 10, 6: 12, 7: 14, 8: 16, 9: 19, 10: 22, 11: 25, 12: 29, 13: 33, 14: 37, 16: 47, 18: 59, 20: 71, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 7, 4: 8, 5: 9, 6: 9, 7: 10, 8: 12, 9: 13, 10: 14, 11: 16, 12: 18, 13: 20, 14: 22, 16: 27, 18: 33, 20: 39, 25: 58, 30: 82, 35: 100, 40: 100, 45: 100, 50: 100},
+        2000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 7, 4: 7, 5: 8, 6: 8, 7: 9, 8: 9, 9: 10, 10: 11, 11: 12, 12: 13, 13: 14, 14: 15, 16: 17, 18: 20, 20: 23, 25: 33, 30: 44, 35: 58, 40: 74, 45: 93, 50: 100}
       },
-      '3a10': {
-        30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 21, 2.5: 33, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
       }
     };
     
     // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
     const tableauEF1F2 = {
       'moins3': {
-        30: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 16, 3: 34, 4: 61, 5: 97, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 14, 3: 29, 4: 50, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 9, 3: 17, 4: 28, 5: 42, 6: 60, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      '3a10': {
-        30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 10, 3: 14, 4: 20, 5: 29, 6: 40, 7: 51, 8: 60, 9: 79, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
-      }
-    };
-    
-    // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
-    const tableauGicleursABCDF3 = {
-      10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      25: {0: 0, 1.2: 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
-      50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
-      60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
-      80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
-      100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
-      150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
-    };
-    
-    // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
-    const tableauGicleursEF1F2 = {
-      10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
-      40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
-      50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
-      60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
-      80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
-      100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
-      150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
-    };
-    
-    // Fonction pour afficher/masquer le champ Rapport L/H selon la protection par gicleurs
-    gicleurs.addEventListener('change', function() {
-      if (this.checked) {
-        rapportContainer.style.display = 'none';
-      } else {
-        rapportContainer.style.display = 'block';
-      }
-    });
-    
-    // Fonctions utilitaires
-    const getSurfaceProche = (surface, tableau) => {
-      const surfaces = Object.keys(tableau).map(Number).sort((a, b) => a - b);
-      
-      if (surface <= surfaces[0]) {
-        return surfaces[0];
-      }
-      
-      for (let i = 0; i < surfaces.length - 1; i++) {
-        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
-          return surfaces[i + 1];
-        }
-      }
-      
-      return surfaces[surfaces.length - 1];
-    };
-    
-    const getDistanceProche = (distance, tableauDistance) => {
-      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
-      
-      if (distance <= distances[0]) {
-        return distances[0];
-      }
-      
-      for (let i = 0; i < distances.length - 1; i++) {
-        if (distance > distances[i] && distance <= distances[i + 1]) {
-          return distances[i];
-        }
-      }
-      
-      return distances[distances.length - 1];
-    };
-    
-    // Fonction de calcul
-    calculer.addEventListener('click', function() {
-      let distanceCalcul = parseFloat(distance.value);
-      let surfaceVal = parseFloat(surface.value);
-      let details = "";
-      
-      // Vérifier si la distance limitative doit être ajustée
-      if (intervention.checked && !gicleurs.checked) {
-        distanceCalcul = distanceCalcul / 2;
-        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
-      }
-      
-      // Sélectionner le tableau approprié
-      let tableauUtilise;
-      let surfaceProche;
-      let tableauDistances;
-      let pourcentage;
-      
-      if (gicleurs.checked) {
-        // Utiliser les tableaux pour bâtiments protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauGicleursABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauGicleursEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-        
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, tableauUtilise);
-        tableauDistances = tableauUtilise[surfaceProche];
-        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
-        
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
-        
-      } else {
-        // Utiliser les tableaux pour bâtiments non protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-        
-        // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
-        const sousTableau = tableauUtilise[rapport.value];
-        details += `Rapport L/H ou H/L utilisé: ${rapport.value === 'moins3' ? '< 3:1' : rapport.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
-        
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, sousTableau);
-        tableauDistances = sousTableau[surfaceProche];
-        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
-        
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
-      }
-      
-      // Calculer la surface maximale des baies non protégées
-      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
-      
-      // Afficher les résultats
-      resultats.innerHTML = `
-        <h2>Résultats</h2>
-        <p style="font-weight: bold; font-size: 18px;">
-          Surface maximale des baies non protégées autorisée: 
-          <span class="highlight">${pourcentage}%</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px;">
-          Soit une surface de: 
-          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
-        </p>
-        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
-        <div class="details">${details}</div>
-      `;
-    });
-    
-    // Initialiser l'état du champ Rapport L/H
-    if (gicleurs.checked) {
-      rapportContainer.style.display = 'none';
-    }
-  </script>
-</body>
-</html>
+        10: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        15: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 19, 2.5: 27, 3: 36, 4: 56, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 8, 1.5: 11, 2.0: 17, 2.5: 24, 3: 31, 4: 47, 5: 66, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 28, 4: 41, 5: 57, 6: 76, 7: 97, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 20, 3: 25, 4: 38, 5: 51, 6: 67, 7: 85, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 17, 3: 22, 4: 32, 5: 44, 6: 56, 7: 70, 8: 86, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 16, 3: 20, 4: 29, 5: 39, 6: 49, 7: 61, 8: 74, 9: 89, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 13, 3: 17, 4: 24, 5: 31, 6: 39, 7: 48, 8: 57, 9: 68, 10: 79, 11: 91, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 14, 4: 19, 5: 24, 6: 30, 7: 36, 8: 43, 9: 50, 10: 57, 11: 65, 12: 73, 13: 82, 14: 92, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 10, 3: 12, 4: 16, 5: 21, 6: 25, 7: 30, 8: 36, 9: 41, 10: 47, 11: 53, 12: 59, 13: 66, 14: 73, 16: 88, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 9, 3: 11, 4: 14, 5: 18, 6: 22, 7: 25, 8: 30, 9: 34, 10: 38, 11: 43, 12: 48, 13: 53, 14: 58, 16: 70, 18: 82, 20: 96, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 8, 3: 9, 4: 11, 5: 13, 6: 16, 7: 19, 8: 21, 9: 24, 10: 27, 11: 30, 12: 33, 13: 36, 14: 39, 16: 46, 18: 53, 20: 60, 25: 82, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        2000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 8, 3: 8, 4: 9, 5: 11, 6: 12, 7: 14, 8: 16, 9: 18, 10: 19, 11: 21, 12: 23, 13: 25, 14: 27, 16: 32, 18: 36, 20: 40, 25: 53, 30: 66, 35: 82, 40: 99, 45: 100, 50: 100}
+        15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        25: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        30: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 17, 3: 23, 4: 39, 5: 61, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 15, 3: 20, 4: 32, 5: 48, 6: 69, 7: 93, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 41, 6: 57, 7: 77, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 13, 3: 16, 4: 25, 5: 36, 6: 49, 7: 66, 8: 85, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 14, 4: 21, 5: 29, 6: 40, 7: 52, 8: 67, 9: 84, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 13, 4: 18, 5: 25, 6: 34, 7: 44, 8: 56, 9: 69, 10: 84, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 10, 3: 11, 4: 15, 5: 20, 6: 26, 7: 33, 8: 41, 9: 50, 10: 60, 11: 71, 12: 84, 13: 97, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 9, 3: 10, 4: 12, 5: 15, 6: 19, 7: 24, 8: 28, 9: 34, 10: 40, 11: 47, 12: 55, 13: 63, 14: 72, 16: 92, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 8, 3: 9, 4: 11, 5: 13, 6: 16, 7: 19, 8: 23, 9: 27, 10: 32, 11: 37, 12: 42, 13: 48, 14: 55, 16: 69, 18: 85, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 8, 3: 8, 4: 10, 5: 12, 6: 14, 7: 16, 8: 19, 9: 22, 10: 25, 11: 29, 12: 33, 13: 37, 14: 41, 16: 52, 18: 63, 20: 76, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 8, 4: 9, 5: 10, 6: 11, 7: 12, 8: 14, 9: 15, 10: 17, 11: 19, 12: 21, 13: 23, 14: 26, 16: 31, 18: 37, 20: 43, 25: 63, 30: 86, 35: 100, 40: 100, 45: 100, 50: 100},
+        2000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 7, 4: 8, 5: 8, 6: 9, 7: 10, 8: 11, 9: 12, 10: 13, 11: 14, 12: 15, 13: 16, 14: 17, 16: 20, 18: 23, 20: 27, 25: 37, 30: 49, 35: 63, 40: 79, 45: 97, 50: 100},
+        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 15, 3: 20, 4: 32, 5: 48, 6: 69, 7: 93, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 41, 6: 57, 7: 77, 8: 100, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        60: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 13, 3: 16, 4: 25, 5: 36, 6: 49, 7: 66, 8: 85, 9: 100, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        80: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 14, 4: 21, 5: 29, 6: 40, 7: 52, 8: 67, 9: 84, 10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 11, 3: 13, 4: 18, 5: 25, 6: 34, 7: 44, 8: 56, 9: 69, 10: 84, 11: 100, 12: 100, 13: 100, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 10, 3: 11, 4: 15, 5: 20, 6: 26, 7: 33, 8: 41, 9: 50, 10: 60, 11: 71, 12: 84, 13: 97, 14: 100, 16: 100, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        250: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 9, 3: 10, 4: 12, 5: 15, 6: 19, 7: 24, 8: 28, 9: 34, 10: 40, 11: 47, 12: 55, 13: 63, 14: 72, 16: 92, 18: 100, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        350: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 8, 3: 9, 4: 11, 5: 13, 6: 16, 7: 19, 8: 23, 9: 27, 10: 32, 11: 37, 12: 42, 13: 48, 14: 55, 16: 69, 18: 85, 20: 100, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        500: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 8, 3: 8, 4: 10, 5: 12, 6: 14, 7: 16, 8: 19, 9: 22, 10: 25, 11: 29, 12: 33, 13: 37, 14: 41, 16: 52, 18: 63, 20: 76, 25: 100, 30: 100, 35: 100, 40: 100, 45: 100, 50: 100},
+        1000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 8, 4: 9, 5: 10, 6: 11, 7: 12, 8: 14, 9: 15, 10: 17, 11: 19, 12: 21, 13: 23, 14: 26, 16: 31, 18: 37, 20: 43, 25: 63, 30: 86, 35: 100, 40: 100, 45: 100, 50: 100},
+        2000: {0: 0, 1.2: 7, 1.5: 7, 2.0: 7, 2.5: 7, 3: 7, 4: 8, 5: 8, 6: 9, 7: 10, 8: 11, 9: 12, 10: 13, 11: 14, 12: 15, 13: 16, 14: 17, 16: 20, 18: 23, 20: 27, 25: 37, 30: 49, 35: 63, 40: 79, 45: 97, 50: 100}
