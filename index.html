@@ -345,522 +345,557 @@
   </div>
   
   <script>
-    // Gestion des onglets
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        // Retirer la classe active de tous les onglets et contenus
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.remove('active'));
-        
-        // Ajouter la classe active à l'onglet cliqué et son contenu
-        this.classList.add('active');
-        const tabContent = document.getElementById(this.dataset.tab);
-        tabContent.classList.add('active');
+    // Gestionnaire d'événements pour les onglets
+    document.addEventListener('DOMContentLoaded', function() {
+      // Gestion des onglets
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          // Retirer la classe active de tous les onglets et contenus
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(tc => tc.classList.remove('active'));
+          
+          // Ajouter la classe active à l'onglet cliqué et son contenu
+          this.classList.add('active');
+          const tabContent = document.getElementById(this.dataset.tab);
+          tabContent.classList.add('active');
+        });
       });
-    });
-    
-    // Référence aux éléments du DOM - Onglet Général
-    const usageBatiment = document.getElementById('usage-batiment');
-    const gicleurs = document.getElementById('gicleurs');
-    const distance = document.getElementById('distance');
-    const surface = document.getElementById('surface');
-    const rapport = document.getElementById('rapport');
-    const rapportContainer = document.getElementById('rapport-container');
-    const intervention = document.getElementById('intervention');
-    const calculer = document.getElementById('calculer');
-    const resultats = document.getElementById('resultats');
-    
-    // Référence aux éléments du DOM - Onglet 9.10.14
-    const usage91014 = document.getElementById('usage-91014');
-    const gicleurs91014 = document.getElementById('gicleurs-91014');
-    const distance91014 = document.getElementById('distance-91014');
-    const surface91014 = document.getElementById('surface-91014');
-    const rapport91014 = document.getElementById('rapport-91014');
-    const rapportContainer91014 = document.getElementById('rapport-container-91014');
-    const intervention91014 = document.getElementById('intervention-91014');
-    const surfaceFenetres91014 = document.getElementById('surface-fenetres-91014');
-    const calculer91014 = document.getElementById('calculer-91014');
-    const resultats91014 = document.getElementById('resultats-91014');
-    
-    // Référence aux éléments du DOM - Onglet 9.10.15
-    const distance91015 = document.getElementById('distance-91015');
-    const surface91015 = document.getElementById('surface-91015');
-    const gicleurs91015 = document.getElementById('gicleurs-91015');
-    const intervention91015 = document.getElementById('intervention-91015');
-    const surfaceFenetres91015 = document.getElementById('surface-fenetres-91015');
-    const calculer91015 = document.getElementById('calculer-91015');
-    const resultats91015 = document.getElementById('resultats-91015');
-    
-    // Tableaux des valeurs du CNB
-    // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
-    const tableauABCDF3 = {
-      'moins3': {
-        30: {0: 0, 1.2: 8, 1.5: 10, 2.0: 18, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 40, 5: 55, 6: 92, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      '3a10': {
-        30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 21, 2.5: 33, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
-      }
-    };
-    
-    // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
-    const tableauEF1F2 = {
-      'moins3': {
-        30: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 16, 3: 34, 4: 61, 5: 97, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 14, 3: 29, 4: 50, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 9, 3: 17, 4: 28, 5: 42, 6: 60, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      '3a10': {
-        30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 10, 3: 14, 4: 20, 5: 29, 6: 40, 7: 51, 8: 60, 9: 79, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
-      }
-    };
-    
-    // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
-    const tableauGicleursABCDF3 = {
-      10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
-      40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
-      50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
-      60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
-      80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
-      100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
-      150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
-    };
-    
-    // Tableau 9.10.14.4.-A - Surface maximale globale des baies non protégées dans les murs extérieurs
-    const tableau9_10_14_4_A = {
-      'habitation': {
+      
+      // Référence aux éléments du DOM - Onglet Général
+      const usageBatiment = document.getElementById('usage-batiment');
+      const gicleurs = document.getElementById('gicleurs');
+      const distance = document.getElementById('distance');
+      const surface = document.getElementById('surface');
+      const rapport = document.getElementById('rapport');
+      const rapportContainer = document.getElementById('rapport-container');
+      const intervention = document.getElementById('intervention');
+      const calculer = document.getElementById('calculer');
+      const resultats = document.getElementById('resultats');
+      
+      // Référence aux éléments du DOM - Onglet 9.10.14
+      const usage91014 = document.getElementById('usage-91014');
+      const gicleurs91014 = document.getElementById('gicleurs-91014');
+      const distance91014 = document.getElementById('distance-91014');
+      const surface91014 = document.getElementById('surface-91014');
+      const rapport91014 = document.getElementById('rapport-91014');
+      const rapportContainer91014 = document.getElementById('rapport-container-91014');
+      const intervention91014 = document.getElementById('intervention-91014');
+      const surfaceFenetres91014 = document.getElementById('surface-fenetres-91014');
+      const calculer91014 = document.getElementById('calculer-91014');
+      const resultats91014 = document.getElementById('resultats-91014');
+      
+      // Référence aux éléments du DOM - Onglet 9.10.15
+      const distance91015 = document.getElementById('distance-91015');
+      const surface91015 = document.getElementById('surface-91015');
+      const gicleurs91015 = document.getElementById('gicleurs-91015');
+      const intervention91015 = document.getElementById('intervention-91015');
+      const surfaceFenetres91015 = document.getElementById('surface-fenetres-91015');
+      const calculer91015 = document.getElementById('calculer-91015');
+      const resultats91015 = document.getElementById('resultats-91015');
+      
+      // Tableaux des valeurs du CNB
+      // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
+      const tableauABCDF3 = {
+        'moins3': {
+          30: {0: 0, 1.2: 8, 1.5: 10, 2.0: 18, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 40, 5: 55, 6: 92, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        '3a10': {
+          30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 21, 2.5: 33, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        'plus10': {
+          30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
+        }
+      };
+      
+      // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
+      const tableauEF1F2 = {
+        'moins3': {
+          30: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 16, 3: 34, 4: 61, 5: 97, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 14, 3: 29, 4: 50, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 9, 3: 17, 4: 28, 5: 42, 6: 60, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        '3a10': {
+          30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 10, 3: 14, 4: 20, 5: 29, 6: 40, 7: 51, 8: 60, 9: 79, 10: 100}
+        },
+        'plus10': {
+          30: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
+        }
+      };
+      
+      // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
+      const tableauGicleursABCDF3 = {
+        10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        25: {0: 0, 1.2: 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
+        50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
+        60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
+        80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
+        100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
+        150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
+      };
+      
+      // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
+      const tableauGicleursEF1F2 = {
+        10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
+        40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
+        50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
+        60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
+        80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
+        100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
+        150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
+      };
+      
+      // Tableau 9.10.14.4.-A - Surface maximale globale des baies non protégées dans les murs extérieurs
+      const tableau91014 = {
+        'habitation': {
+          30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          100: {1.2: 7, 1.5: 8, 2.0: 9, 4.0: 18, 6.0: 34, 8.0: 56, 10.0: 84, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          'plus100': {1.2: 7, 1.5: 7, 2.0: 8, 4.0: 12, 6.0: 19, 8.0: 28, 10.0: 40, 12.0: 55, 16.0: 92, 20.0: 100, 25.0: 100}
+        },
+        'commercial': {
+          30: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 20, 6.0: 44, 8.0: 80, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          40: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 16, 6.0: 34, 8.0: 61, 10.0: 97, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          50: {1.2: 4, 1.5: 4, 2.0: 5, 4.0: 14, 6.0: 29, 8.0: 50, 10.0: 79, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+          100: {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 9, 6.0: 17, 8.0: 28, 10.0: 42, 12.0: 60, 16.0: 100, 20.0: 100, 25.0: 100},
+          'plus100': {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 6, 6.0: 10, 8.0: 14, 10.0: 20, 12.0: 27, 16.0: 46, 20.0: 70, 25.0: 100}
+        }
+      };
+      
+      // Tableau 9.10.15.4 - Surface maximale des baies vitrées dans les murs extérieurs des maisons
+      const tableau91015 = {
+        10: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+        15: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
         30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
         40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
         50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
         100: {1.2: 7, 1.5: 8, 2.0: 9, 4.0: 18, 6.0: 34, 8.0: 56, 10.0: 84, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
         'plus100': {1.2: 7, 1.5: 7, 2.0: 8, 4.0: 12, 6.0: 19, 8.0: 28, 10.0: 40, 12.0: 55, 16.0: 92, 20.0: 100, 25.0: 100}
-      },
-      'commercial': {
-        30: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 20, 6.0: 44, 8.0: 80, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-        40: {1.2: 4, 1.5: 4, 2.0: 6, 4.0: 16, 6.0: 34, 8.0: 61, 10.0: 97, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-        50: {1.2: 4, 1.5: 4, 2.0: 5, 4.0: 14, 6.0: 29, 8.0: 50, 10.0: 79, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-        100: {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 9, 6.0: 17, 8.0: 28, 10.0: 42, 12.0: 60, 16.0: 100, 20.0: 100, 25.0: 100},
-        'plus100': {1.2: 4, 1.5: 4, 2.0: 4, 4.0: 6, 6.0: 10, 8.0: 14, 10.0: 20, 12.0: 27, 16.0: 46, 20.0: 70, 25.0: 100}
-      }
-    };
-    
-    // Tableau 9.10.15.4 - Surface maximale des baies vitrées dans les murs extérieurs des maisons
-    const tableau9_10_15_4 = {
-      10: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      15: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      100: {1.2: 7, 1.5: 8, 2.0: 9, 4.0: 18, 6.0: 34, 8.0: 56, 10.0: 84, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
-      'plus100': {1.2: 7, 1.5: 7, 2.0: 8, 4.0: 12, 6.0: 19, 8.0: 28, 10.0: 40, 12.0: 55, 16.0: 92, 20.0: 100, 25.0: 100}
-    };
-    
-    // Fonction pour afficher/masquer le champ Rapport L/H selon la protection par gicleurs
-    gicleurs.addEventListener('change', function() {
-      if (this.checked) {
-        rapportContainer.style.display = 'none';
-      } else {
-        rapportContainer.style.display = 'block';
-      }
-    });
-    
-    gicleurs91014.addEventListener('change', function() {
-      if (this.checked) {
-        rapportContainer91014.style.display = 'none';
-      } else {
-        rapportContainer91014.style.display = 'block';
-      }
-    });
-    
-    // Fonctions utilitaires
-    const getSurfaceProche = (surface, tableau) => {
-      const surfaces = Object.keys(tableau).map(Number).sort((a, b) => a - b);
+      };
       
-      if (surface <= surfaces[0]) {
-        return surfaces[0];
-      }
-      
-      for (let i = 0; i < surfaces.length - 1; i++) {
-        if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
-          return surfaces[i + 1];
+      // Fonction pour afficher/masquer le champ Rapport L/H selon la protection par gicleurs
+      gicleurs.addEventListener('change', function() {
+        if (this.checked) {
+          rapportContainer.style.display = 'none';
+        } else {
+          rapportContainer.style.display = 'block';
         }
-      }
+      });
       
-      return surfaces[surfaces.length - 1];
-    };
-    
-    const getDistanceProche = (distance, tableauDistance) => {
-      const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
-      
-      if (distance <= distances[0]) {
-        return distances[0];
-      }
-      
-      for (let i = 0; i < distances.length - 1; i++) {
-        if (distance > distances[i] && distance <= distances[i + 1]) {
-          return distances[i];
+      gicleurs91014.addEventListener('change', function() {
+        if (this.checked) {
+          rapportContainer91014.style.display = 'none';
+        } else {
+          rapportContainer91014.style.display = 'block';
         }
-      }
+      });
       
-      return distances[distances.length - 1];
-    };
-    
-    // Fonction d'interpolation
-    const interpolation = (x, x1, x2, y1, y2) => {
-      return y1 + ((x - x1) * (y2 - y1)) / (x2 - x1);
-    };
-    
-    // Fonction pour obtenir le pourcentage par interpolation pour 9.10.14
-    const getPourcentageParInterpolation91014 = (distance, surface, usage) => {
-      const tableauUsage = tableau9_10_14_4_A[usage];
-      const surfaces = Object.keys(tableauUsage).map(s => s === 'plus100' ? Infinity : Number(s)).sort((a, b) => a - b);
-      
-      // Identifier les surfaces pour interpolation
-      let surfaceInf, surfaceSup;
-      if (surface <= surfaces[0]) {
-        return tableauUsage[surfaces[0].toString()][getDistanceProche(distance, tableauUsage[surfaces[0].toString()])];
-      } else if (surface >= surfaces[surfaces.length - 2]) {
-        return tableauUsage['plus100'][getDistanceProche(distance, tableauUsage['plus100'])];
-      } else {
+      // Fonctions utilitaires
+      const getSurfaceProche = (surface, tableau) => {
+        const surfaces = Object.keys(tableau)
+          .filter(key => key !== 'plus100')
+          .map(Number)
+          .sort((a, b) => a - b);
+        
+        if (surface <= surfaces[0]) {
+          return surfaces[0];
+        }
+        
         for (let i = 0; i < surfaces.length - 1; i++) {
           if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
-            surfaceInf = surfaces[i];
-            surfaceSup = surfaces[i + 1];
-            break;
+            return surfaces[i + 1];
           }
         }
-      }
+        
+        return surfaces[surfaces.length - 1];
+      };
       
-      // Convertir en clés de chaîne pour le tableau
-      const surfaceInfKey = surfaceInf.toString();
-      const surfaceSupKey = surfaceSup === Infinity ? 'plus100' : surfaceSup.toString();
+      const getDistanceProche = (distance, tableauDistance) => {
+        const distances = Object.keys(tableauDistance).map(Number).sort((a, b) => a - b);
+        
+        if (distance <= distances[0]) {
+          return distances[0];
+        }
+        
+        for (let i = 0; i < distances.length - 1; i++) {
+          if (distance > distances[i] && distance <= distances[i + 1]) {
+            return distances[i];
+          }
+        }
+        
+        return distances[distances.length - 1];
+      };
       
-      // Obtenir les distances les plus proches pour chaque surface
-      const distancesInf = Object.keys(tableauUsage[surfaceInfKey]).map(Number).sort((a, b) => a - b);
-      const distancesSup = Object.keys(tableauUsage[surfaceSupKey]).map(Number).sort((a, b) => a - b);
+      // Fonction d'interpolation
+      const interpolation = (x, x1, x2, y1, y2) => {
+        return y1 + ((x - x1) * (y2 - y1)) / (x2 - x1);
+      };
       
-      // Identifier les distances pour interpolation
-      let distanceInfInf, distanceInfSup, distanceSupInf, distanceSupSup;
-      let pourcentageInfInf, pourcentageInfSup, pourcentageSupInf, pourcentageSupSup;
-      
-      // Pour la surface inférieure
-      for (let i = 0; i < distancesInf.length - 1; i++) {
-        if (distance >= distancesInf[i] && distance <= distancesInf[i + 1]) {
-          distanceInfInf = distancesInf[i];
-          distanceInfSup = distancesInf[i + 1];
+      // Fonction pour obtenir le pourcentage par interpolation pour 9.10.14 et 9.10.15
+      const calculerPourcentageInterpolation = (distance, surface, tableau, rapportValue = null) => {
+        let tableauUsage;
+        
+        // Sélectionner le tableau en fonction de l'usage (pour 9.10.14)
+        if (typeof tableau === 'object' && tableau.hasOwnProperty('habitation')) {
+          tableauUsage = tableau[rapportValue || 'habitation'];
+        } else {
+          tableauUsage = tableau;
+        }
+        
+        const surfaces = Object.keys(tableauUsage)
+          .map(s => s === 'plus100' ? Infinity : Number(s))
+          .sort((a, b) => a - b);
+        
+        // Identifier les surfaces pour interpolation
+        let surfaceInf, surfaceSup;
+        
+        if (surface <= surfaces[0]) {
+          surfaceInf = surfaces[0];
+          surfaceSup = surfaces[0];
+        } else if (surface >= surfaces[surfaces.length - 2]) {
+          surfaceInf = surfaces[surfaces.length - 2];
+          surfaceSup = Infinity;
+        } else {
+          for (let i = 0; i < surfaces.length - 1; i++) {
+            if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
+              surfaceInf = surfaces[i];
+              surfaceSup = surfaces[i + 1];
+              break;
+            }
+          }
+        }
+        
+        // Convertir en clés de chaîne pour le tableau
+        const surfaceInfKey = surfaceInf.toString();
+        const surfaceSupKey = surfaceSup === Infinity ? 'plus100' : surfaceSup.toString();
+        
+        // Obtenir les distances les plus proches pour chaque surface
+        const distancesInf = Object.keys(tableauUsage[surfaceInfKey]).map(Number).sort((a, b) => a - b);
+        const distancesSup = Object.keys(tableauUsage[surfaceSupKey]).map(Number).sort((a, b) => a - b);
+        
+        // Identifier les distances pour interpolation
+        let distanceInfInf, distanceInfSup, distanceSupInf, distanceSupSup;
+        let pourcentageInfInf, pourcentageInfSup, pourcentageSupInf, pourcentageSupSup;
+        
+        // Pour la surface inférieure
+        if (distance <= distancesInf[0]) {
+          distanceInfInf = distancesInf[0];
+          distanceInfSup = distancesInf[0];
           pourcentageInfInf = tableauUsage[surfaceInfKey][distanceInfInf];
-          pourcentageInfSup = tableauUsage[surfaceInfKey][distanceInfSup];
-          break;
-        }
-      }
-      
-      // Pour la surface supérieure
-      for (let i = 0; i < distancesSup.length - 1; i++) {
-        if (distance >= distancesSup[i] && distance <= distancesSup[i + 1]) {
-          distanceSupInf = distancesSup[i];
-          distanceSupSup = distancesSup[i + 1];
-          pourcentageSupInf = tableauUsage[surfaceSupKey][distanceSupInf];
-          pourcentageSupSup = tableauUsage[surfaceSupKey][distanceSupSup];
-          break;
-        }
-      }
-      
-      // Interpolation pour chaque surface
-      const pourcentageInf = interpolation(distance, distanceInfInf, distanceInfSup, pourcentageInfInf, pourcentageInfSup);
-      const pourcentageSup = interpolation(distance, distanceSupInf, distanceSupSup, pourcentageSupInf, pourcentageSupSup);
-      
-      // Interpolation finale entre les surfaces
-      return interpolation(surface, surfaceInf, surfaceSup, pourcentageInf, pourcentageSup);
-    };
-    
-    // Fonction pour obtenir le pourcentage par interpolation pour 9.10.15
-    const getPourcentageParInterpolation91015 = (distance, surface) => {
-      const surfaces = Object.keys(tableau9_10_15_4).map(s => s === 'plus100' ? Infinity : Number(s)).sort((a, b) => a - b);
-      
-      // Identifier les surfaces pour interpolation
-      let surfaceInf, surfaceSup;
-      if (surface <= surfaces[0]) {
-        return tableau9_10_15_4[surfaces[0].toString()][getDistanceProche(distance, tableau9_10_15_4[surfaces[0].toString()])];
-      } else if (surface >= surfaces[surfaces.length - 2]) {
-        return tableau9_10_15_4['plus100'][getDistanceProche(distance, tableau9_10_15_4['plus100'])];
-      } else {
-        for (let i = 0; i < surfaces.length - 1; i++) {
-          if (surface > surfaces[i] && surface <= surfaces[i + 1]) {
-            surfaceInf = surfaces[i];
-            surfaceSup = surfaces[i + 1];
-            break;
+          pourcentageInfSup = pourcentageInfInf;
+        } else if (distance >= distancesInf[distancesInf.length - 1]) {
+          distanceInfInf = distancesInf[distancesInf.length - 1];
+          distanceInfSup = distanceInfInf;
+          pourcentageInfInf = tableauUsage[surfaceInfKey][distanceInfInf];
+          pourcentageInfSup = pourcentageInfInf;
+        } else {
+          for (let i = 0; i < distancesInf.length - 1; i++) {
+            if (distance >= distancesInf[i] && distance <= distancesInf[i + 1]) {
+              distanceInfInf = distancesInf[i];
+              distanceInfSup = distancesInf[i + 1];
+              pourcentageInfInf = tableauUsage[surfaceInfKey][distanceInfInf];
+              pourcentageInfSup = tableauUsage[surfaceInfKey][distanceInfSup];
+              break;
+            }
           }
         }
-      }
-      
-      // Convertir en clés de chaîne pour le tableau
-      const surfaceInfKey = surfaceInf.toString();
-      const surfaceSupKey = surfaceSup === Infinity ? 'plus100' : surfaceSup.toString();
-      
-      // Obtenir les distances les plus proches pour chaque surface
-      const distancesInf = Object.keys(tableau9_10_15_4[surfaceInfKey]).map(Number).sort((a, b) => a - b);
-      const distancesSup = Object.keys(tableau9_10_15_4[surfaceSupKey]).map(Number).sort((a, b) => a - b);
-      
-      // Identifier les distances pour interpolation
-      let distanceInfInf, distanceInfSup, distanceSupInf, distanceSupSup;
-      let pourcentageInfInf, pourcentageInfSup, pourcentageSupInf, pourcentageSupSup;
-      
-      // Pour la surface inférieure
-      for (let i = 0; i < distancesInf.length - 1; i++) {
-        if (distance >= distancesInf[i] && distance <= distancesInf[i + 1]) {
-          distanceInfInf = distancesInf[i];
-          distanceInfSup = distancesInf[i + 1];
-          pourcentageInfInf = tableau9_10_15_4[surfaceInfKey][distanceInfInf];
-          pourcentageInfSup = tableau9_10_15_4[surfaceInfKey][distanceInfSup];
-          break;
+        
+        // Pour la surface supérieure
+        if (distance <= distancesSup[0]) {
+          distanceSupInf = distancesSup[0];
+          distanceSupSup = distancesSup[0];
+          pourcentageSupInf = tableauUsage[surfaceSupKey][distanceSupInf];
+          pourcentageSupSup = pourcentageSupInf;
+        } else if (distance >= distancesSup[distancesSup.length - 1]) {
+          distanceSupInf = distancesSup[distancesSup.length - 1];
+          distanceSupSup = distanceSupInf;
+          pourcentageSupInf = tableauUsage[surfaceSupKey][distanceSupInf];
+          pourcentageSupSup = pourcentageSupInf;
+        } else {
+          for (let i = 0; i < distancesSup.length - 1; i++) {
+            if (distance >= distancesSup[i] && distance <= distancesSup[i + 1]) {
+              distanceSupInf = distancesSup[i];
+              distanceSupSup = distancesSup[i + 1];
+              pourcentageSupInf = tableauUsage[surfaceSupKey][distanceSupInf];
+              pourcentageSupSup = tableauUsage[surfaceSupKey][distanceSupSup];
+              break;
+            }
+          }
         }
-      }
-      
-      // Pour la surface supérieure
-      for (let i = 0; i < distancesSup.length - 1; i++) {
-        if (distance >= distancesSup[i] && distance <= distancesSup[i + 1]) {
-          distanceSupInf = distancesSup[i];
-          distanceSupSup = distancesSup[i + 1];
-          pourcentageSupInf = tableau9_10_15_4[surfaceSupKey][distanceSupInf];
-          pourcentageSupSup = tableau9_10_15_4[surfaceSupKey][distanceSupSup];
-          break;
+        
+        // Interpolation pour chaque surface
+        const pourcentageInf = interpolation(distance, distanceInfInf, distanceInfSup, pourcentageInfInf, pourcentageInfSup);
+        const pourcentageSup = interpolation(distance, distanceSupInf, distanceSupSup, pourcentageSupInf, pourcentageSupSup);
+        
+        // Si même surface, pas besoin d'interpoler entre surfaces
+        if (surfaceInf === surfaceSup) {
+          return pourcentageInf;
         }
-      }
+        
+        // Interpolation finale entre les surfaces
+        return interpolation(surface, surfaceInf, surfaceSup, pourcentageInf, pourcentageSup);
+      };
       
-      // Interpolation pour chaque surface
-      const pourcentageInf = interpolation(distance, distanceInfInf, distanceInfSup, pourcentageInfInf, pourcentageInfSup);
-      const pourcentageSup = interpolation(distance, distanceSupInf, distanceSupSup, pourcentageSupInf, pourcentageSupSup);
+      // Fonction de calcul - Onglet Général
+      calculer.addEventListener('click', function() {
+        let distanceCalcul = parseFloat(distance.value);
+        let surfaceVal = parseFloat(surface.value);
+        let details = "";
+        
+        // Vérifier si la distance limitative doit être ajustée
+        if (intervention.checked && !gicleurs.checked) {
+          distanceCalcul = distanceCalcul / 2;
+          details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+        }
+        
+        // Sélectionner le tableau approprié
+        let tableauUtilise;
+        let surfaceProche;
+        let tableauDistances;
+        let pourcentage;
+        
+        if (gicleurs.checked) {
+          // Utiliser les tableaux pour bâtiments protégés par gicleurs
+          if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
+            tableauUtilise = tableauGicleursABCDF3;
+            details += "Tableau utilisé: 3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)\n";
+          } else {
+            tableauUtilise = tableauGicleursEF1F2;
+            details += "Tableau utilisé: 3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)\n";
+          }
+          
+          // Trouver la surface la plus proche dans le tableau
+          surfaceProche = getSurfaceProche(surfaceVal, tableauUtilise);
+          tableauDistances = tableauUtilise[surfaceProche];
+          details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
+          
+          // Trouver la distance limitative la plus proche
+          const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
+          pourcentage = tableauDistances[distanceProche];
+          details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+          
+        } else {
+          // Utiliser les tableaux pour bâtiments non protégés par gicleurs
+          if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
+            tableauUtilise = tableauABCDF3;
+            details += "Tableau utilisé: 3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)\n";
+          } else {
+            tableauUtilise = tableauEF1F2;
+            details += "Tableau utilisé: 3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)\n";
+          }
+          
+          // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
+          const sousTableau = tableauUtilise[rapport.value];
+          details += `Rapport L/H ou H/L utilisé: ${rapport.value === 'moins3' ? '< 3:1' : rapport.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
+          
+          // Trouver la surface la plus proche dans le tableau
+          surfaceProche = getSurfaceProche(surfaceVal, sousTableau);
+          tableauDistances = sousTableau[surfaceProche];
+          details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
+          
+          // Trouver la distance limitative la plus proche
+          const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
+          pourcentage = tableauDistances[distanceProche];
+          details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+        }
+        
+        // Calculer la surface maximale des baies non protégées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Afficher les résultats
+        resultats.innerHTML = `
+          <h2>Résultats</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies non protégées autorisée: 
+            <span class="highlight">${pourcentage}%</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Soit une surface de: 
+            <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      });
       
-      // Interpolation finale entre les surfaces
-      return interpolation(surface, surfaceInf, surfaceSup, pourcentageInf, pourcentageSup);
-    };
-    
-    // Fonction de calcul - Onglet Général
-    calculer.addEventListener('click', function() {
-      let distanceCalcul = parseFloat(distance.value);
-      let surfaceVal = parseFloat(surface.value);
-      let details = "";
+      // Fonction de calcul - Onglet 9.10.14
+      calculer91014.addEventListener('click', function() {
+        let distanceCalcul = parseFloat(distance91014.value);
+        const surfaceVal = parseFloat(surface91014.value);
+        const surfaceFenetres = parseFloat(surfaceFenetres91014.value);
+        let details = "";
+        
+        // Vérifier si la distance limitative doit être ajustée
+        if (intervention91014.checked && !gicleurs91014.checked) {
+          distanceCalcul = distanceCalcul / 2;
+          details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+        }
+        
+        // Récupérer l'usage du bâtiment
+        const usageVal = usage91014.value;
+        details += `Usage du bâtiment: ${usageVal === 'habitation' ? 'Habitation, établissement d\'affaires ou établissement industriel à risques faibles' : 'Établissement commercial ou établissement industriel à risques moyens'}\n`;
+        
+        let pourcentage;
+        
+        // Si le bâtiment est protégé par gicleurs, doubler le pourcentage
+        if (gicleurs91014.checked) {
+          // Formule pour bâtiments protégés par gicleurs selon 9.10.14.4. 1)c)
+          pourcentage = Math.min(distanceCalcul * distanceCalcul, 100);
+          details += "Calcul selon 9.10.14.4. 1)c) pour bâtiments protégés par gicleurs\n";
+          details += `Formule utilisée: % = distance² = ${distanceCalcul.toFixed(2)}² = ${(distanceCalcul * distanceCalcul).toFixed(2)}%\n`;
+        } else {
+          // Utiliser le tableau 9.10.14.4.-A
+          details += "Tableau utilisé: 9.10.14.4.-A\n";
+          
+          // Si rapport L/H est sélectionné, inclure dans les détails
+          if (!gicleurs91014.checked) {
+            details += `Rapport L/H ou H/L utilisé: ${rapport91014.value === 'moins3' ? '< 3:1' : rapport91014.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
+          }
+          
+          // Calculer le pourcentage avec interpolation
+          pourcentage = calculerPourcentageInterpolation(distanceCalcul, surfaceVal, tableau91014, usageVal);
+        }
+        
+        details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n`;
+        details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
+        
+        // Arrondir le pourcentage calculé
+        pourcentage = Math.min(Math.round(pourcentage * 100) / 100, 100);
+        
+        // Calculer la surface maximale des baies non protégées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Calculer la surface disponible
+        const surfaceDisponible = surfaceMaxBaies - surfaceFenetres;
+        
+        // Vérifier si la surface des fenêtres existantes respecte la limite
+        const conformite = surfaceFenetres <= surfaceMaxBaies;
+        
+        // Afficher les résultats
+        resultats91014.innerHTML = `
+          <h2>Résultats (9.10.14)</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies non protégées autorisée: 
+            <span class="highlight">${pourcentage.toFixed(2)}%</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Soit une surface de: 
+            <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px; margin-top: 20px;">
+            Surface existante des baies: 
+            <span class="highlight">${surfaceFenetres.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface disponible restante: 
+            <span class="highlight">${surfaceDisponible.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px; color: ${conformite ? 'green' : 'red'};">
+            Conformité: ${conformite ? 'CONFORME' : 'NON CONFORME'}
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      });
       
-      // Vérifier si la distance limitative doit être ajustée
-      if (intervention.checked && !gicleurs.checked) {
-        distanceCalcul = distanceCalcul / 2;
-        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
-      }
-      
-      // Sélectionner le tableau approprié
-      let tableauUtilise;
-      let surfaceProche;
-      let tableauDistances;
-      let pourcentage;
-      
+      // Initialiser l'état du champ Rapport L/H
       if (gicleurs.checked) {
-        // Utiliser les tableaux pour bâtiments protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauGicleursABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-D (Bâtiments entièrement protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauGicleursEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-E (Bâtiments entièrement protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-        
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, tableauUtilise);
-        tableauDistances = tableauUtilise[surfaceProche];
-        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
-        
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
-        
-      } else {
-        // Utiliser les tableaux pour bâtiments non protégés par gicleurs
-        if (usageBatiment.value === 'habitation' || usageBatiment.value === 'affaires') {
-          tableauUtilise = tableauABCDF3;
-          details += "Tableau utilisé: 3.2.3.1.-B (Bâtiments non protégés par gicleurs - Groupe A, B, C, D, F3)\n";
-        } else {
-          tableauUtilise = tableauEF1F2;
-          details += "Tableau utilisé: 3.2.3.1.-C (Bâtiments non protégés par gicleurs - Groupe E, F1, F2)\n";
-        }
-        
-        // Déterminer quel sous-tableau utiliser en fonction du rapport L/H
-        const sousTableau = tableauUtilise[rapport.value];
-        details += `Rapport L/H ou H/L utilisé: ${rapport.value === 'moins3' ? '< 3:1' : rapport.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
-        
-        // Trouver la surface la plus proche dans le tableau
-        surfaceProche = getSurfaceProche(surfaceVal, sousTableau);
-        tableauDistances = sousTableau[surfaceProche];
-        details += `Surface de référence: ${surfaceProche} m² (surface réelle: ${surfaceVal} m²)\n`;
-        
-        // Trouver la distance limitative la plus proche
-        const distanceProche = getDistanceProche(distanceCalcul, tableauDistances);
-        pourcentage = tableauDistances[distanceProche];
-        details += `Distance limitative de référence: ${distanceProche} m (distance réelle: ${distanceCalcul} m)\n`;
+        rapportContainer.style.display = 'none';
       }
       
-      // Calculer la surface maximale des baies non protégées
-      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
-      
-      // Afficher les résultats
-      resultats.innerHTML = `
-        <h2>Résultats</h2>
-        <p style="font-weight: bold; font-size: 18px;">
-          Surface maximale des baies non protégées autorisée: 
-          <span class="highlight">${pourcentage}%</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px;">
-          Soit une surface de: 
-          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
-        </p>
-        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
-        <div class="details">${details}</div>
-      `;
-    });
-    
-    // Fonction de calcul - Onglet 9.10.14
-    calculer91014.addEventListener('click', function() {
-      let distanceCalcul = parseFloat(distance91014.value);
-      const surfaceVal = parseFloat(surface91014.value);
-      const surfaceFenetres = parseFloat(surfaceFenetres91014.value);
-      let details = "";
-      
-      // Vérifier si la distance limitative doit être ajustée
-      if (intervention91014.checked && !gicleurs91014.checked) {
-        distanceCalcul = distanceCalcul / 2;
-        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
-      }
-      
-      // Récupérer l'usage du bâtiment
-      const usageVal = usage91014.value;
-      details += `Usage du bâtiment: ${usageVal === 'habitation' ? 'Habitation, établissement d\'affaires ou établissement industriel à risques faibles' : 'Établissement commercial ou établissement industriel à risques moyens'}\n`;
-      
-      let pourcentage;
-      
-      // Si le bâtiment est protégé par gicleurs, doubler le pourcentage
       if (gicleurs91014.checked) {
-        // Calculer le pourcentage de base et le doubler
-        pourcentage = getPourcentageParInterpolation91014(distanceCalcul, surfaceVal, usageVal);
-        pourcentage = Math.min(100, pourcentage * 2); // Doubler mais ne pas dépasser 100%
-        details += "Bâtiment protégé par gicleurs: pourcentage doublé (article 9.10.14.4., paragraphe 7))\n";
-      } else {
-        pourcentage = getPourcentageParInterpolation91014(distanceCalcul, surfaceVal, usageVal);
-        
-        // Si rapport L/H est sélectionné, inclure dans les détails
-        if (!gicleurs91014.checked) {
-          details += `Rapport L/H ou H/L utilisé: ${rapport91014.value === 'moins3' ? '< 3:1' : rapport91014.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
-        }
+        rapportContainer91014.style.display = 'none';
       }
-      
-      details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n`;
-      details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
-      
-      // Calculer la surface maximale des baies non protégées
-      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
-      
-      // Vérifier si la surface des fenêtres existantes respecte la limite
-      const conformite = surfaceFenetres <= surfaceMaxBaies;
-      
-      // Afficher les résultats
-      resultats91014.innerHTML = `
-        <h2>Résultats</h2>
-        <p style="font-weight: bold; font-size: 18px;">
-          Surface maximale des baies non protégées autorisée: 
-          <span class="highlight">${pourcentage.toFixed(2)}%</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px;">
-          Soit une surface de: 
-          <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px; margin-top: 20px;">
-          Surface des baies existantes: 
-          <span class="highlight">${surfaceFenetres.toFixed(2)} m²</span>
-        </p>
-        <p style="font-weight: bold; font-size: 18px; color: ${conformite ? 'green' : 'red'};">
-          Conformité: ${conformite ? 'CONFORME' : 'NON CONFORME'}
-        </p>
-        <h3 style="margin-top: 20px;">Détails du calcul:</h3>
-        <div class="details">${details}</div>
-      `;
     });
-    
-    // Fonction de calcul - Onglet 9.10.15
-    calculer91015.addEventListener('click', function() {
-      let distanceCalcul = parseFloat(distance91015.value);
-      const surfaceVal = parseFloat(surface91015.value);
-      const surfaceFenetres = parseFloat(surfaceFenetres91015.value);
-      let details = "";
+  </script>
+</body>
+</html><span class="highlight">${surfaceFenetres.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface disponible restante: 
+            <span class="highlight">${surfaceDisponible.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px; color: ${conformite ? 'green' : 'red'};">
+            Conformité: ${conformite ? 'CONFORME' : 'NON CONFORME'}
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      });
       
-      // Vérifier si la distance limitative doit être ajustée
-      if (intervention91015.checked && !gicleurs91015.checked) {
-        distanceCalcul = distanceCalcul / 2;
-        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
-      }
-      
-      let pourcentage;
-      
-      // Si le bâtiment est protégé par gicleurs, doubler le pourcentage
-      if (gicleurs91015.checked) {
-        // Calculer le pourcentage de base et le doubler
-        pourcentage = getPourcentageParInterpolation91015(distanceCalcul, surfaceVal);
-        pourcentage = Math.min(100, pourcentage * 2); // Doubler mais ne pas dépasser 100%
-        details += "Bâtiment protégé par gicleurs: pourcentage doublé (article 9.10.15.4., paragraphe 3))\n";
-      } else {
-        pourcentage = getPourcentageParInterpolation91015(distanceCalcul, surfaceVal);
-      }
-      
-      details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n`;
-      details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
-      
-      // Calculer la surface maximale des baies vitrées
-      const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
-      
-      // Vérifier si la surface des fenêtres existantes respecte la limite
-      const conformite = surfaceFenetres <= surfaceMaxBaies;
-      
-      // Afficher les résultats
-      resultats91015.innerHTML = `
-        <h2>Résultats</h2>
-        <p style="font 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
-      50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
-      60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
-      80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
-      100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
-      150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
-    };
-    
-    // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
-    const tableauGicleursEF1F2 = {
-      10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      25: {0: 0, 1.2:
+      // Fonction de calcul - Onglet 9.10.15
+      calculer91015.addEventListener('click', function() {
+        let distanceCalcul = parseFloat(distance91015.value);
+        const surfaceVal = parseFloat(surface91015.value);
+        const surfaceFenetres = parseFloat(surfaceFenetres91015.value);
+        let details = "";
+        
+        // Vérifier si la distance limitative doit être ajustée
+        if (intervention91015.checked && !gicleurs91015.checked) {
+          distanceCalcul = distanceCalcul / 2;
+          details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+        }
+        
+        let pourcentage;
+        
+        // Si le bâtiment est protégé par gicleurs, doubler le pourcentage
+        if (gicleurs91015.checked) {
+          // Formule pour bâtiments protégés par gicleurs selon 9.10.15.4. 1)c)
+          pourcentage = Math.min(distanceCalcul * distanceCalcul, 100);
+          details += "Calcul selon 9.10.15.4. 1)c) pour bâtiments protégés par gicleurs\n";
+          details += `Formule utilisée: % = distance² = ${distanceCalcul.toFixed(2)}² = ${(distanceCalcul * distanceCalcul).toFixed(2)}%\n`;
+        } else {
+          // Utiliser le tableau 9.10.15.4
+          details += "Tableau utilisé: 9.10.15.4\n";
+          
+          // Calculer le pourcentage avec interpolation
+          pourcentage = calculerPourcentageInterpolation(distanceCalcul, surfaceVal, tableau91015);
+        }
+        
+        details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n`;
+        details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
+        
+        // Arrondir le pourcentage calculé
+        pourcentage = Math.min(Math.round(pourcentage * 100) / 100, 100);
+        
+        // Calculer la surface maximale des baies vitrées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Calculer la surface disponible
+        const surfaceDisponible = surfaceMaxBaies - surfaceFenetres;
+        
+        // Vérifier si la surface des fenêtres existantes respecte la limite
+        const conformite = surfaceFenetres <= surfaceMaxBaies;
+        
+        // Afficher les résultats
+        resultats91015.innerHTML = `
+          <h2>Résultats (9.10.15)</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies vitrées autorisée:
