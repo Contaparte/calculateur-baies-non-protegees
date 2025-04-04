@@ -1,4 +1,148 @@
-<!DOCTYPE html>
+// Calcul - Partie 9 (9.10.14)
+      calculer914.addEventListener('click', function() {
+        let distanceCalcul = parseFloat(distance914.value);
+        let surfaceVal = parseFloat(surface914.value);
+        let fenetreVal = parseFloat(fenetreExistante914.value);
+        let details = "";
+        
+        // Vérifier si la distance limitative doit être ajustée
+        if (intervention914.checked && !gicleurs914.checked) {
+          distanceCalcul = distanceCalcul / 2;
+          details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+        }
+        
+        details += "Calcul selon la sous-section 9.10.14. du CNB\n";
+        details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
+        details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n\n`;
+        
+        // Sélectionner le tableau approprié
+        let pourcentage;
+        
+        if (gicleurs914.checked) {
+          // Formule pour bâtiments protégés par gicleurs selon 9.10.14.4. 1)c)
+          pourcentage = Math.min(distanceCalcul * distanceCalcul, 100);
+          details += "Calcul selon 9.10.14.4. 1)c) pour bâtiments protégés par gicleurs\n";
+          details += `Formule utilisée: % = distance² = ${distanceCalcul.toFixed(2)}² = ${(distanceCalcul * distanceCalcul).toFixed(2)}%\n`;
+        } else {
+          // Utiliser le tableau 9.10.14.4.-A
+          details += "Tableau utilisé: 9.10.14.4.-A\n";
+          details += `Rapport L/H ou H/L utilisé: ${rapport914.value === 'moins3' ? '< 3:1' : rapport914.value === '3a10' ? '3:1 à 10:1' : '> 10:1'}\n`;
+          
+          // Calculer le pourcentage avec interpolation
+          pourcentage = calculerPourcentageInterpolation(distanceCalcul, surfaceVal, tableau91014, rapport914.value);
+        }
+        
+        // Arrondir le pourcentage calculé
+        pourcentage = Math.min(Math.round(pourcentage * 100) / 100, 100);
+        
+        // Calculer la surface maximale des baies non protégées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Calculer la surface disponible
+        const surfaceDisponible = surfaceMaxBaies - fenetreVal;
+        
+        // Afficher les résultats
+        resultats914.innerHTML = `
+          <h2>Résultats (9.10.14)</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies non protégées autorisée: 
+            <span class="highlight">${pourcentage}%</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Soit une surface de: 
+            <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface existante des baies: 
+            <span class="highlight">${fenetreVal.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface disponible restante: 
+            <span class="highlight">${surfaceDisponible.toFixed(2)} m²</span>
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      });
+      
+      // Calcul - Partie 9 (9.10.15)
+      calculer915.addEventListener('click', function() {
+        let distanceCalcul = parseFloat(distance915.value);
+        let surfaceVal = parseFloat(surface915.value);
+        let fenetreVal = parseFloat(fenetreExistante915.value);
+        let details = "";
+        
+        // Vérifier si la distance limitative doit être ajustée
+        if (intervention915.checked && !gicleurs915.checked) {
+          distanceCalcul = distanceCalcul / 2;
+          details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+        }
+        
+        details += "Calcul selon la sous-section 9.10.15. du CNB (Maisons)\n";
+        details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
+        details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n\n`;
+        
+        // Sélectionner le tableau approprié
+        let pourcentage;
+        
+        if (gicleurs915.checked) {
+          // Formule pour bâtiments protégés par gicleurs selon 9.10.15.4. 1)c)
+          pourcentage = Math.min(distanceCalcul * distanceCalcul, 100);
+          details += "Calcul selon 9.10.15.4. 1)c) pour bâtiments protégés par gicleurs\n";
+          details += `Formule utilisée: % = distance² = ${distanceCalcul.toFixed(2)}² = ${(distanceCalcul * distanceCalcul).toFixed(2)}%\n`;
+        } else {
+          // Utiliser le tableau 9.10.15.4
+          details += "Tableau utilisé: 9.10.15.4\n";
+          
+          // Calculer le pourcentage avec interpolation
+          pourcentage = calculerPourcentageInterpolation(distanceCalcul, surfaceVal, tableau91015);
+        }
+        
+        // Arrondir le pourcentage calculé
+        pourcentage = Math.min(Math.round(pourcentage * 100) / 100, 100);
+        
+        // Calculer la surface maximale des baies non protégées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Calculer la surface disponible
+        const surfaceDisponible = surfaceMaxBaies - fenetreVal;
+        
+        // Afficher les résultats
+        resultats915.innerHTML = `
+          <h2>Résultats (9.10.15)</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies non protégées autorisée: 
+            <span class="highlight">${pourcentage}%</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Soit une surface de: 
+            <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface existante des baies: 
+            <span class="highlight">${fenetreVal.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface disponible restante: 
+            <span class="highlight">${surfaceDisponible.toFixed(2)} m²</span>
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      });
+      
+      // Initialiser l'état des champs Rapport L/H
+      if (gicleurs.checked) {
+        rapportContainer.style.display = 'none';
+      }
+      
+      if (gicleurs914.checked) {
+        rapportContainer914.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -341,127 +485,163 @@
   </div>
   
   <script>
-    // Gestion des onglets
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        // Désactiver tous les onglets
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-        
-        // Activer l'onglet cliqué
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
+    // Attendre que le document soit complètement chargé avant d'exécuter le script
+    document.addEventListener('DOMContentLoaded', function() {
+      // Gestion des onglets
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Désactiver tous les onglets
+          tabs.forEach(t => t.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+          
+          // Activer l'onglet cliqué
+          tab.classList.add('active');
+          const tabId = tab.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
       });
-    });
-    
-    // Référence aux éléments du DOM - Partie 3 (3.2.3)
-    const usageBatiment = document.getElementById('usage-batiment');
-    const gicleurs = document.getElementById('gicleurs');
-    const distance = document.getElementById('distance');
-    const surface = document.getElementById('surface');
-    const rapport = document.getElementById('rapport');
-    const rapportContainer = document.getElementById('rapport-container');
-    const intervention = document.getElementById('intervention');
-    const calculer = document.getElementById('calculer');
-    const resultats = document.getElementById('resultats');
-    
-    // Référence aux éléments du DOM - Partie 9 (9.10.14)
-    const usageBatiment914 = document.getElementById('usage-batiment-914');
-    const gicleurs914 = document.getElementById('gicleurs-914');
-    const distance914 = document.getElementById('distance-914');
-    const surface914 = document.getElementById('surface-914');
-    const rapport914 = document.getElementById('rapport-914');
-    const rapportContainer914 = document.getElementById('rapport-container-914');
-    const intervention914 = document.getElementById('intervention-914');
-    const fenetreExistante914 = document.getElementById('fenetre-existante-914');
-    const calculer914 = document.getElementById('calculer-914');
-    const resultats914 = document.getElementById('resultats-914');
-    
-    // Référence aux éléments du DOM - Partie 9 (9.10.15)
-    const distance915 = document.getElementById('distance-915');
-    const surface915 = document.getElementById('surface-915');
-    const gicleurs915 = document.getElementById('gicleurs-915');
-    const intervention915 = document.getElementById('intervention-915');
-    const fenetreExistante915 = document.getElementById('fenetre-existante-915');
-    const calculer915 = document.getElementById('calculer-915');
-    const resultats915 = document.getElementById('resultats-915');
-    
-    // ====== TABLEAUX DE DONNÉES POUR LES CALCULS =======
-    
-    // Tableaux des valeurs du CNB - Partie 3 (3.2.3)
-    // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
-    const tableauABCDF3 = {
-      'moins3': {
-        30: {0: 0, 1.2: 8, 1.5: 10, 2.0: 18, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 40, 5: 55, 6: 92, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      '3a10': {
-        30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 21, 2.5: 33, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
-      }
-    };
-    
-    // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
-    const tableauEF1F2 = {
-      'moins3': {
-        30: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 16, 3: 34, 4: 61, 5: 97, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 14, 3: 29, 4: 50, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 9, 3: 17, 4: 28, 5: 42, 6: 60, 7: 100, 8: 100, 9: 100, 10: 100}
-      },
-      '3a10': {
-        30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 10, 3: 14, 4: 20, 5: 29, 6: 40, 7: 51, 8: 60, 9: 79, 10: 100}
-      },
-      'plus10': {
-        30: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-        40: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100},
-        50: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100},
-        100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
-      }
-    };
-    
-    // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
-    const tableauGicleursABCDF3 = {
-      10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      25: {0: 0, 1.2: 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
-      40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
-      50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
-      60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
-      80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
-      100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
-      150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
-    };
-    
-    // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
-    const tableauGicleursEF1F2 = {
-      10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
-      30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
-      40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
-      50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
-      60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
-      80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
-      100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
-      150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
+      
+      // Référence aux éléments du DOM - Partie 3 (3.2.3)
+      const usageBatiment = document.getElementById('usage-batiment');
+      const gicleurs = document.getElementById('gicleurs');
+      const distance = document.getElementById('distance');
+      const surface = document.getElementById('surface');
+      const rapport = document.getElementById('rapport');
+      const rapportContainer = document.getElementById('rapport-container');
+      const intervention = document.getElementById('intervention');
+      const calculer = document.getElementById('calculer');
+      const resultats = document.getElementById('resultats');
+      
+      // Référence aux éléments du DOM - Partie 9 (9.10.14)
+      const usageBatiment914 = document.getElementById('usage-batiment-914');
+      const gicleurs914 = document.getElementById('gicleurs-914');
+      const distance914 = document.getElementById('distance-914');
+      const surface914 = document.getElementById('surface-914');
+      const rapport914 = document.getElementById('rapport-914');
+      const rapportContainer914 = document.getElementById('rapport-container-914');
+      const intervention914 = document.getElementById('intervention-914');
+      const fenetreExistante914 = document.getElementById('fenetre-existante-914');
+      const calculer914 = document.getElementById('calculer-914');
+      const resultats914 = document.getElementById('resultats-914');
+      
+      // Référence aux éléments du DOM - Partie 9 (9.10.15)
+      const distance915 = document.getElementById('distance-915');
+      const surface915 = document.getElementById('surface-915');
+      const gicleurs915 = document.getElementById('gicleurs-915');
+      const intervention915 = document.getElementById('intervention-915');
+      const fenetreExistante915 = document.getElementById('fenetre-existante-915');
+      const calculer915 = document.getElementById('calculer-915');
+      const resultats915 = document.getElementById('resultats-915');
+      
+      // ====== TABLEAUX DE DONNÉES POUR LES CALCULS =======
+      
+      // Tableaux des valeurs du CNB - Partie 3 (3.2.3)
+      // Tableau 3.2.3.1.-B - Bâtiments non entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
+      const tableauABCDF3 = {
+        'moins3': {
+          30: {0: 0, 1.2: 8, 1.5: 10, 2.0: 18, 2.5: 29, 3: 46, 4: 91, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 28, 4: 40, 5: 55, 6: 92, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        '3a10': {
+          30: {0: 0, 1.2: 8, 1.5: 12, 2.0: 21, 2.5: 33, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 8, 1.5: 10, 2.0: 17, 2.5: 25, 3: 37, 4: 67, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 8, 1.5: 10, 2.0: 15, 2.5: 21, 3: 30, 4: 53, 5: 85, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 8, 1.5: 9, 2.0: 13, 2.5: 19, 3: 26, 4: 45, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        'plus10': {
+          30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 48, 3: 68, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 39, 3: 53, 4: 87, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 33, 3: 45, 4: 72, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 9, 1.5: 13, 2.0: 21, 2.5: 30, 3: 39, 4: 62, 5: 90, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100}
+        }
+      };
+      
+      // Tableau 9.10.14.4.-A pour partie 9 - Bâtiments ne renfermant que des logements
+      const tableau91014 = {
+        'moins3': {
+          30: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 39, 3: 88, 4: 100, 5: 100},
+          40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 69, 4: 100, 5: 100},
+          50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 57, 4: 100, 5: 100},
+          100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 34, 4: 56, 5: 84, 6: 100},
+          150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 12, 3: 19, 4: 28, 5: 40, 6: 55, 7: 92, 8: 100}
+        },
+        '3a10': {
+          30: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 39, 3: 88, 4: 100, 5: 100},
+          40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 69, 4: 100, 5: 100},
+          50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 57, 4: 100, 5: 100},
+          100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 34, 4: 56, 5: 84, 6: 100},
+          150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 12, 3: 19, 4: 28, 5: 40, 6: 55, 7: 92, 8: 100}
+        },
+        'plus10': {
+          30: {0: 0, 1.2: 11, 1.5: 18, 2.0: 32, 2.5: 68, 3: 100, 4: 100, 5: 100},
+          40: {0: 0, 1.2: 10, 1.5: 15, 2.0: 26, 2.5: 50, 3: 96, 4: 100, 5: 100},
+          50: {0: 0, 1.2: 9, 1.5: 14, 2.0: 23, 2.5: 43, 3: 77, 4: 100, 5: 100},
+          100: {0: 0, 1.2: 8, 1.5: 12, 2.0: 18, 2.5: 32, 3: 53, 4: 87, 5: 100, 6: 100},
+          150: {0: 0, 1.2: 7, 1.5: 10, 2.0: 15, 2.5: 24, 3: 36, 4: 57, 5: 79, 6: 100, 7: 100, 8: 100}
+        }
+      };
+      
+      // Tableau 9.10.15.4 pour habitations (maisons)
+      const tableau91015 = {
+        30: {0: 0, 1.2: 7, 1.5: 9, 2.0: 12, 2.5: 39, 3: 88, 4: 100, 5: 100},
+        40: {0: 0, 1.2: 7, 1.5: 8, 2.0: 11, 2.5: 32, 3: 69, 4: 100, 5: 100},
+        50: {0: 0, 1.2: 7, 1.5: 8, 2.0: 10, 2.5: 28, 3: 57, 4: 100, 5: 100},
+        100: {0: 0, 1.2: 7, 1.5: 8, 2.0: 9, 2.5: 18, 3: 34, 4: 56, 5: 84, 6: 100},
+        150: {0: 0, 1.2: 7, 1.5: 7, 2.0: 8, 2.5: 12, 3: 19, 4: 28, 5: 40, 6: 55, 7: 92, 8: 100}
+      };
+      
+      // Tableau 3.2.3.1.-C - Bâtiments non entièrement protégés par gicleurs (Groupe E, F1, F2)
+      const tableauEF1F2 = {
+        'moins3': {
+          30: {0: 0, 1.2: 4, 1.5: 5, 2.0: 9, 2.5: 15, 3: 23, 4: 46, 5: 77, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 16, 3: 34, 4: 61, 5: 97, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 4, 2.0: 5, 2.5: 14, 3: 29, 4: 50, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 4, 2.5: 9, 3: 17, 4: 28, 5: 42, 6: 60, 7: 100, 8: 100, 9: 100, 10: 100}
+        },
+        '3a10': {
+          30: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 17, 3: 25, 4: 48, 5: 79, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 4, 1.5: 5, 2.0: 8, 2.5: 13, 3: 18, 4: 34, 5: 55, 6: 82, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 5, 2.0: 7, 2.5: 11, 3: 15, 4: 27, 5: 43, 6: 63, 7: 87, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 4, 2.0: 6, 2.5: 10, 3: 14, 4: 20, 5: 29, 6: 40, 7: 51, 8: 60, 9: 79, 10: 100}
+        },
+        'plus10': {
+          30: {0: 0, 1.2: 5, 1.5: 9, 2.0: 16, 2.5: 24, 3: 34, 4: 58, 5: 91, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+          40: {0: 0, 1.2: 5, 1.5: 8, 2.0: 13, 2.5: 19, 3: 26, 4: 43, 5: 66, 6: 93, 7: 100, 8: 100, 9: 100, 10: 100},
+          50: {0: 0, 1.2: 4, 1.5: 7, 2.0: 11, 2.5: 17, 3: 22, 4: 36, 5: 53, 6: 74, 7: 99, 8: 100, 9: 100, 10: 100},
+          100: {0: 0, 1.2: 4, 1.5: 6, 2.0: 10, 2.5: 15, 3: 20, 4: 31, 5: 45, 6: 62, 7: 82, 8: 100, 9: 100, 10: 100}
+        }
+      };
+      
+      // Tableau 3.2.3.1.-D - Bâtiments entièrement protégés par gicleurs (Groupe A, B, C, D, F3)
+      const tableauGicleursABCDF3 = {
+        10: {0: 0, 1.2: 16, 1.5: 24, 2.0: 42, 2.5: 66, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        15: {0: 0, 1.2: 16, 1.5: 20, 2.0: 34, 2.5: 50, 3: 74, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        20: {0: 0, 1.2: 16, 1.5: 20, 2.0: 30, 2.5: 42, 3: 60, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        25: {0: 0, 1.2: 16, 1.5: 18, 2.0: 26, 2.5: 38, 3: 52, 4: 90, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        30: {0: 0, 1.2: 14, 1.5: 18, 2.0: 24, 2.5: 34, 3: 46, 4: 78, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100},
+        40: {0: 0, 1.2: 14, 1.5: 16, 2.0: 22, 2.5: 30, 3: 40, 4: 64, 5: 96, 6: 100, 7: 100, 8: 100, 9: 100},
+        50: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 28, 3: 36, 4: 56, 5: 82, 6: 100, 7: 100, 8: 100, 9: 100},
+        60: {0: 0, 1.2: 14, 1.5: 16, 2.0: 20, 2.5: 26, 3: 32, 4: 50, 5: 72, 6: 98, 7: 100, 8: 100, 9: 100},
+        80: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 28, 4: 42, 5: 58, 6: 80, 7: 100, 8: 100, 9: 100},
+        100: {0: 0, 1.2: 14, 1.5: 16, 2.0: 18, 2.5: 22, 3: 26, 4: 36, 5: 50, 6: 68, 7: 88, 8: 100, 9: 100},
+        150: {0: 0, 1.2: 14, 1.5: 14, 2.0: 16, 2.5: 20, 3: 22, 4: 30, 5: 40, 6: 52, 7: 66, 8: 82, 9: 100}
+      };
+      
+      // Tableau 3.2.3.1.-E - Bâtiments entièrement protégés par gicleurs (Groupe E, F1, F2)
+      const tableauGicleursEF1F2 = {
+        10: {0: 0, 1.2: 8, 1.5: 12, 2.0: 20, 2.5: 34, 3: 50, 4: 96, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        15: {0: 0, 1.2: 8, 1.5: 10, 2.0: 16, 2.5: 26, 3: 36, 4: 68, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        20: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 22, 3: 30, 4: 54, 5: 86, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        25: {0: 0, 1.2: 8, 1.5: 10, 2.0: 14, 2.5: 18, 3: 26, 4: 44, 5: 70, 6: 100, 7: 100, 8: 100, 9: 100, 10: 100},
+        30: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 18, 3: 24, 4: 40, 5: 60, 6: 88, 7: 100, 8: 100, 9: 100, 10: 100},
+        40: {0: 0, 1.2: 8, 1.5: 8, 2.0: 12, 2.5: 16, 3: 20, 4: 32, 5: 48, 6: 68, 7: 94, 8: 100, 9: 100, 10: 100},
+        50: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 14, 3: 18, 4: 28, 5: 40, 6: 58, 7: 76, 8: 100, 9: 100, 10: 100},
+        60: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 16, 4: 24, 5: 36, 6: 50, 7: 66, 8: 86, 9: 100, 10: 100},
+        80: {0: 0, 1.2: 8, 1.5: 8, 2.0: 10, 2.5: 12, 3: 14, 4: 20, 5: 30, 6: 40, 7: 52, 8: 66, 9: 84, 10: 100},
+        100: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 18, 5: 26, 6: 34, 7: 44, 8: 56, 9: 70, 10: 84, 11: 100},
+        150: {0: 0, 1.2: 8, 1.5: 8, 2.0: 8, 2.5: 10, 3: 12, 4: 16, 5: 20, 6: 26, 7: 32, 8: 40, 9: 50, 10: 60, 11: 72, 12: 84, 13: 98, 14: 100, 15: 100}
