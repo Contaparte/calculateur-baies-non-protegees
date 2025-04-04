@@ -1,4 +1,102 @@
-<!DOCTYPE html>
+// Fonction de calcul - Onglet 9.10.15
+    function calculer91015() {
+      console.log("Fonction calculer91015() appelée");
+      const gicleurs91015 = document.getElementById('gicleurs-91015').checked;
+      let distanceCalcul = parseFloat(document.getElementById('distance-91015').value);
+      const surfaceVal = parseFloat(document.getElementById('surface-91015').value);
+      const intervention91015 = document.getElementById('intervention-91015').checked;
+      const surfaceFenetres = parseFloat(document.getElementById('surface-fenetres-91015').value);
+      const resultats91015 = document.getElementById('resultats-91015');
+      let details = "";
+      
+      // Debug
+      console.log("Données entrées:", {
+        gicleurs: gicleurs91015,
+        distance: distanceCalcul,
+        surface: surfaceVal,
+        intervention: intervention91015,
+        surfaceFenetres: surfaceFenetres
+      });
+      
+      // Vérifier si la distance limitative doit être ajustée
+      if (intervention91015 && !gicleurs91015) {
+        distanceCalcul = distanceCalcul / 2;
+        details += `Distance limitative ajustée à ${distanceCalcul.toFixed(2)} m (facteur 0.5) en raison du délai d'intervention du service d'incendie.\n\n`;
+      }
+      
+      let pourcentage;
+      
+      try {
+        // Si le bâtiment est protégé par gicleurs
+        if (gicleurs91015) {
+          // Formule pour bâtiments protégés par gicleurs selon 9.10.15.4. 1)c)
+          pourcentage = Math.min(distanceCalcul * distanceCalcul, 100);
+          details += "Calcul selon 9.10.15.4. 1)c) pour bâtiments protégés par gicleurs\n";
+          details += `Formule utilisée: % = distance² = ${distanceCalcul.toFixed(2)}² = ${pourcentage.toFixed(2)}%\n`;
+        } else {
+          // Utiliser le tableau 9.10.15.4
+          details += "Tableau utilisé: 9.10.15.4\n";
+          
+          // Calculer le pourcentage avec interpolation
+          const resultat = calculerPourcentageInterpolation(distanceCalcul, surfaceVal, tableau91015);
+          pourcentage = resultat.pourcentage;
+          details += resultat.details;
+        }
+        
+        details += `Distance limitative: ${distanceCalcul.toFixed(2)} m\n`;
+        details += `Surface de la façade de rayonnement: ${surfaceVal.toFixed(2)} m²\n`;
+        
+        // Arrondir le pourcentage calculé
+        pourcentage = Math.min(Math.round(pourcentage * 100) / 100, 100);
+        
+        // Calculer la surface maximale des baies vitrées
+        const surfaceMaxBaies = (surfaceVal * pourcentage) / 100;
+        
+        // Calculer la surface disponible
+        const surfaceDisponible = surfaceMaxBaies - surfaceFenetres;
+        
+        // Vérifier si la surface des fenêtres existantes respecte la limite
+        const conformite = surfaceFenetres <= surfaceMaxBaies;
+        
+        // Afficher les résultats
+        resultats91015.innerHTML = `
+          <h2>Résultats (9.10.15)</h2>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface maximale des baies vitrées autorisée: 
+            <span class="highlight">${pourcentage.toFixed(2)}%</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Soit une surface de: 
+            <span class="highlight">${surfaceMaxBaies.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px; margin-top: 20px;">
+            Surface existante des baies: 
+            <span class="highlight">${surfaceFenetres.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px;">
+            Surface disponible restante: 
+            <span class="highlight">${surfaceDisponible.toFixed(2)} m²</span>
+          </p>
+          <p style="font-weight: bold; font-size: 18px; color: ${conformite ? 'green' : 'red'};">
+            Conformité: ${conformite ? 'CONFORME' : 'NON CONFORME'}
+          </p>
+          <h3 style="margin-top: 20px;">Détails du calcul:</h3>
+          <div class="details">${details}</div>
+        `;
+      } catch (error) {
+        // En cas d'erreur, afficher le message d'erreur
+        console.error("Erreur lors du calcul pour 9.10.15:", error);
+        resultats91015.innerHTML = `
+          <h2>Erreur de calcul</h2>
+          <p style="color: red;">Une erreur s'est produite lors du calcul: ${error.message}</p>
+          <p>Veuillez vérifier les valeurs entrées et réessayer.</p>
+          <div class="details">
+            <strong>Détails techniques:</strong><br>
+            ${error.stack ? error.stack.replace(/\n/g, '<br>') : 'Pas de détails disponibles'}
+          </div>
+        `;
+      }
+    }<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -559,6 +657,8 @@
     
     // Tableau 9.10.15.4 - Surface maximale des baies vitrées dans les murs extérieurs des maisons
     const tableau91015 = {
+      10: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
+      15: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
       30: {1.2: 7, 1.5: 9, 2.0: 12, 4.0: 39, 6.0: 88, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
       40: {1.2: 7, 1.5: 8, 2.0: 11, 4.0: 32, 6.0: 69, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
       50: {1.2: 7, 1.5: 8, 2.0: 10, 4.0: 28, 6.0: 57, 8.0: 100, 10.0: 100, 12.0: 100, 16.0: 100, 20.0: 100, 25.0: 100},
