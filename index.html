@@ -4,69 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de baies non protégées (CNB)</title>
-<style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff7f2; }
-    #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-    h1 { color: #6d4c41; text-align: center; }
-    .tab-nav { overflow: hidden; background-color: #ffece1; border-bottom: 1px solid #e6d7ce; }
-    .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
-    .tab-nav button:hover { background-color: #ffddc9; }
-    .tab-nav button.active { background-color: #bf755f; color: white; }
-    .tab-content { display: none; padding: 20px; border: 1px solid #e6d7ce; border-top: none; }
-    .tab-content.active { display: block; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin: 10px 0; font-size: 16px; }
-    input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #e6d7ce; border-radius: 4px; box-sizing: border-box; background-color: #fff7f2; }
-    button { margin: 10px 0; padding: 10px 20px; background-color: #bf755f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-    button:hover { background-color: #a05a46; }
-    .results { background-color: #fff2e8; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #e6d7ce; }
-    .info { font-style: italic; font-size: 14px; color: #8d6e63; margin-top: 5px; }
-.panel-header {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.duplicate-btn {
-    background-color: #bf755f;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 10px;
-}
-.panels-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.panel {
-    flex: 1;
-    min-width: 300px;
-}
-.panel-title {
-    color: #6d4c41;
-    margin: 10px 0;
-    text-align: center;
-}</style>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        h1 { color: #333; text-align: center; }
+        .tab-nav { overflow: hidden; background-color: #f1f1f1; border-bottom: 1px solid #ccc; }
+        .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
+        .tab-nav button:hover { background-color: #ddd; }
+        .tab-nav button.active { background-color: #004d99; color: white; }
+        .tab-content { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin: 10px 0; font-size: 16px; }
+        input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { margin: 10px 0; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .results { background-color: #f1f1f1; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .info { font-style: italic; font-size: 14px; color: #666; margin-top: 5px; }
+    </style>
 </head>
 <body>
     <div id="app">
-    <div class="panel-header">
         <h1>Calculateur de baies non protégées (CNB)</h1>
-        <button class="duplicate-btn" onclick="duplicatePanel()">+</button>
-    </div>
-    <h2 style="text-align: center; color: #6d4c41; margin-top: 5px; margin-bottom: 20px;">Élévation avant</h2>
-    
-    <div class="panels-container">
-        <div id="panel-1" class="panel">
-            <h3 class="panel-title">Façade de rayonnement #1</h3>
-            <div class="tab-nav">
         <div class="tab-nav">
             <button class="tab-link active" onclick="openTab(event, 'cnb')">Méthode CNB (3.2.3.)</button>
             <button class="tab-link" onclick="openTab(event, 'method91014')">Méthode 9.10.14</button>
@@ -185,7 +144,7 @@
             
             <div class="form-group">
                 <label><input type="checkbox" id="response_91014"> Plus de 10 min dans 10 % ou plus des cas</label>
-                <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraph 9.10.14.3. 1))</div>
+                <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.14.3. 1))</div>
             </div>
             
             <button onclick="calculate91014()">Calculer</button>
@@ -233,9 +192,8 @@
             <button onclick="calculate91015()">Calculer</button>
             <div id="method91015-result" class="results"></div>
         </div>
-        </div> <!-- Fermeture de panel-1 -->
-    </div> <!-- Fermeture de panels-container -->
-</div>
+    </div>
+
     <script>
         // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
         const tableauGroupesAB3CDF3 = {
@@ -404,8 +362,8 @@
                 "> 10:1": [0, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 26, 33, 41, 50, 59, 70, 81, 94, 100]
             }
         };
-
-       // Tableau 3.2.3.1.-D - Bâtiment protégé par gicleurs - Usages des groupes A, B, C, D et F3
+        
+        // Tableau 3.2.3.1.-D - Bâtiment protégé par gicleurs - Usages des groupes A, B, C, D et F3
         const tableauAvecGicleursGroupesABCDF3 = {
             10: [0, 16, 24, 42, 66, 100],
             15: [0, 16, 20, 34, 50, 74, 100],
@@ -458,45 +416,50 @@
         }
 
         function findBounds(value, array) {
+            // Si la valeur est inférieure au premier élément
             if (value <= array[0]) {
                 return { lower: array[0], upper: array[1] };
             }
+            // Si la valeur est supérieure au dernier élément
             if (value >= array[array.length - 1]) {
                 return { lower: array[array.length - 2], upper: array[array.length - 1] };
             }
+            // Recherche des bornes
             for (let i = 0; i < array.length - 1; i++) {
                 if (value >= array[i] && value <= array[i + 1]) {
                     return { lower: array[i], upper: array[i + 1] };
                 }
             }
-            return { lower: array[0], upper: array[1] };
+            return { lower: array[0], upper: array[1] }; // Valeur par défaut
         }
 
-        function calculateCNB(panelSuffix = '') {
-            const suffix = panelSuffix ? '-' + panelSuffix : '';
-            const facadeSurface = parseFloat(document.getElementById('surface_cnb' + suffix).value);
-            const length = parseFloat(document.getElementById('length_cnb' + suffix).value);
-            const height = parseFloat(document.getElementById('height_cnb' + suffix).value);
-            let limitingDistance = parseFloat(document.getElementById('distance_cnb' + suffix).value);
-            const sprinklers = document.getElementById('sprinklers_cnb' + suffix).checked;
-            const response = document.getElementById('response_cnb' + suffix).checked;
-            const usage = document.getElementById('usage_cnb' + suffix).value;
-            const constructionType = document.getElementById('construction_type_cnb' + suffix).value;
-            const revetementType = document.getElementById('revetement_type_cnb' + suffix).value;
-            const glassBrick = document.getElementById('glass_brick_cnb' + suffix).checked;
+        function calculateCNB() {
+            const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
+            const length = parseFloat(document.getElementById('length_cnb').value);
+            const height = parseFloat(document.getElementById('height_cnb').value);
+            let limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+            const sprinklers = document.getElementById('sprinklers_cnb').checked;
+            const response = document.getElementById('response_cnb').checked;
+            const usage = document.getElementById('usage_cnb').value;
+            const constructionType = document.getElementById('construction_type_cnb').value;
+            const revetementType = document.getElementById('revetement_type_cnb').value;
+            const glassBrick = document.getElementById('glass_brick_cnb').checked;
 
+            // Vérification des entrées
             if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
                 facadeSurface <= 0 || length <= 0 || height <= 0 || limitingDistance < 0) {
-                document.getElementById('cnb-result' + suffix).innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+                document.getElementById('cnb-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
                 return;
             }
 
+            // Ajustement pour le délai d'intervention
             if (response) {
                 limitingDistance = limitingDistance / 2;
             }
 
             const ratioCategory = getRatioCategory(length, height);
             
+            // Choix du tableau selon l'usage et les gicleurs
             let tableToUse, distancesToUse, surfacesToUse;
             
             if (sprinklers) {
@@ -519,17 +482,21 @@
                 }
             }
 
+            // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
-                document.getElementById('cnb-result' + suffix).innerHTML = 
+                document.getElementById('cnb-result').innerHTML = 
                     `Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.<br>
                     <strong>Surface maximale des baies non protégées : 100%</strong>`;
                 return;
             }
 
+            // Trouver les bornes pour l'interpolation de distance
             const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
             const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
             const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
 
+            // Trouver les surfaces les plus proches pour l'interpolation
+            // Recherche des surfaces encadrantes
             let lowerSurface = surfacesToUse[0];
             let upperSurface = surfacesToUse[surfacesToUse.length - 1];
 
@@ -541,11 +508,13 @@
                 }
             }
 
+            // Si la façade est plus petite que la plus petite surface du tableau
             if (facadeSurface < surfacesToUse[0]) {
                 lowerSurface = surfacesToUse[0];
                 upperSurface = surfacesToUse[1];
             }
             
+            // Si la façade est plus grande que la plus grande surface du tableau
             if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
                 lowerSurface = surfacesToUse[surfacesToUse.length - 2];
                 upperSurface = surfacesToUse[surfacesToUse.length - 1];
@@ -554,18 +523,24 @@
             let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
             let upperSurfacePercentageLower, upperSurfacePercentageUpper;
 
+            // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
             if (sprinklers) {
+                // Avec gicleurs (pas de ratio)
                 lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
                 lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+                
                 upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
                 upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
             } else {
+                // Sans gicleurs (avec ratio)
                 lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
                 lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+                
                 upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
                 upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
             }
 
+            // Interpolation des pourcentages pour la distance limitative
             const lowerSurfacePercentage = interpolate(
                 limitingDistance,
                 lowerDistance,
@@ -582,6 +557,7 @@
                 upperSurfacePercentageUpper
             );
 
+            // Interpolation finale entre les surfaces
             let finalPercentage;
             if (lowerSurface === upperSurface) {
                 finalPercentage = lowerSurfacePercentage;
@@ -595,16 +571,21 @@
                 );
             }
             
+            // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
             
+            // Majoration en cas de briques de verre / verre armé
             if (glassBrick) {
                 finalPercentage = Math.min(100, finalPercentage * 2);
             }
             
+            // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * facadeSurface;
             
+            // Déterminer les exigences de construction selon 3.2.3.7
             let constructionRequirements = determineConstructionRequirements(finalPercentage, usage, constructionType, revetementType);
 
+            // Afficher les résultats détaillés
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
@@ -621,10 +602,11 @@
                 ${constructionRequirements}
             `;
 
-            document.getElementById('cnb-result' + suffix).innerHTML = resultHTML;
+            document.getElementById('cnb-result').innerHTML = resultHTML;
         }
         
         function determineConstructionRequirements(percentage, usage, constructionType, revetementType) {
+            // Déterminer le degré de résistance au feu et les exigences de construction selon 3.2.3.7
             let degre = "";
             let constructionExigence = "";
             let revetementExigence = "";
@@ -632,7 +614,7 @@
             if (percentage <= 10) {
                 if (usage === "groupes_A_B3_C_D_F3") {
                     degre = "1 h";
-                } else {
+                } else { // groupes_E_F1_F2
                     degre = "2 h";
                 }
                 constructionExigence = "Incombustible";
@@ -640,7 +622,7 @@
             } else if (percentage <= 25) {
                 if (usage === "groupes_A_B3_C_D_F3") {
                     degre = "1 h";
-                } else {
+                } else { // groupes_E_F1_F2
                     degre = "2 h";
                 }
                 constructionExigence = "Combustible ou incombustible";
@@ -648,7 +630,7 @@
             } else if (percentage <= 50) {
                 if (usage === "groupes_A_B3_C_D_F3") {
                     degre = "45 min";
-                } else {
+                } else { // groupes_E_F1_F2
                     degre = "1 h";
                 }
                 constructionExigence = "Combustible ou incombustible";
@@ -656,13 +638,14 @@
             } else if (percentage < 100) {
                 if (usage === "groupes_A_B3_C_D_F3") {
                     degre = "45 min";
-                } else {
+                } else { // groupes_E_F1_F2
                     degre = "1 h";
                 }
                 constructionExigence = "Combustible ou incombustible";
                 revetementExigence = "Combustible ou incombustible";
             }
             
+            // Si la construction actuelle n'est pas conforme, ajouter un avertissement
             let warningMsg = "";
             if ((constructionExigence === "Incombustible" && constructionType === "combustible") ||
                 (revetementExigence === "Incombustible" && revetementType === "combustible")) {
@@ -678,6 +661,7 @@
             `;
         }
 
+        // Données du Tableau 9.10.14.4-A
         const tableau91014 = {
             "habitation": {
                 surfaces: {
@@ -701,27 +685,30 @@
             }
         };
 
-        function calculate91014(panelSuffix = '') {
-            const suffix = panelSuffix ? '-' + panelSuffix : '';
-            const usage = document.getElementById('usage_91014' + suffix).value;
-            const buildingType = document.getElementById('building_type_91014' + suffix).value;
-            const exteriorFinish = document.getElementById('exterior_finish_91014' + suffix).value;
-            const soffit_protection = document.getElementById('soffit_protection_91014' + suffix).checked;
-            let limitingDistance = parseFloat(document.getElementById('distance_91014' + suffix).value);
-            const surface = parseFloat(document.getElementById('surface_91014' + suffix).value);
-            const response = document.getElementById('response_91014' + suffix).checked;
+        function calculate91014() {
+            const usage = document.getElementById('usage_91014').value;
+            const buildingType = document.getElementById('building_type_91014').value;
+            const exteriorFinish = document.getElementById('exterior_finish_91014').value;
+            const soffit_protection = document.getElementById('soffit_protection_91014').checked;
+            let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
+            const surface = parseFloat(document.getElementById('surface_91014').value);
+            const response = document.getElementById('response_91014').checked;
 
+            // Vérification des entrées
             if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
-                document.getElementById('method91014-result' + suffix).innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+                document.getElementById('method91014-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
                 return;
             }
 
+            // Ajustement pour le délai d'intervention
             if (response) {
                 limitingDistance = limitingDistance / 2;
             }
             
+            // Exemption pour les garages ou bâtiments secondaires
             if (buildingType === "garage") {
-                document.getElementById('method91014-result' + suffix).innerHTML = `
+                // Selon 9.10.14.4.(10-12), les baies vitrées des garages peuvent être exemptées des restrictions
+                document.getElementById('method91014-result').innerHTML = `
                     <strong>Résultat pour garage ou bâtiment secondaire :</strong><br>
                     Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires 
                     qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes:<br><br>
@@ -741,19 +728,23 @@
 
             const distances = tableau91014[usage].distances;
             
+            // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distances[distances.length - 1]) {
-                document.getElementById('method91014-result' + suffix).innerHTML = 
+                document.getElementById('method91014-result').innerHTML = 
                     `Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.<br>
                     <strong>Surface maximale des baies non protégées : 100%</strong>`;
                 return;
             }
 
+            // Trouver les bornes pour l'interpolation de distance
             const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
             const lowerDistanceIndex = distances.indexOf(lowerDistance);
             const upperDistanceIndex = distances.indexOf(upperDistance);
 
+            // Définir les surfaces connues du tableau pour l'interpolation
             const surfaceValues = [30, 40, 50, 100];
             
+            // Trouver les surfaces les plus proches pour l'interpolation
             let lowerSurface, upperSurface;
             
             if (surface <= 30) {
@@ -773,6 +764,7 @@
                 upperSurface = ">100";
             }
             
+            // Calculer le pourcentage pour la surface inférieure
             const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
             const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
             const lowerSurfacePercentage = interpolate(
@@ -783,6 +775,7 @@
                 lowerSurfacePercentageUpper
             );
             
+            // Calculer le pourcentage pour la surface supérieure
             const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
             const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
             const upperSurfacePercentage = interpolate(
@@ -793,17 +786,21 @@
                 upperSurfacePercentageUpper
             );
             
+            // Interpolation finale entre les surfaces
             let finalPercentage;
             if (surface > 100) {
+                // Si la surface est > 100, on utilise la formule du CNB 
+                // (LC-1.2m)² pour habitations et 0.5 x (LC-1.2m)² pour établissements commerciaux
                 if (limitingDistance >= 1.2) {
                     if (usage === "habitation") {
                         finalPercentage = Math.pow(limitingDistance, 2);
-                    } else {
+                    } else { // commercial
                         finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
                     }
+                    // Limiter à 100%
                     finalPercentage = Math.min(finalPercentage, 100);
                 } else {
-                    finalPercentage = upperSurfacePercentage;
+                    finalPercentage = upperSurfacePercentage; // Utiliser les valeurs du tableau pour >100
                 }
             } else if (lowerSurface === upperSurface) {
                 finalPercentage = lowerSurfacePercentage;
@@ -817,10 +814,13 @@
                 );
             }
             
+            // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
             
+            // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
             
+            // Déterminer les exigences de construction et de protection
             let constructionRequirements = "";
             
             if (limitingDistance < 1.2) {
@@ -834,6 +834,7 @@
                 `;
             }
             
+            // Informations sur les soffites
             let soffitInfo = "";
             if (limitingDistance < 0.45) {
                 soffitInfo = `
@@ -845,13 +846,14 @@
                     <br><strong>Protection des soffites (9.10.14.5.10-12):</strong><br>
                     - Les soffites ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété<br>
                     - Si un soffite fait saillie à moins de 1,2 m de la limite de propriété, il doit:<br>
-                      • Ne comporter aucune ouverture<br>
-                      • Être protégé par un matériau approprié selon 9.10.14.5.12)b)<br>
+                    &nbsp;&nbsp;• Ne comporter aucune ouverture<br>
+                    &nbsp;&nbsp;• Être protégé par un matériau approprié selon 9.10.14.5.12)b)<br>
                     ${soffit_protection ? "✅ Vous avez indiqué que les soffites sont protégés conformément au code." : 
                     "⚠️ Protection des soffites requise mais non confirmée."}
                 `;
             }
 
+            // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
@@ -867,9 +869,10 @@
                 ${soffitInfo}
             `;
 
-            document.getElementById('method91014-result' + suffix).innerHTML = resultHTML;
+            document.getElementById('method91014-result').innerHTML = resultHTML;
         }
 
+        // Données du Tableau 9.10.15.4
         const tableau91015 = {
             surfaces: {
                 30: [0, 7, 9, 12, 39, 88, 100, 100, 100, 100, 100],
@@ -881,38 +884,43 @@
             distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0]
         };
 
-        function calculate91015(panelSuffix = '') {
-            const suffix = panelSuffix ? '-' + panelSuffix : '';
-            let limitingDistance = parseFloat(document.getElementById('distance_91015' + suffix).value);
-            const surface = parseFloat(document.getElementById('surface_91015' + suffix).value);
-            const response = document.getElementById('response_91015' + suffix).checked;
-            const housingType = document.getElementById('housing_type_91015' + suffix).value;
-            const revetingType = document.getElementById('reveting_type_91015' + suffix).value;
+        function calculate91015() {
+            let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
+            const surface = parseFloat(document.getElementById('surface_91015').value);
+            const response = document.getElementById('response_91015').checked;
+            const housingType = document.getElementById('housing_type_91015').value;
+            const revetingType = document.getElementById('reveting_type_91015').value;
 
+            // Vérification des entrées
             if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
-                document.getElementById('method91015-result' + suffix).innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+                document.getElementById('method91015-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
                 return;
             }
 
+            // Ajustement pour le délai d'intervention
             if (response) {
                 limitingDistance = limitingDistance / 2;
             }
 
             const distances = tableau91015.distances;
             
+            // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distances[distances.length - 1]) {
-                document.getElementById('method91015-result' + suffix).innerHTML = 
+                document.getElementById('method91015-result').innerHTML = 
                     `Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.<br>
                     <strong>Surface maximale des baies non protégées : 100%</strong>`;
                 return;
             }
 
+            // Trouver les bornes pour l'interpolation de distance
             const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
             const lowerDistanceIndex = distances.indexOf(lowerDistance);
             const upperDistanceIndex = distances.indexOf(upperDistance);
 
+            // Définir les surfaces connues du tableau pour l'interpolation
             const surfaceValues = [30, 40, 50, 100];
             
+            // Trouver les surfaces les plus proches pour l'interpolation
             let lowerSurface, upperSurface;
             
             if (surface <= 30) {
@@ -932,6 +940,7 @@
                 upperSurface = ">100";
             }
             
+            // Calculer le pourcentage pour la surface inférieure
             const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
             const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
             const lowerSurfacePercentage = interpolate(
@@ -942,6 +951,7 @@
                 lowerSurfacePercentageUpper
             );
             
+            // Calculer le pourcentage pour la surface supérieure
             const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
             const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
             const upperSurfacePercentage = interpolate(
@@ -952,13 +962,17 @@
                 upperSurfacePercentageUpper
             );
             
+            // Interpolation finale entre les surfaces
             let finalPercentage;
             if (surface > 100) {
+                // Si la surface est > 100, on utilise la formule du CNB 
+                // (LC-1.2m)² pour habitations et 0.5 x (LC-1.2m)² pour établissements commerciaux
                 if (limitingDistance >= 1.2) {
                     finalPercentage = Math.pow(limitingDistance, 2);
+                    // Limiter à 100%
                     finalPercentage = Math.min(finalPercentage, 100);
                 } else {
-                    finalPercentage = upperSurfacePercentage;
+                    finalPercentage = upperSurfacePercentage; // Utiliser les valeurs du tableau pour >100
                 }
             } else if (lowerSurface === upperSurface) {
                 finalPercentage = lowerSurfacePercentage;
@@ -972,10 +986,13 @@
                 );
             }
             
+            // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
             
+            // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
             
+            // Déterminer les exigences de construction
             let constructionRequirements = "";
             if (limitingDistance < 0.6) {
                 constructionRequirements = `
@@ -984,10 +1001,10 @@
                     - Revêtement extérieur ${revetingType === "incombustible" ? "incombustible" : "combustible avec contraintes"}<br>
                     ${revetingType === "combustible" ? 
                     `- Le revêtement combustible doit être installé selon l'article 9.10.15.5, paragraphe 2):<br>
-                         • Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
-                         • Doit avoir un indice de propagation de la flamme d'au plus 25<br>
-                         • Si c'est un revêtement conforme à 9.27.12, son épaisseur ne doit pas dépasser 2 mm<br>
-                         • Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+                       &nbsp;&nbsp;• Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;• Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+                       &nbsp;&nbsp;• Si c'est un revêtement conforme à 9.27.12, son épaisseur ne doit pas dépasser 2 mm<br>
+                       &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
                      : ""}
                 `;
             } else if (limitingDistance < 1.2) {
@@ -996,14 +1013,14 @@
                     - Degré de résistance au feu d'au moins 45 min pour la façade de rayonnement<br>
                     ${revetingType === "combustible" ? 
                     `- Revêtement combustible soumis aux exigences du paragraphe 3) de l'article 9.10.15.5:<br>
-                         • Si conforme à 9.27.6, 9.27.7, 9.27.8, 9.27.9 ou 9.27.10:<br>
-                           - Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
-                           - Doit avoir un indice de propagation de la flamme d'au plus 25 après conditionnement<br>
-                         • Si conforme à 9.27.12:<br>
-                           - Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
-                           - Doit avoir un indice de propagation de la flamme d'au plus 25<br>
-                           - Ne doit pas dépasser 2 mm d'épaisseur<br>
-                         • Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+                       &nbsp;&nbsp;• Si conforme à 9.27.6, 9.27.7, 9.27.8, 9.27.9 ou 9.27.10:<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25 après conditionnement<br>
+                       &nbsp;&nbsp;• Si conforme à 9.27.12:<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Ne doit pas dépasser 2 mm d'épaisseur<br>
+                       &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
                      : "- Revêtement incombustible selon la section 9.20, la sous-section 9.27.11 ou la section 9.28"}
                 `;
             } else {
@@ -1015,6 +1032,7 @@
                 `;
             }
             
+            // Ajouter des informations spécifiques au type d'habitation
             let housingInfo = "";
             if (housingType === "accessoire") {
                 housingInfo = `
@@ -1024,6 +1042,7 @@
                 `;
             }
 
+            // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
@@ -1040,77 +1059,19 @@
                 ${housingInfo}
             `;
 
-            document.getElementById('method91015-result' + suffix).innerHTML = resultHTML;
+            document.getElementById('method91015-result').innerHTML = resultHTML;
         }
 
         function openTab(event, tabName) {
-            const panel = event.currentTarget.closest('.panel');
-            if (!panel) return;
-
-            const tabcontent = panel.getElementsByClassName("tab-content");
+            var tabcontent = document.getElementsByClassName("tab-content");
             for (var i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-
-            const tablinks = panel.getElementsByClassName("tab-link");
+            var tablinks = document.getElementsByClassName("tab-link");
             for (var i = 0; i < tablinks.length; i++) {
                 tablinks[i].classList.remove("active");
             }
-
-            panel.querySelector('#' + tabName).classList.add("active");
+            document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
-
-        document.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                const activeTab = document.querySelector('.tab-content.active');
-                if (activeTab.id === 'cnb') {
-                    calculateCNB();
-                } else if (activeTab.id === 'method91014') {
-                    calculate91014();
-                } else if (activeTab.id === 'method91015') {
-                    calculate91015();
-                } else if (activeTab.id === 'cnb-p2') {
-                    calculateCNB('p2');
-                } else if (activeTab.id === 'method91014-p2') {
-                    calculate91014('p2');
-                } else if (activeTab.id === 'method91015-p2') {
-                    calculate91015('p2');
-                }
-            }
-        });
-
-        function duplicatePanel() {
-            if (document.getElementById('panel-2')) {
-                alert("Un maximum de deux façades peut être calculé simultanément.");
-                return;
-            }
-            
-            const panel1 = document.getElementById('panel-1');
-            const panel2 = panel1.cloneNode(true);
-            panel2.id = 'panel-2';
-            
-            panel2.querySelector('.panel-title').textContent = 'Façade de rayonnement #2';
-            
-            panel2.querySelectorAll('[id]').forEach(element => {
-                if (element.id !== 'panel-2') {
-                    element.id = element.id + '-p2';
-                }
-            });
-            
-            document.querySelector('.panels-container').appendChild(panel2);
-            
-            panel2.querySelectorAll('button[onclick*="calculate"]').forEach(button => {
-                const onclickStr = button.getAttribute('onclick');
-                if (onclickStr.includes('calculateCNB')) {
-                    button.onclick = function() { calculateCNB('p2'); };
-                } else if (onclickStr.includes('calculate91014')) {
-                    button.onclick = function() { calculate91014('p2'); };
-                } else if (onclickStr.includes('calculate91015')) {
-                    button.onclick = function() { calculate91015('p2'); };
-                }
-            });
-        }
     </script>
-</body>
-</html>
