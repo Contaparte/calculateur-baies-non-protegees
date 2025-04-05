@@ -4,28 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de baies non protégées (CNB)</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
-        #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        h1 { color: #333; text-align: center; }
-        .tab-nav { overflow: hidden; background-color: #f1f1f1; border-bottom: 1px solid #ccc; }
-        .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
-        .tab-nav button:hover { background-color: #ddd; }
-        .tab-nav button.active { background-color: #004d99; color: white; }
-        .tab-content { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; }
-        .tab-content.active { display: block; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin: 10px 0; font-size: 16px; }
-        input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { margin: 10px 0; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        .results { background-color: #f1f1f1; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .info { font-style: italic; font-size: 14px; color: #666; margin-top: 5px; }
-    </style>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff7f2; }
+    #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    h1 { color: #6d4c41; text-align: center; }
+    .tab-nav { overflow: hidden; background-color: #ffece1; border-bottom: 1px solid #e6d7ce; }
+    .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
+    .tab-nav button:hover { background-color: #ffddc9; }
+    .tab-nav button.active { background-color: #bf755f; color: white; }
+    .tab-content { display: none; padding: 20px; border: 1px solid #e6d7ce; border-top: none; }
+    .tab-content.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin: 10px 0; font-size: 16px; }
+    input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #e6d7ce; border-radius: 4px; box-sizing: border-box; background-color: #fff7f2; }
+    button { margin: 10px 0; padding: 10px 20px; background-color: #bf755f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+    button:hover { background-color: #a05a46; }
+    .results { background-color: #fff2e8; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #e6d7ce; }
+    .info { font-style: italic; font-size: 14px; color: #8d6e63; margin-top: 5px; }
+.panel-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.duplicate-btn {
+    background-color: #bf755f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+.panels-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.panel {
+    flex: 1;
+    min-width: 300px;
+}
+.panel-title {
+    color: #6d4c41;
+    margin: 10px 0;
+    text-align: center;
+}</style>
 </head>
 <body>
     <div id="app">
+    <div class="panel-header">
         <h1>Calculateur de baies non protégées (CNB)</h1>
+        <button class="duplicate-btn" onclick="duplicatePanel()">+</button>
+    </div>
+    <h2 style="text-align: center; color: #6d4c41; margin-top: 5px; margin-bottom: 20px;">Élévation avant</h2>
+    
+    <div class="panels-container">
+        <div id="panel-1" class="panel">
+            <h3 class="panel-title">Façade de rayonnement #1</h3>
+            <div class="tab-nav">
         <div class="tab-nav">
             <button class="tab-link active" onclick="openTab(event, 'cnb')">Méthode CNB (3.2.3.)</button>
             <button class="tab-link" onclick="openTab(event, 'method91014')">Méthode 9.10.14</button>
@@ -192,8 +233,9 @@
             <button onclick="calculate91015()">Calculer</button>
             <div id="method91015-result" class="results"></div>
         </div>
-    </div>
-
+        </div> <!-- Fermeture de panel-1 -->
+    </div> <!-- Fermeture de panels-container -->
+</div>
     <script>
         // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
         const tableauGroupesAB3CDF3 = {
@@ -1074,4 +1116,54 @@
             document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
-    </script>
+    // Ajouter un écouteur d'événement pour la touche Enter
+document.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        // Déterminer quel onglet est actif
+        const activeTab = document.querySelector('.tab-content.active');
+        if (activeTab.id === 'cnb') {
+            calculateCNB();
+        } else if (activeTab.id === 'method91014') {
+            calculate91014();
+        } else if (activeTab.id === 'method91015') {
+            calculate91015();
+        }
+    }
+});function duplicatePanel() {
+    // Vérifiez s'il y a déjà un deuxième panneau
+    if (document.getElementById('panel-2')) {
+        alert("Un maximum de deux façades peut être calculé simultanément.");
+        return;
+    }
+    
+    // Cloner le premier panneau
+    const panel1 = document.getElementById('panel-1');
+    const panel2 = panel1.cloneNode(true);
+    panel2.id = 'panel-2';
+    
+    // Mettre à jour le titre
+    panel2.querySelector('.panel-title').textContent = 'Façade de rayonnement #2';
+    
+    // Mettre à jour les IDs des éléments internes
+    panel2.querySelectorAll('[id]').forEach(element => {
+        if (element.id !== 'panel-2') {
+            element.id = element.id + '-p2';
+        }
+    });
+    
+    // Ajouter le nouveau panneau
+    document.querySelector('.panels-container').appendChild(panel2);
+    
+    // Mettre à jour les gestionnaires d'événements
+    panel2.querySelectorAll('button').forEach(button => {
+        if (button.onclick) {
+            const onclickStr = button.getAttribute('onclick');
+            if (onclickStr.includes('calculate')) {
+                button.setAttribute('onclick', onclickStr.replace(')', '-p2)'));
+            } else if (onclickStr.includes('openTab')) {
+                const newOnclick = onclickStr.replace('openTab(event, ', 'openTab(event, ') + '-p2';
+                button.setAttribute('onclick', newOnclick);
+            }
+        }
+    });
+}</script>
