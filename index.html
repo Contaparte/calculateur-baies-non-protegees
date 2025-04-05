@@ -400,10 +400,6 @@
                 }
             }
 
-            // Trouver les bornes pour l'interpolation
-            let { lower: lowerSurface, upper: upperSurface } = findBounds(facadeSurface, surfacesToUse);
-            let { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
-
             // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
                 document.getElementById('cnb-result').innerHTML = 
@@ -412,44 +408,86 @@
                 return;
             }
 
+            // Trouver les bornes pour l'interpolation de distance
+            const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
             const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
             const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
 
-            let lowerPercentage, upperPercentage;
+            // Trouver les surfaces les plus proches pour l'interpolation
+            // Recherche des surfaces encadrantes
+            let lowerSurface = surfacesToUse[0];
+            let upperSurface = surfacesToUse[surfacesToUse.length - 1];
 
-            // Interpolation des pourcentages
-            if (sprinklers) {
-                // Avec gicleurs (pas de ratio)
-                const lowerPercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-                const lowerPercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-                lowerPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerPercentageLower, lowerPercentageUpper);
-
-                // Si la surface supérieure existe dans le tableau
-                if (tableToUse[upperSurface]) {
-                    const upperPercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-                    const upperPercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
-                    upperPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, upperPercentageLower, upperPercentageUpper);
-                } else {
-                    upperPercentage = lowerPercentage; // Utiliser la même valeur si la surface supérieure n'existe pas
-                }
-            } else {
-                // Sans gicleurs (avec ratio)
-                const lowerPercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-                const lowerPercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-                lowerPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerPercentageLower, lowerPercentageUpper);
-
-                // Si la surface supérieure existe dans le tableau
-                if (tableToUse[upperSurface]) {
-                    const upperPercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-                    const upperPercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-                    upperPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, upperPercentageLower, upperPercentageUpper);
-                } else {
-                    upperPercentage = lowerPercentage; // Utiliser la même valeur si la surface supérieure n'existe pas
+            for (let i = 0; i < surfacesToUse.length - 1; i++) {
+                if (facadeSurface >= surfacesToUse[i] && facadeSurface <= surfacesToUse[i + 1]) {
+                    lowerSurface = surfacesToUse[i];
+                    upperSurface = surfacesToUse[i + 1];
+                    break;
                 }
             }
 
-            // Interpolation entre les surfaces
-            let finalPercentage = interpolate(facadeSurface, lowerSurface, upperSurface, lowerPercentage, upperPercentage);
+            // Si la façade est plus petite que la plus petite surface du tableau
+            if (facadeSurface < surfacesToUse[0]) {
+                lowerSurface = surfacesToUse[0];
+                upperSurface = surfacesToUse[1];
+            }
+            
+            // Si la façade est plus grande que la plus grande surface du tableau
+            if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
+                lowerSurface = surfacesToUse[surfacesToUse.length - 2];
+                upperSurface = surfacesToUse[surfacesToUse.length - 1];
+            }
+
+            let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+            let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+
+            // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
+            if (sprinklers) {
+                // Avec gicleurs (pas de ratio)
+                lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+                lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+                
+                upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+                upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
+            } else {
+                // Sans gicleurs (avec ratio)
+                lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+                lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+                
+                upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+                upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+            }
+
+            // Interpolation des pourcentages pour la distance limitative
+            const lowerSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                lowerSurfacePercentageLower,
+                lowerSurfacePercentageUpper
+            );
+
+            const upperSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                upperSurfacePercentageLower,
+                upperSurfacePercentageUpper
+            );
+
+            // Interpolation finale entre les surfaces
+            let finalPercentage;
+            if (lowerSurface === upperSurface) {
+                finalPercentage = lowerSurfacePercentage;
+            } else {
+                finalPercentage = interpolate(
+                    facadeSurface,
+                    lowerSurface,
+                    upperSurface,
+                    lowerSurfacePercentage,
+                    upperSurfacePercentage
+                );
+            }
             
             // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
@@ -457,12 +495,15 @@
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * facadeSurface;
 
-            // Afficher les résultats
+            // Afficher les résultats détaillés
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
                 Rapport L/H ou H/L : ${ratioCategory}<br>
-                <strong>Résultats :</strong><br>
+                <br><strong>Détails d'interpolation :</strong><br>
+                Distance limitative entre ${lowerDistance} m et ${upperDistance} m<br>
+                Surface de référence entre ${lowerSurface} m² et ${upperSurface} m²<br>
+                <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
             `;
@@ -512,21 +553,6 @@
             }
 
             const distances = tableau91014[usage].distances;
-            const surfaces = Object.keys(tableau91014[usage].surfaces).map(Number);
-            
-            // Déterminer la surface de référence
-            let surfaceKey;
-            if (surface <= 30) {
-                surfaceKey = 30;
-            } else if (surface <= 40) {
-                surfaceKey = 40;
-            } else if (surface <= 50) {
-                surfaceKey = 50;
-            } else if (surface <= 100) {
-                surfaceKey = 100;
-            } else {
-                surfaceKey = ">100";
-            }
             
             // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distances[distances.length - 1]) {
@@ -536,21 +562,83 @@
                 return;
             }
 
-            // Trouver les bornes pour l'interpolation
+            // Trouver les bornes pour l'interpolation de distance
             const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
             const lowerDistanceIndex = distances.indexOf(lowerDistance);
             const upperDistanceIndex = distances.indexOf(upperDistance);
 
-            // Obtenir les pourcentages pour la surface de référence
-            const percentages = surfaceKey === ">100" ? 
-                tableau91014[usage].surfaces[">100"] : 
-                tableau91014[usage].surfaces[surfaceKey];
+            // Définir les surfaces connues du tableau pour l'interpolation
+            const surfaceValues = [30, 40, 50, 100];
             
-            const lowerPercentage = percentages[lowerDistanceIndex];
-            const upperPercentage = percentages[upperDistanceIndex];
+            // Trouver les surfaces les plus proches pour l'interpolation
+            let lowerSurface, upperSurface;
             
-            // Interpolation entre les distances
-            let finalPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerPercentage, upperPercentage);
+            if (surface <= 30) {
+                lowerSurface = 30;
+                upperSurface = 40;
+            } else if (surface <= 40) {
+                lowerSurface = 30;
+                upperSurface = 40;
+            } else if (surface <= 50) {
+                lowerSurface = 40;
+                upperSurface = 50;
+            } else if (surface <= 100) {
+                lowerSurface = 50;
+                upperSurface = 100;
+            } else {
+                lowerSurface = 100;
+                upperSurface = ">100";
+            }
+            
+            // Calculer le pourcentage pour la surface inférieure
+            const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+            const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+            const lowerSurfacePercentage = interpolate(
+                limitingDistance, 
+                lowerDistance, 
+                upperDistance, 
+                lowerSurfacePercentageLower, 
+                lowerSurfacePercentageUpper
+            );
+            
+            // Calculer le pourcentage pour la surface supérieure
+            const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+            const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+            const upperSurfacePercentage = interpolate(
+                limitingDistance, 
+                lowerDistance, 
+                upperDistance, 
+                upperSurfacePercentageLower, 
+                upperSurfacePercentageUpper
+            );
+            
+            // Interpolation finale entre les surfaces
+            let finalPercentage;
+            if (surface > 100) {
+                // Si la surface est > 100, on utilise la formule du CNB 
+                // (LC-1.2m)² pour habitations et 0.5 x (LC-1.2m)² pour établissements commerciaux
+                if (limitingDistance >= 1.2) {
+                    if (usage === "habitation") {
+                        finalPercentage = Math.pow(limitingDistance, 2);
+                    } else { // commercial
+                        finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+                    }
+                    // Limiter à 100%
+                    finalPercentage = Math.min(finalPercentage, 100);
+                } else {
+                    finalPercentage = upperSurfacePercentage; // Utiliser les valeurs du tableau pour >100
+                }
+            } else if (lowerSurface === upperSurface) {
+                finalPercentage = lowerSurfacePercentage;
+            } else {
+                finalPercentage = interpolate(
+                    surface, 
+                    lowerSurface, 
+                    upperSurface, 
+                    lowerSurfacePercentage, 
+                    upperSurfacePercentage
+                );
+            }
             
             // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
@@ -558,12 +646,16 @@
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
 
-            // Afficher les résultats
+            // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-                Surface de référence du tableau : ${surfaceKey === ">100" ? ">100" : surfaceKey} m²<br>
-                <strong>Résultats :</strong><br>
+                Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
+                Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+                <br><strong>Détails d'interpolation :</strong><br>
+                Distance limitative entre ${lowerDistance} m et ${upperDistance} m<br>
+                Surface de référence entre ${lowerSurface === upperSurface ? lowerSurface : lowerSurface + " m² et " + upperSurface + " m²"}<br>
+                <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
             `;
@@ -601,20 +693,6 @@
 
             const distances = tableau91015.distances;
             
-            // Déterminer la surface de référence
-            let surfaceKey;
-            if (surface <= 30) {
-                surfaceKey = 30;
-            } else if (surface <= 40) {
-                surfaceKey = 40;
-            } else if (surface <= 50) {
-                surfaceKey = 50;
-            } else if (surface <= 100) {
-                surfaceKey = 100;
-            } else {
-                surfaceKey = ">100";
-            }
-            
             // Si la distance limitative dépasse la plage du tableau
             if (limitingDistance > distances[distances.length - 1]) {
                 document.getElementById('method91015-result').innerHTML = 
@@ -623,18 +701,79 @@
                 return;
             }
 
-            // Trouver les bornes pour l'interpolation
+            // Trouver les bornes pour l'interpolation de distance
             const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
             const lowerDistanceIndex = distances.indexOf(lowerDistance);
             const upperDistanceIndex = distances.indexOf(upperDistance);
 
-            // Obtenir les pourcentages pour la surface de référence
-            const percentages = tableau91015.surfaces[surfaceKey];
-            const lowerPercentage = percentages[lowerDistanceIndex];
-            const upperPercentage = percentages[upperDistanceIndex];
+            // Définir les surfaces connues du tableau pour l'interpolation
+            const surfaceValues = [30, 40, 50, 100];
             
-            // Interpolation entre les distances
-            let finalPercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerPercentage, upperPercentage);
+            // Trouver les surfaces les plus proches pour l'interpolation
+            let lowerSurface, upperSurface;
+            
+            if (surface <= 30) {
+                lowerSurface = 30;
+                upperSurface = 40;
+            } else if (surface <= 40) {
+                lowerSurface = 30;
+                upperSurface = 40;
+            } else if (surface <= 50) {
+                lowerSurface = 40;
+                upperSurface = 50;
+            } else if (surface <= 100) {
+                lowerSurface = 50;
+                upperSurface = 100;
+            } else {
+                lowerSurface = 100;
+                upperSurface = ">100";
+            }
+            
+            // Calculer le pourcentage pour la surface inférieure
+            const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+            const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+            const lowerSurfacePercentage = interpolate(
+                limitingDistance, 
+                lowerDistance, 
+                upperDistance, 
+                lowerSurfacePercentageLower, 
+                lowerSurfacePercentageUpper
+            );
+            
+            // Calculer le pourcentage pour la surface supérieure
+            const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+            const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+            const upperSurfacePercentage = interpolate(
+                limitingDistance, 
+                lowerDistance, 
+                upperDistance, 
+                upperSurfacePercentageLower, 
+                upperSurfacePercentageUpper
+            );
+            
+            // Interpolation finale entre les surfaces
+            let finalPercentage;
+            if (surface > 100) {
+                // Si la surface est > 100, on utilise la formule du CNB 
+                // (LC-1.2m)² pour habitations et 0.5 x (LC-1.2m)² pour établissements commerciaux
+                if (limitingDistance >= 1.2) {
+                    finalPercentage = Math.pow(limitingDistance, 2);
+                    // Limiter à 100%
+                    finalPercentage = Math.min(finalPercentage, 100);
+                } else {
+                    finalPercentage = upperSurfacePercentage; // Utiliser les valeurs du tableau pour >100
+                }
+            } else if (lowerSurface === upperSurface) {
+                finalPercentage = lowerSurfacePercentage;
+            } else {
+                finalPercentage = interpolate(
+                    surface, 
+                    lowerSurface, 
+                    upperSurface, 
+                    lowerSurfacePercentage, 
+                    upperSurfacePercentage
+                );
+            }
             
             // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
@@ -642,12 +781,15 @@
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
 
-            // Afficher les résultats
+            // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-                Surface de référence du tableau : ${surfaceKey === ">100" ? ">100" : surfaceKey} m²<br>
-                <strong>Résultats :</strong><br>
+                Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+                <br><strong>Détails d'interpolation :</strong><br>
+                Distance limitative entre ${lowerDistance} m et ${upperDistance} m<br>
+                Surface de référence entre ${lowerSurface === upperSurface ? lowerSurface : lowerSurface + " m² et " + upperSurface + " m²"}<br>
+                <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
             `;
