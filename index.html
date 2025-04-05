@@ -42,29 +42,58 @@
                     <option value="groupes_E_F1_F2">Usages des groupes E et F divisions 1 et 2</option>
                 </select>
             </div>
+            
+            <div class="form-group">
+                <label for="construction_type_cnb">Type de construction</label>
+                <select id="construction_type_cnb">
+                    <option value="incombustible">Incombustible</option>
+                    <option value="combustible">Combustible</option>
+                </select>
+                <div class="info">Selon 3.2.3.7, le type de construction a un impact sur les exigences.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="revetement_type_cnb">Type de revêtement</label>
+                <select id="revetement_type_cnb">
+                    <option value="incombustible">Incombustible</option>
+                    <option value="combustible">Combustible</option>
+                </select>
+            </div>
+            
             <div class="form-group">
                 <label><input type="checkbox" id="sprinklers_cnb"> Bâtiment entièrement protégé par gicleurs</label>
             </div>
+            
             <div class="form-group">
                 <label for="distance_cnb">Distance limitative (m)</label>
                 <input type="number" id="distance_cnb" value="5" min="0" step="0.1">
             </div>
+            
             <div class="form-group">
                 <label for="surface_cnb">Surface de la façade de rayonnement (m²)</label>
                 <input type="number" id="surface_cnb" value="120" min="0">
             </div>
+            
             <div class="form-group">
                 <label for="length_cnb">Longueur de la façade (m)</label>
                 <input type="number" id="length_cnb" value="20" min="0">
             </div>
+            
             <div class="form-group">
                 <label for="height_cnb">Hauteur de la façade (m)</label>
                 <input type="number" id="height_cnb" value="6" min="0">
             </div>
+            
+            <div class="form-group">
+                <label><input type="checkbox" id="glass_brick_cnb"> Baies protégées par briques de verre/verre armé</label>
+                <div class="info">Selon 3.2.3.12, permet de doubler la surface maximale autorisée.</div>
+            </div>
+            
             <div class="form-group">
                 <label><input type="checkbox" id="response_cnb"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 3.2.3.1. 8))</div>
             </div>
+            
             <button onclick="calculateCNB()">Calculer</button>
             <div id="cnb-result" class="results"></div>
         </div>
@@ -79,18 +108,45 @@
                     <option value="commercial">Établissement commercial et établissement industriel à risques moyens</option>
                 </select>
             </div>
+            
+            <div class="form-group">
+                <label for="building_type_91014">Type de bâtiment</label>
+                <select id="building_type_91014">
+                    <option value="standard">Bâtiment standard</option>
+                    <option value="garage">Garage ou bâtiment secondaire</option>
+                </select>
+                <div class="info">Les garages et bâtiments secondaires peuvent bénéficier d'exemptions selon 9.10.14.4(10-12) et 9.10.14.5(4-5).</div>
+            </div>
+            
             <div class="form-group">
                 <label for="distance_91014">Distance limitative (m)</label>
                 <input type="number" id="distance_91014" value="2.0" min="0" step="0.1">
             </div>
+            
             <div class="form-group">
                 <label for="surface_91014">Surface de la façade de rayonnement (m²)</label>
                 <input type="number" id="surface_91014" value="30" min="0">
             </div>
+            
+            <div class="form-group">
+                <label for="exterior_finish_91014">Type de revêtement extérieur</label>
+                <select id="exterior_finish_91014">
+                    <option value="combustible">Combustible</option>
+                    <option value="incombustible">Incombustible</option>
+                </select>
+                <div class="info">Le type de revêtement est important pour les distances limitatives inférieures à 1,2 m.</div>
+            </div>
+            
+            <div class="form-group">
+                <label><input type="checkbox" id="soffit_protection_91014"> Soffites protégés</label>
+                <div class="info">Concerne les soffites faisant saillie à moins de 1,2 m de la limite de propriété (9.10.14.5).</div>
+            </div>
+            
             <div class="form-group">
                 <label><input type="checkbox" id="response_91014"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.14.3. 1))</div>
             </div>
+            
             <button onclick="calculate91014()">Calculer</button>
             <div id="method91014-result" class="results"></div>
         </div>
@@ -98,18 +154,41 @@
         <!-- Onglet Méthode 9.10.15 -->
         <div id="method91015" class="tab-content">
             <p>Calcul basé sur la sous-section 9.10.15 du CNB (Tableau 9.10.15.4) - Pour habitations</p>
+            <div class="info">Cette méthode s'applique uniquement aux bâtiments qui ne renferment que des logements et dont aucun des logements n'est situé au-dessus d'un autre logement.</div>
+            
+            <div class="form-group">
+                <label for="housing_type_91015">Type d'habitation</label>
+                <select id="housing_type_91015">
+                    <option value="standard">Habitation standard</option>
+                    <option value="accessoire">Maison comportant un logement accessoire</option>
+                </select>
+                <div class="info">Selon 9.10.15.1., les maisons comportant un logement accessoire suivent des règles spécifiques.</div>
+            </div>
+            
             <div class="form-group">
                 <label for="distance_91015">Distance limitative (m)</label>
                 <input type="number" id="distance_91015" value="2.0" min="0" step="0.1">
             </div>
+            
             <div class="form-group">
                 <label for="surface_91015">Surface de la façade de rayonnement (m²)</label>
                 <input type="number" id="surface_91015" value="50" min="0">
             </div>
+            
+            <div class="form-group">
+                <label for="reveting_type_91015">Type de revêtement extérieur</label>
+                <select id="reveting_type_91015">
+                    <option value="combustible">Combustible</option>
+                    <option value="incombustible">Incombustible</option>
+                </select>
+                <div class="info">Selon 9.10.15.5, le type de revêtement a un impact sur les exigences de construction.</div>
+            </div>
+            
             <div class="form-group">
                 <label><input type="checkbox" id="response_91015"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.15.3. 1))</div>
             </div>
+            
             <button onclick="calculate91015()">Calculer</button>
             <div id="method91015-result" class="results"></div>
         </div>
@@ -362,6 +441,9 @@
             const sprinklers = document.getElementById('sprinklers_cnb').checked;
             const response = document.getElementById('response_cnb').checked;
             const usage = document.getElementById('usage_cnb').value;
+            const constructionType = document.getElementById('construction_type_cnb').value;
+            const revetementType = document.getElementById('revetement_type_cnb').value;
+            const glassBrick = document.getElementById('glass_brick_cnb').checked;
 
             // Vérification des entrées
             if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
@@ -492,23 +574,91 @@
             // Limiter le pourcentage entre 0 et 100
             finalPercentage = Math.max(0, Math.min(100, finalPercentage));
             
+            // Majoration en cas de briques de verre / verre armé
+            if (glassBrick) {
+                finalPercentage = Math.min(100, finalPercentage * 2);
+            }
+            
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * facadeSurface;
+            
+            // Déterminer les exigences de construction selon 3.2.3.7
+            let constructionRequirements = determineConstructionRequirements(finalPercentage, usage, constructionType, revetementType);
 
             // Afficher les résultats détaillés
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
                 Rapport L/H ou H/L : ${ratioCategory}<br>
+                Type de construction : ${constructionType}<br>
+                Type de revêtement : ${revetementType}<br>
+                ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
                 <br><strong>Détails d'interpolation :</strong><br>
                 Distance limitative entre ${lowerDistance} m et ${upperDistance} m<br>
                 Surface de référence entre ${lowerSurface} m² et ${upperSurface} m²<br>
                 <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+                ${constructionRequirements}
             `;
 
             document.getElementById('cnb-result').innerHTML = resultHTML;
+        }
+        
+        function determineConstructionRequirements(percentage, usage, constructionType, revetementType) {
+            // Déterminer le degré de résistance au feu et les exigences de construction selon 3.2.3.7
+            let degre = "";
+            let constructionExigence = "";
+            let revetementExigence = "";
+            
+            if (percentage <= 10) {
+                if (usage === "groupes_A_B3_C_D_F3") {
+                    degre = "1 h";
+                } else { // groupes_E_F1_F2
+                    degre = "2 h";
+                }
+                constructionExigence = "Incombustible";
+                revetementExigence = "Incombustible";
+            } else if (percentage <= 25) {
+                if (usage === "groupes_A_B3_C_D_F3") {
+                    degre = "1 h";
+                } else { // groupes_E_F1_F2
+                    degre = "2 h";
+                }
+                constructionExigence = "Combustible ou incombustible";
+                revetementExigence = "Incombustible";
+            } else if (percentage <= 50) {
+                if (usage === "groupes_A_B3_C_D_F3") {
+                    degre = "45 min";
+                } else { // groupes_E_F1_F2
+                    degre = "1 h";
+                }
+                constructionExigence = "Combustible ou incombustible";
+                revetementExigence = "Incombustible";
+            } else if (percentage < 100) {
+                if (usage === "groupes_A_B3_C_D_F3") {
+                    degre = "45 min";
+                } else { // groupes_E_F1_F2
+                    degre = "1 h";
+                }
+                constructionExigence = "Combustible ou incombustible";
+                revetementExigence = "Combustible ou incombustible";
+            }
+            
+            // Si la construction actuelle n'est pas conforme, ajouter un avertissement
+            let warningMsg = "";
+            if ((constructionExigence === "Incombustible" && constructionType === "combustible") ||
+                (revetementExigence === "Incombustible" && revetementType === "combustible")) {
+                warningMsg = "<br>⚠️ <strong>Attention :</strong> La construction ou le revêtement sélectionné ne respecte pas les exigences minimales du tableau 3.2.3.7.";
+            }
+            
+            return `
+                <br><strong>Exigences de construction (tableau 3.2.3.7):</strong><br>
+                Pour ${percentage.toFixed(2)}% de baies non protégées:<br>
+                - Degré de résistance au feu minimal: ${degre}<br>
+                - Type de construction exigé: ${constructionExigence}<br>
+                - Type de revêtement exigé: ${revetementExigence}${warningMsg}
+            `;
         }
 
         // Données du Tableau 9.10.14.4-A
@@ -537,6 +687,9 @@
 
         function calculate91014() {
             const usage = document.getElementById('usage_91014').value;
+            const buildingType = document.getElementById('building_type_91014').value;
+            const exteriorFinish = document.getElementById('exterior_finish_91014').value;
+            const soffit_protection = document.getElementById('soffit_protection_91014').checked;
             let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
             const surface = parseFloat(document.getElementById('surface_91014').value);
             const response = document.getElementById('response_91014').checked;
@@ -550,6 +703,27 @@
             // Ajustement pour le délai d'intervention
             if (response) {
                 limitingDistance = limitingDistance / 2;
+            }
+            
+            // Exemption pour les garages ou bâtiments secondaires
+            if (buildingType === "garage") {
+                // Selon 9.10.14.4.(10-12), les baies vitrées des garages peuvent être exemptées des restrictions
+                document.getElementById('method91014-result').innerHTML = `
+                    <strong>Résultat pour garage ou bâtiment secondaire :</strong><br>
+                    Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires 
+                    qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes:<br><br>
+                    
+                    - Si le garage dessert un seul logement et est sur la même propriété: 
+                      <strong>pas de limite de surface pour les baies vitrées</strong><br>
+                    - Pour la construction de la façade de rayonnement, si la distance limitative est d'au moins 0,6 m:
+                      <strong>pas d'exigence quant au degré de résistance au feu</strong><br>
+                    - Si la distance limitative est inférieure à 0,6 m: <strong>un degré de résistance au feu d'au moins 
+                      45 min est requis</strong><br>
+                    - <strong>Aucune exigence quant au type de revêtement</strong>, peu importe la distance limitative<br><br>
+                    
+                    Pour une analyse plus spécifique, veuillez sélectionner "Bâtiment standard" dans le type de bâtiment.
+                `;
+                return;
             }
 
             const distances = tableau91014[usage].distances;
@@ -645,6 +819,39 @@
             
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
+            
+            // Déterminer les exigences de construction et de protection
+            let constructionRequirements = "";
+            
+            if (limitingDistance < 1.2) {
+                constructionRequirements = `
+                    <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
+                    - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
+                    - Le verre armé et les briques de verre ne sont pas autorisés<br>
+                    - ${exteriorFinish === "incombustible" ? 
+                        "Revêtement incombustible requis pour les façades" : 
+                        "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}<br>
+                `;
+            }
+            
+            // Informations sur les soffites
+            let soffitInfo = "";
+            if (limitingDistance < 0.45) {
+                soffitInfo = `
+                    <br><strong>Protection des soffites (9.10.14.5.9):</strong><br>
+                    - Aucun soffite de toit en saillie ne doit être construit au-dessus de la façade de rayonnement<br>
+                `;
+            } else if (limitingDistance < 1.2) {
+                soffitInfo = `
+                    <br><strong>Protection des soffites (9.10.14.5.10-12):</strong><br>
+                    - Les soffites ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété<br>
+                    - Si un soffite fait saillie à moins de 1,2 m de la limite de propriété, il doit:<br>
+                    &nbsp;&nbsp;• Ne comporter aucune ouverture<br>
+                    &nbsp;&nbsp;• Être protégé par un matériau approprié selon 9.10.14.5.12)b)<br>
+                    ${soffit_protection ? "✅ Vous avez indiqué que les soffites sont protégés conformément au code." : 
+                    "⚠️ Protection des soffites requise mais non confirmée."}
+                `;
+            }
 
             // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
@@ -658,6 +865,8 @@
                 <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+                ${constructionRequirements}
+                ${soffitInfo}
             `;
 
             document.getElementById('method91014-result').innerHTML = resultHTML;
@@ -679,6 +888,8 @@
             let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
             const surface = parseFloat(document.getElementById('surface_91015').value);
             const response = document.getElementById('response_91015').checked;
+            const housingType = document.getElementById('housing_type_91015').value;
+            const revetingType = document.getElementById('reveting_type_91015').value;
 
             // Vérification des entrées
             if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
@@ -780,18 +991,72 @@
             
             // Calculer la surface maximale
             const maxArea = (finalPercentage / 100) * surface;
+            
+            // Déterminer les exigences de construction
+            let constructionRequirements = "";
+            if (limitingDistance < 0.6) {
+                constructionRequirements = `
+                    <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+                    - Degré de résistance au feu d'au moins 45 min pour la façade de rayonnement<br>
+                    - Revêtement extérieur ${revetingType === "incombustible" ? "incombustible" : "combustible avec contraintes"}<br>
+                    ${revetingType === "combustible" ? 
+                    `- Le revêtement combustible doit être installé selon l'article 9.10.15.5, paragraphe 2):<br>
+                       &nbsp;&nbsp;• Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;• Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+                       &nbsp;&nbsp;• Si c'est un revêtement conforme à 9.27.12, son épaisseur ne doit pas dépasser 2 mm<br>
+                       &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+                     : ""}
+                `;
+            } else if (limitingDistance < 1.2) {
+                constructionRequirements = `
+                    <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+                    - Degré de résistance au feu d'au moins 45 min pour la façade de rayonnement<br>
+                    ${revetingType === "combustible" ? 
+                    `- Revêtement combustible soumis aux exigences du paragraphe 3) de l'article 9.10.15.5:<br>
+                       &nbsp;&nbsp;• Si conforme à 9.27.6, 9.27.7, 9.27.8, 9.27.9 ou 9.27.10:<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25 après conditionnement<br>
+                       &nbsp;&nbsp;• Si conforme à 9.27.12:<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;- Ne doit pas dépasser 2 mm d'épaisseur<br>
+                       &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+                     : "- Revêtement incombustible selon la section 9.20, la sous-section 9.27.11 ou la section 9.28"}
+                `;
+            } else {
+                constructionRequirements = `
+                    <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+                    - Pour distance limitative ≥ 1,2 m: les restrictions sont moins sévères<br>
+                    - Les exigences minimales pour les soffites s'appliquent quand ils font saillie à moins de 1,2 m de la limite de propriété<br>
+                    - Pour les poteaux en gros bois d'œuvre: pas de conformité nécessaire si distance ≥ 3 m
+                `;
+            }
+            
+            // Ajouter des informations spécifiques au type d'habitation
+            let housingInfo = "";
+            if (housingType === "accessoire") {
+                housingInfo = `
+                    <br><strong>Remarque pour logement accessoire:</strong><br>
+                    - Les maisons comportant un logement accessoire peuvent avoir des exigences supplémentaires.<br>
+                    - Vérifier également les exigences de l'article 9.10.15.5 pour les revêtements.<br>
+                `;
+            }
 
             // Afficher les résultats avec détails des calculs intermédiaires
             let resultHTML = `
                 <strong>Données de calcul :</strong><br>
                 ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
                 Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+                Type d'habitation : ${housingType === "standard" ? "Habitation standard" : "Maison comportant un logement accessoire"}<br>
+                Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
                 <br><strong>Détails d'interpolation :</strong><br>
                 Distance limitative entre ${lowerDistance} m et ${upperDistance} m<br>
                 Surface de référence entre ${lowerSurface === upperSurface ? lowerSurface : lowerSurface + " m² et " + upperSurface + " m²"}<br>
                 <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+                ${constructionRequirements}
+                ${housingInfo}
             `;
 
             document.getElementById('method91015-result').innerHTML = resultHTML;
