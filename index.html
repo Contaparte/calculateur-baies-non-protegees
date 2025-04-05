@@ -40,6 +40,23 @@
     right: 0;
     top: 10px;
 }
+.buttons-group {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    display: flex;
+    gap: 5px;
+}
+.remove-btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
 .panels-container {
     display: flex;
     flex-wrap: wrap;
@@ -58,9 +75,12 @@
 <body>
     <div id="app">
     <div class="panel-header">
-        <h1>Calculateur de baies non protégées (CNB)</h1>
+    <h1>Calculateur de baies non protégées (CNB)</h1>
+    <div class="buttons-group">
         <button class="duplicate-btn" onclick="duplicatePanel()">+</button>
+        <button class="remove-btn" onclick="removePanel()" style="background-color: #d9534f;">-</button>
     </div>
+</div>
     <h2 style="text-align: center; color: #6d4c41; margin-top: 5px; margin-bottom: 20px;">Élévation avant</h2>
     
     <div class="panels-container">
@@ -1150,6 +1170,45 @@ document.addEventListener('keypress', function(event) {
             element.id = element.id + '-p2';
         }
     });
+    
+    // Ajouter le nouveau panneau
+    document.querySelector('.panels-container').appendChild(panel2);
+    
+    // Mettre à jour les gestionnaires d'événements pour les onglets
+    panel2.querySelectorAll('.tab-link').forEach(button => {
+        const onclickStr = button.getAttribute('onclick');
+        if (onclickStr) {
+            const tabName = onclickStr.match(/'([^']+)'/)[1];
+            button.setAttribute('onclick', `openTab(event, '${tabName}-p2')`);
+        }
+    });
+    
+    // Mettre à jour les gestionnaires pour les boutons de calcul
+    panel2.querySelectorAll('button').forEach(button => {
+        if (button.getAttribute('onclick') === 'calculateCNB()') {
+            button.setAttribute('onclick', 'calculateCNB("p2")');
+        } else if (button.getAttribute('onclick') === 'calculate91014()') {
+            button.setAttribute('onclick', 'calculate91014("p2")');
+        } else if (button.getAttribute('onclick') === 'calculate91015()') {
+            button.setAttribute('onclick', 'calculate91015("p2")');
+        }
+    });
+    
+    // Mettre à jour les IDs des divs de contenu des onglets
+    const tabContents = panel2.querySelectorAll('.tab-content');
+    tabContents.forEach(tabContent => {
+        if (tabContent.id) {
+            tabContent.id = tabContent.id + '-p2';
+        }
+    });
+}function removePanel() {
+    const panel2 = document.getElementById('panel-2');
+    if (panel2) {
+        panel2.remove();
+    } else {
+        alert("Il n'y a pas de panneau supplémentaire à supprimer.");
+    }
+}
     
     // Ajouter le nouveau panneau
     document.querySelector('.panels-container').appendChild(panel2);
