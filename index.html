@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de baies non protégées (CNB)</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff7f2; }
-        #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        h1 { color: #333; text-align: center; }
-        .tab-nav { overflow: hidden; background-color: #fff0e5; border-bottom: 1px solid #ccc; }
-        .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
-        .tab-nav button:hover { background-color: #ffe4d1; }
-        .tab-nav button.active { background-color: #004d99; color: white; }
-        .tab-content { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; }
-        .tab-content.active { display: block; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin: 10px 0; font-size: 16px; }
-        input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { margin: 10px 0; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        .results { background-color: #f1f1f1; padding: 20px; border-radius: 8px; margin-top: 20px; }
-        .info { font-style: italic; font-size: 14px; color: #666; margin-top: 5px; }
-    </style>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #fff7f2; }
+    #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+    h1 { color: #6d4c41; text-align: center; }
+    .tab-nav { overflow: hidden; background-color: #ffece1; border-bottom: 1px solid #e6d7ce; }
+    .tab-nav button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 16px; }
+    .tab-nav button:hover { background-color: #ffddc9; }
+    .tab-nav button.active { background-color: #bf755f; color: white; }
+    .tab-content { display: none; padding: 20px; border: 1px solid #e6d7ce; border-top: none; }
+    .tab-content.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin: 10px 0; font-size: 16px; }
+    input[type="number"], select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #e6d7ce; border-radius: 4px; box-sizing: border-box; background-color: #fff7f2; }
+    button { margin: 10px 0; padding: 10px 20px; background-color: #bf755f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+    button:hover { background-color: #a05a46; }
+    .results { background-color: #fff2e8; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #e6d7ce; }
+    .info { font-style: italic; font-size: 14px; color: #8d6e63; margin-top: 5px; }
+</style>
 </head>
 <body>
     <div id="app">
