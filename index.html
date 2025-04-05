@@ -1074,4 +1074,17 @@
             document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
-    </script>
+    // Ajouter un écouteur d'événement pour la touche Enter
+document.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        // Déterminer quel onglet est actif
+        const activeTab = document.querySelector('.tab-content.active');
+        if (activeTab.id === 'cnb') {
+            calculateCNB();
+        } else if (activeTab.id === 'method91014') {
+            calculate91014();
+        } else if (activeTab.id === 'method91015') {
+            calculate91015();
+        }
+    }
+});</script>
