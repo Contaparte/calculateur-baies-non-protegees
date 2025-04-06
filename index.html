@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de baies non protégées (CNB)</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #fef7f2; }
         #app { max-width: 800px; margin: 0 auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
         h1 { color: #333; text-align: center; }
         .tab-nav { overflow: hidden; background-color: #f1f1f1; border-bottom: 1px solid #ccc; }
@@ -66,22 +66,22 @@
             
             <div class="form-group">
                 <label for="distance_cnb">Distance limitative (m)</label>
-                <input type="number" id="distance_cnb" value="5" min="0" step="0.1">
+                <input type="number" id="distance_cnb" value="" min="0" step="0.1">
             </div>
             
             <div class="form-group">
                 <label for="surface_cnb">Surface de la façade de rayonnement (m²)</label>
-                <input type="number" id="surface_cnb" value="120" min="0">
+                <input type="number" id="surface_cnb" value="" min="0">
             </div>
             
             <div class="form-group">
                 <label for="length_cnb">Longueur de la façade (m)</label>
-                <input type="number" id="length_cnb" value="20" min="0">
+                <input type="number" id="length_cnb" value="" min="0">
             </div>
             
             <div class="form-group">
                 <label for="height_cnb">Hauteur de la façade (m)</label>
-                <input type="number" id="height_cnb" value="6" min="0">
+                <input type="number" id="height_cnb" value="" min="0">
             </div>
             
             <div class="form-group">
@@ -94,7 +94,7 @@
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 3.2.3.1. 8))</div>
             </div>
             
-            <button onclick="calculateCNB()">Calculer</button>
+            <button id="calculate_cnb" onclick="calculateCNB()">Calculer</button>
             <div id="cnb-result" class="results"></div>
         </div>
 
@@ -120,12 +120,12 @@
             
             <div class="form-group">
                 <label for="distance_91014">Distance limitative (m)</label>
-                <input type="number" id="distance_91014" value="2.0" min="0" step="0.1">
+                <input type="number" id="distance_91014" value="" min="0" step="0.1">
             </div>
             
             <div class="form-group">
                 <label for="surface_91014">Surface de la façade de rayonnement (m²)</label>
-                <input type="number" id="surface_91014" value="30" min="0">
+                <input type="number" id="surface_91014" value="" min="0">
             </div>
             
             <div class="form-group">
@@ -147,7 +147,7 @@
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.14.3. 1))</div>
             </div>
             
-            <button onclick="calculate91014()">Calculer</button>
+            <button id="calculate_91014" onclick="calculate91014()">Calculer</button>
             <div id="method91014-result" class="results"></div>
         </div>
 
@@ -167,12 +167,12 @@
             
             <div class="form-group">
                 <label for="distance_91015">Distance limitative (m)</label>
-                <input type="number" id="distance_91015" value="2.0" min="0" step="0.1">
+                <input type="number" id="distance_91015" value="" min="0" step="0.1">
             </div>
             
             <div class="form-group">
                 <label for="surface_91015">Surface de la façade de rayonnement (m²)</label>
-                <input type="number" id="surface_91015" value="50" min="0">
+                <input type="number" id="surface_91015" value="" min="0">
             </div>
             
             <div class="form-group">
@@ -189,7 +189,7 @@
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.15.3. 1))</div>
             </div>
             
-            <button onclick="calculate91015()">Calculer</button>
+            <button id="calculate_91015" onclick="calculate91015()">Calculer</button>
             <div id="method91015-result" class="results"></div>
         </div>
     </div>
@@ -339,7 +339,7 @@
             250: {
                 "< 3:1": [0, 4, 4, 4, 4, 4, 5, 7, 8, 10, 12, 15, 18, 22, 25, 29, 34, 44, 55, 68, 100],
                 "3:1 à 10:1": [0, 4, 4, 4, 4, 5, 6, 8, 10, 12, 14, 17, 20, 24, 27, 32, 36, 46, 57, 70, 100],
-                "> 10:1": [0, 4, 4, 5, 6, 7, 9, 12, 15, 18, 21, 25, 28, 32, 37, 41, 46, 56, 68, 81, 100]
+              "> 10:1": [0, 4, 4, 5, 6, 7, 9, 12, 15, 18, 21, 25, 28, 32, 37, 41, 46, 56, 68, 81, 100]
             },
             350: {
                 "< 3:1": [0, 4, 4, 4, 4, 4, 5, 6, 7, 8, 10, 12, 14, 16, 19, 22, 25, 32, 40, 49, 77, 100],
@@ -1074,4 +1074,40 @@
             document.getElementById(tabName).classList.add("active");
             event.currentTarget.classList.add("active");
         }
+
+        // Fonction pour gérer l'appui sur la touche Enter
+        function handleEnterKey(event, calculationFunction) {
+            if (event.key === "Enter") {
+                calculationFunction();
+            }
+        }
+
+        // Ajouter des écouteurs d'événements après le chargement de la page
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ajouter des écouteurs pour l'onglet CNB
+            const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
+            cnbInputs.forEach(input => {
+                input.addEventListener('keypress', function(event) {
+                    handleEnterKey(event, calculateCNB);
+                });
+            });
+
+            // Ajouter des écouteurs pour l'onglet 9.10.14
+            const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
+            inputs91014.forEach(input => {
+                input.addEventListener('keypress', function(event) {
+                    handleEnterKey(event, calculate91014);
+                });
+            });
+
+            // Ajouter des écouteurs pour l'onglet 9.10.15
+            const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
+            inputs91015.forEach(input => {
+                input.addEventListener('keypress', function(event) {
+                    handleEnterKey(event, calculate91015);
+                });
+            });
+        });
     </script>
+</body>
+</html>
