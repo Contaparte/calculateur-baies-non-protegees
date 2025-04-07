@@ -93,7 +93,29 @@
                 <label><input type="checkbox" id="response_cnb"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 3.2.3.1. 8))</div>
             </div>
-            
+   <!-- Onglet Méthode CNB (3.2.3.) -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_cnb">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_cnb" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.14 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91014">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91014" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.15 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91015">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91015" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>         
             <button id="calculate_cnb" onclick="calculateCNB()">Calculer</button>
             <div id="cnb-result" class="results"></div>
         </div>
@@ -146,7 +168,29 @@
                 <label><input type="checkbox" id="response_91014"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.14.3. 1))</div>
             </div>
-            
+<!-- Onglet Méthode CNB (3.2.3.) -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_cnb">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_cnb" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.14 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91014">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91014" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.15 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91015">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91015" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>            
             <button id="calculate_91014" onclick="calculate91014()">Calculer</button>
             <div id="method91014-result" class="results"></div>
         </div>
@@ -188,7 +232,29 @@
                 <label><input type="checkbox" id="response_91015"> Plus de 10 min dans 10 % ou plus des cas</label>
                 <div class="info">Si coché, la distance limitative est divisée par 2 (selon le paragraphe 9.10.15.3. 1))</div>
             </div>
-            
+   <!-- Onglet Méthode CNB (3.2.3.) -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_cnb">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_cnb" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.14 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91014">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91014" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>
+
+<!-- Onglet Méthode 9.10.15 -->
+<!-- Ajouter après la section des inputs et avant le bouton de calcul -->
+<div class="form-group">
+    <label for="proposed_area_91015">Surface proposée de baies non protégées (m²)</label>
+    <input type="number" id="proposed_area_91015" value="" min="0">
+    <div class="info">Surface totale de baies non protégées que vous souhaitez proposer pour ce bâtiment.</div>
+</div>         
             <button id="calculate_91015" onclick="calculate91015()">Calculer</button>
             <div id="method91015-result" class="results"></div>
         </div>
@@ -601,7 +667,31 @@
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
                 ${constructionRequirements}
             `;
-
+    const proposedArea = parseFloat(document.getElementById('proposed_area_cnb').value);
+    let comparisonResult = "";
+    
+    if (!isNaN(proposedArea) && proposedArea > 0) {
+        const proposedPercentage = (proposedArea / facadeSurface) * 100;
+        let statusClass = "";
+        if (proposedPercentage > finalPercentage) {
+            statusClass = "color: red; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        } else {
+            statusClass = "color: green; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        }
+    }
+    
+    // Ajouter le résultat de comparaison à resultHTML
+    resultHTML += comparisonResult;
             document.getElementById('cnb-result').innerHTML = resultHTML;
         }
         
@@ -868,7 +958,35 @@
                 ${constructionRequirements}
                 ${soffitInfo}
             `;
-
+    if (buildingType !== "garage") {
+        // Ajouter cette partie pour la comparaison avec la surface proposée
+        const proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
+        
+        if (!isNaN(proposedArea) && proposedArea > 0) {
+            const proposedPercentage = (proposedArea / surface) * 100;
+            let statusClass = "";
+            let comparisonResult = "";
+            
+            if (proposedPercentage > finalPercentage) {
+                statusClass = "color: red; font-weight: bold;";
+                comparisonResult = `
+                    <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                    Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                    <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                `;
+            } else {
+                statusClass = "color: green; font-weight: bold;";
+                comparisonResult = `
+                    <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                    Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                    <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                `;
+            }
+            
+            // Ajouter le résultat de comparaison à resultHTML
+            resultHTML += comparisonResult;
+        }
+    }
             document.getElementById('method91014-result').innerHTML = resultHTML;
         }
 
@@ -1058,7 +1176,32 @@
                 ${constructionRequirements}
                 ${housingInfo}
             `;
-
+    const proposedArea = parseFloat(document.getElementById('proposed_area_91015').value);
+    
+    if (!isNaN(proposedArea) && proposedArea > 0) {
+        const proposedPercentage = (proposedArea / surface) * 100;
+        let statusClass = "";
+        let comparisonResult = "";
+        
+        if (proposedPercentage > finalPercentage) {
+            statusClass = "color: red; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        } else {
+            statusClass = "color: green; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        }
+        
+        // Ajouter le résultat de comparaison à resultHTML
+        resultHTML += comparisonResult;
+    }
             document.getElementById('method91015-result').innerHTML = resultHTML;
         }
 
