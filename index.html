@@ -1707,22 +1707,23 @@
 
       // Fonction pour copier le contenu dans le presse-papier
       function copyToClipboard(elementId) {
-          const element = document.getElementById(elementId);
-          const text = element.innerText;
-          
-          navigator.clipboard.writeText(text)
-              .then(() => {
-                  // Feedback visuel temporaire
-                  const originalButtonText = document.getElementById(`copy_${elementId.split('-')[0]}`).innerHTML;
-                  document.getElementById(`copy_${elementId.split('-')[0]}`).innerHTML = "✓ Copié!";
-                  setTimeout(() => {
-                      document.getElementById(`copy_${elementId.split('-')[0]}`).innerHTML = originalButtonText;
-                  }, 2000);
-              })
-              .catch(err => {
-                  console.error('Impossible de copier le texte:', err);
-              });
-      }
+    const element = document.getElementById(elementId);
+    const text = element.innerText;
+    
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            // Correction pour identifier correctement le bouton
+            const tabId = elementId.replace('-result', '');
+            const originalButtonText = document.getElementById(`copy_${tabId}`).innerHTML;
+            document.getElementById(`copy_${tabId}`).innerHTML = "✓ Copié!";
+            setTimeout(() => {
+                document.getElementById(`copy_${tabId}`).innerHTML = originalButtonText;
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Impossible de copier le texte:', err);
+        });
+}
 
       // Fonction pour gérer l'appui sur la touche Enter
       function handleEnterKey(event, calculationFunction) {
