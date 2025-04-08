@@ -1706,18 +1706,24 @@
       }
 
       // Fonction pour copier le contenu dans le presse-papier
-      function copyToClipboard(elementId) {
+function copyToClipboard(elementId) {
     const element = document.getElementById(elementId);
     const text = element.innerText;
     
     navigator.clipboard.writeText(text)
         .then(() => {
-            // Correction pour identifier correctement le bouton
-            const tabId = elementId.replace('-result', '');
-            const originalButtonText = document.getElementById(`copy_${tabId}`).innerHTML;
-            document.getElementById(`copy_${tabId}`).innerHTML = "✓ Copié!";
+            // Pour "method91014-result" ou "method91015-result", extrait "91014" ou "91015"
+            let buttonId;
+            if (elementId.startsWith('method')) {
+                buttonId = elementId.split('-')[0].replace('method', '');
+            } else {
+                buttonId = elementId.split('-')[0];
+            }
+            
+            const originalButtonText = document.getElementById(`copy_${buttonId}`).innerHTML;
+            document.getElementById(`copy_${buttonId}`).innerHTML = "✓ Copié!";
             setTimeout(() => {
-                document.getElementById(`copy_${tabId}`).innerHTML = originalButtonText;
+                document.getElementById(`copy_${buttonId}`).innerHTML = originalButtonText;
             }, 2000);
         })
         .catch(err => {
