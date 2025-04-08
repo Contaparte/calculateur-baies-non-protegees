@@ -1275,40 +1275,46 @@
                `;
            }
            
-           // Vérification de l'espacement des baies
-           let spacingResult = "";
+// Vérification de l'espacement des baies
+let spacingResult = "";
            
-           if (checkSpacing) {
-               const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
-               const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
-               
-               if (limitingDistance <= 2.0) {
-                   // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
-                   let maxBaieArea = 0;
-                   let maxBaieInfo = "";
-                   
-                   if (limitingDistance < 1.2) {
-                       maxBaieArea = 0.35;
-                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
-                   } else if (limitingDistance <= 1.5) {
-                       maxBaieArea = 0.78;
-                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 1,5 m, chaque baie ne doit pas dépasser 0,78 m².`;
-                   } else if (limitingDistance <= 2.0) {
-                       maxBaieArea = 1.88;
-                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 2,0 m, chaque baie ne doit pas dépasser 1,88 m².`;
-                   }
-                   
-                   // Pour les distances entre 1,2 m et 2,0 m, application de la formule
-                   if (limitingDistance >= 1.2) {
-                       const formulaArea = Math.pow(limitingDistance, 2);
-                       maxBaieInfo += `<br>Ou selon la formule de 9.10.14.4.(3)b), chaque baie peut avoir une surface maximale de ${formulaArea.toFixed(2)} m².`;
-                   }
-                   
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
-                       ${maxBaieInfo}<br>
-                   `;
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
+    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
+    
+    if (limitingDistance <= 2.0) {
+        // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
+        let maxBaieArea = 0;
+        let maxBaieInfo = "";
+        let formulaArea = 0;
+        
+        if (limitingDistance < 1.2) {
+            maxBaieArea = 0.35;
+            maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
+        } else if (limitingDistance <= 1.5) {
+            maxBaieArea = 0.78;
+            maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 1,5 m, chaque baie ne doit pas dépasser 0,78 m².`;
+        } else if (limitingDistance <= 2.0) {
+            maxBaieArea = 1.88;
+            maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 2,0 m, chaque baie ne doit pas dépasser 1,88 m².`;
+        }
+        
+        // Pour les distances entre 1,2 m et 2,0 m, application de la formule
+        if (limitingDistance >= 1.2) {
+            formulaArea = Math.pow(limitingDistance, 2);
+            
+            if (formulaArea > maxBaieArea) {
+                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (ou ${formulaArea.toFixed(2)} m² selon la formule du paragraphe 9.10.14.4.(3)b)).`;
+            } else {
+                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (ou ${maxBaieArea.toFixed(2)} m² selon le tableau 9.10.14.4.-B).`;
+            }
+        }
+        
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
+            ${maxBaieInfo}<br>
+        `;
                    
                    // Vérification de l'espacement
                    if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
