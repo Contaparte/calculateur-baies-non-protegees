@@ -285,7 +285,7 @@
             <div class="info">Cette méthode s'applique uniquement aux bâtiments qui ne renferment que des logements et dont aucun des logements n'est situé au-dessus d'un autre logement.</div>
             
             <div class="form-group">
-                <label for="housing_type_91015">Type d'habitation <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Selon 9.10.15.1., les maisons comportant un logement accessoire suivent des règles spécifiques.</span></div></label>
+                <label for="housing_type_91015">Type d'habitation <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltipicon">?</span><span class="tooltip-text">Selon 9.10.15.1., les maisons comportant un logement accessoire suivent des règles spécifiques.</span></div></label>
                 <select id="housing_type_91015">
                     <option value="standard">Habitation standard</option>
                     <option value="accessoire">Maison comportant un logement accessoire</option>
@@ -1046,7 +1046,7 @@
                }
                constructionExigence = "Combustible ou incombustible";
                revetementExigence = "Incombustible";
-           } else if (percentage <= 50) {
+            } else if (percentage <= 50) {
                if (usage === "groupes_A_B3_C_D_F3") {
                    degre = "45 min";
                } else { // groupes_E_F1_F2
@@ -1112,7 +1112,7 @@
           const surface = parseFloat(document.getElementById('surface_91014').value);
           const response = document.getElementById('response_91014').checked;
           const proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
-          const checkSpacing = document.getElementById('check_spacing_91014').checked;
+          let checkSpacing = document.getElementById('check_spacing_91014').checked;
           const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
           const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
           const checkSoffit = document.getElementById('check_soffit_91014').checked;
@@ -1164,6 +1164,14 @@
                document.getElementById('method91014-result').innerHTML = resultHTML;
                document.getElementById('copy_91014').style.display = 'inline-block';
                return;
+           }
+
+           // Si la distance limitative est d'au plus 2 m, activer automatiquement la vérification d'espacement
+           if (limitingDistance <= 2.0) {
+               // Activer la case à cocher et afficher les options d'espacement
+               document.getElementById('check_spacing_91014').checked = true;
+               document.getElementById('spacing_options_91014').style.display = 'block';
+               checkSpacing = true; // S'assurer que la vérification sera effectuée
            }
 
            // Trouver les bornes pour l'interpolation de distance
@@ -1269,25 +1277,74 @@
            
            // Vérification de l'espacement des baies
            let spacingResult = "";
+           
            if (checkSpacing) {
                const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
                const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
                
-               if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+               if (limitingDistance <= 2.0) {
+                   // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
+                   let maxBaieArea = 0;
+                   let maxBaieInfo = "";
+                   
+                   if (limitingDistance < 1.2) {
+                       maxBaieArea = 0.35;
+                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
+                   } else if (limitingDistance <= 1.5) {
+                       maxBaieArea = 0.78;
+                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 1,5 m, chaque baie ne doit pas dépasser 0,78 m².`;
+                   } else if (limitingDistance <= 2.0) {
+                       maxBaieArea = 1.88;
+                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative de 2,0 m, chaque baie ne doit pas dépasser 1,88 m².`;
+                   }
+                   
+                   // Pour les distances entre 1,2 m et 2,0 m, application de la formule
+                   if (limitingDistance >= 1.2) {
+                       const formulaArea = Math.pow(limitingDistance, 2);
+                       maxBaieInfo += `<br>Ou selon la formule de 9.10.14.4.(3)b), chaque baie peut avoir une surface maximale de ${formulaArea.toFixed(2)} m².`;
+                   }
+                   
                    spacingResult = `
                        <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                       Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                       - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                       - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                       <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
+                       ${maxBaieInfo}<br>
                    `;
+                   
+                   // Vérification de l'espacement
+                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                       spacingResult += `
+                           <strong>Espacement des baies :</strong><br>
+                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                       `;
+                   } else {
+                       spacingResult += `
+                           <strong>Espacement des baies :</strong><br>
+                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                       `;
+                   }
                } else {
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                       Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                       Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                   `;
+                   // Pour les distances > 2.0 m, vérification de base
+                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                       spacingResult = `
+                           <br><strong>Vérification de l'espacement des baies :</strong><br>
+                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                       `;
+                   } else {
+                       spacingResult = `
+                           <br><strong>Vérification de l'espacement des baies :</strong><br>
+                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                       `;
+                   }
                }
            }
            
@@ -1385,8 +1442,7 @@
            document.getElementById('method91014-result').innerHTML = resultHTML;
            document.getElementById('copy_91014').style.display = 'inline-block';
        }
-
-       // Données du Tableau 9.10.15.4
+        // Données du Tableau 9.10.15.4
        const tableau91015 = {
            surfaces: {
                30: [0, 7, 9, 12, 39, 88, 100, 100, 100, 100, 100],
