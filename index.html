@@ -1295,21 +1295,21 @@ if (checkSpacing) {
             maxBaieArea = 0.78;
             formulaArea = Math.pow(limitingDistance, 2);
             
-            // Prendre la plus petite valeur comme maximale
+            // La méthode la plus restrictive d'abord
             if (formulaArea < maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative: ${maxBaieArea.toFixed(2)} m²).`;
+                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode moins restrictive: ${maxBaieArea.toFixed(2)} m²).`;
             } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative: ${formulaArea.toFixed(2)} m²).`;
+                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode moins restrictive: ${formulaArea.toFixed(2)} m²).`;
             }
         } else if (limitingDistance <= 2.0) {
             maxBaieArea = 1.88;
             formulaArea = Math.pow(limitingDistance, 2);
             
-            // Prendre la plus petite valeur comme maximale
+            // La méthode la plus restrictive d'abord
             if (formulaArea < maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative: ${maxBaieArea.toFixed(2)} m²).`;
+                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode moins restrictive: ${maxBaieArea.toFixed(2)} m²).`;
             } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative: ${formulaArea.toFixed(2)} m²).`;
+                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode moins restrictive: ${formulaArea.toFixed(2)} m²).`;
             }
         }
         
