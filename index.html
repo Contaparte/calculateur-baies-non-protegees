@@ -1019,7 +1019,13 @@
                // Ajouter le résultat de comparaison à resultHTML
                resultHTML += comparisonResult;
            }
-           
+// Ajouter le message de dégagement de responsabilité
+resultHTML += `
+    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+    </div>
+`;           
            document.getElementById('cnb-result').innerHTML = resultHTML;
            document.getElementById('copy_cnb').style.display = 'inline-block';
        }
@@ -1445,7 +1451,13 @@ if (checkSpacing) {
                // Ajouter le résultat de comparaison à resultHTML
                resultHTML += comparisonResult;
            }
-           
+// Ajouter le message de dégagement de responsabilité
+resultHTML += `
+    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+    </div>
+`;           
            document.getElementById('method91014-result').innerHTML = resultHTML;
            document.getElementById('copy_91014').style.display = 'inline-block';
        }
@@ -1750,6 +1762,13 @@ if (checkSpacing) {
               // Ajouter le résultat de comparaison à resultHTML
               resultHTML += comparisonResult;
           }
+// Ajouter le message de dégagement de responsabilité
+resultHTML += `
+    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+    </div>
+`;
           
           document.getElementById('method91015-result').innerHTML = resultHTML;
           document.getElementById('copy_91015').style.display = 'inline-block';
