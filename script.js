@@ -261,6 +261,33 @@
                    handleEnterKey(event, calculate91015);
                });
            });
+           // Gestionnaires d'événements pour les onglets
+      document.getElementById('tab-cnb').addEventListener('click', function(event) {
+             openTab(event, 'cnb');
+         });
+      document.getElementById('tab-91014').addEventListener('click', function(event) {
+             openTab(event, 'method91014');
+         });
+      document.getElementById('tab-91015').addEventListener('click', function(event) {
+             openTab(event, 'method91015');
+         });
+
+      // Gestionnaires d'événements pour les boutons de calcul
+      document.getElementById('calculate_cnb').addEventListener('click', calculateCNB);
+      document.getElementById('calculate_91014').addEventListener('click', calculate91014);
+      document.getElementById('calculate_91015').addEventListener('click', calculate91015);
+
+      // Gestionnaires pour les boutons de copie
+      document.getElementById('copy_cnb').addEventListener('click', function() {
+             copyToClipboard('cnb-result');
+         });
+      document.getElementById('copy_91014').addEventListener('click', function() {
+             copyToClipboard('method91014-result');
+         });
+      document.getElementById('copy_91015').addEventListener('click', function() {
+             copyToClipboard('method91015-result');
+         });
+      
        });
 
        function getRatioCategory(length, height) {
