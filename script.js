@@ -537,28 +537,38 @@
            let constructionRequirements = determineConstructionRequirements(finalPercentage, usage, constructionType, revetementType);
            
            // Vérification de l'espacement des baies
-           let spacingResult = "";
-           if (checkSpacing) {
-               const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
-               const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
-               
-               if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                       Selon l'article 3.2.3.1.(6), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                       - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                       - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-                   `;
-               } else {
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                       Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                       Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                   `;
-               }
-           }
+let spacingResult = "";
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
+    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
+    
+    if (limitingDistance <= 2.0) {
+        // Seulement vérifier l'espacement si la distance limitative est <= 2.0 m
+        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
+                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+            `;
+        } else {
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+            `;
+        }
+    } else {
+        // Distance limitative > 2.0 m, les restrictions d'espacement ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            ✅ <span style="color: green;">CONFORME</span> - Les restrictions d'espacement minimal des baies selon 9.10.15.4.(4) 
+            ne s'appliquent que lorsque la distance limitative est d'au plus 2,0 m.<br>
+            Distance limitative actuelle: ${limitingDistance.toFixed(2)} m > 2,0 m - aucune restriction d'espacement applicable.
+        `;
+    }
            
            // Vérification de la protection des soffites
            let soffitResult = "";
@@ -960,25 +970,13 @@ if (checkSpacing) {
                        `;
                    }
                } else {
-                   // Pour les distances > 2.0 m, vérification de base
-                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                       spacingResult = `
-                           <br><strong>Vérification de l'espacement des baies :</strong><br>
-                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-                       `;
-                   } else {
-                       spacingResult = `
-                           <br><strong>Vérification de l'espacement des baies :</strong><br>
-                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                       `;
-                   }
-               }
-           }
+                   // Distance limitative > 2.0 m, les restrictions d'espacement ne s'appliquent pas
+spacingResult = `
+    <br><strong>Vérification de l'espacement des baies :</strong><br>
+    ✅ <span style="color: green;">CONFORME</span> - Les restrictions d'espacement minimal des baies selon 9.10.14.4.(4) 
+    ne s'appliquent que lorsque la distance limitative est d'au plus 2,0 m.<br>
+    Distance limitative actuelle: ${limitingDistance.toFixed(2)} m > 2,0 m - aucune restriction d'espacement applicable.
+`;
            
            // Vérification de la protection des soffites
            let soffitResult = "";
