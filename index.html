@@ -37,9 +37,9 @@
     <div id="app">
         <h1>Calculateur de baies non protégées (CNB)</h1>
         <div class="tab-nav">
-            <button class="tab-link active" onclick="openTab(event, 'cnb')">Méthode CNB (3.2.3.)</button>
-            <button class="tab-link" onclick="openTab(event, 'method91014')">Méthode 9.10.14</button>
-            <button class="tab-link" onclick="openTab(event, 'method91015')">Méthode 9.10.15</button>
+            <button class="tab-link active" id="tab-cnb">Méthode CNB (3.2.3.)</button>
+            <button class="tab-link" id="tab-91014">Méthode 9.10.14</button>
+            <button class="tab-link" id="tab-91015">Méthode 9.10.15</button>
         </div>
 
         <div id="cnb" class="tab-content active">
@@ -170,8 +170,8 @@
                 </select>
             </div>
      
-            <button id="calculate_cnb" onclick="calculateCNB()">Calculer</button>
-            <button id="copy_cnb" class="copy-btn" onclick="copyToClipboard('cnb-result')" style="display: none;">📋 Copier les résultats</button>
+            <button id="calculate_cnb">Calculer</button>
+            <button id="copy_cnb" class="copy-btn" style="display: none;">📋 Copier les résultats</button>
             
             <div id="cnb-result" class="results"></div>
         </div>
@@ -274,8 +274,8 @@
                 <input type="number" id="proposed_area_91014" value="" min="0">
             </div>
           
-            <button id="calculate_91014" onclick="calculate91014()">Calculer</button>
-            <button id="copy_91014" class="copy-btn" onclick="copyToClipboard('method91014-result')" style="display: none;">📋 Copier les résultats</button>
+            <button id="calculate_91014">Calculer</button>
+            <button id="copy_91014" class="copy-btn" style="display: none;">📋 Copier les résultats</button>
             
             <div id="method91014-result" class="results"></div>
         </div>
@@ -371,8 +371,8 @@
            <input type="number" id="proposed_area_91015" value="" min="0">
        </div>
   
-       <button id="calculate_91015" onclick="calculate91015()">Calculer</button>
-       <button id="copy_91015" class="copy-btn" onclick="copyToClipboard('method91015-result')" style="display: none;">📋 Copier les résultats</button>
+       <button id="calculate_91015">Calculer</button>
+        <button id="copy_91015" class="copy-btn" style="display: none;">📋 Copier les résultats</button>
        
        <div id="method91015-result" class="results"></div>
    </div>
