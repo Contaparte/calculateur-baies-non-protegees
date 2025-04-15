@@ -1173,117 +1173,116 @@ resultHTML += `
            }
 
            // Si la distance limitative est d'au plus 2 m, activer automatiquement la vérification d'espacement
-           if (limitingDistance <= 2.0) {
-               // Activer la case à cocher et afficher les options d'espacement
-               document.getElementById('check_spacing_91014').checked = true;
-               document.getElementById('spacing_options_91014').style.display = 'block';
-               checkSpacing = true; // S'assurer que la vérification sera effectuée
-           }
+if (limitingDistance <= 2.0) {
+    // Activer la case à cocher et afficher les options d'espacement
+    document.getElementById('check_spacing_91014').checked = true;
+    document.getElementById('spacing_options_91014').style.display = 'block';
+    checkSpacing = true; // S'assurer que la vérification sera effectuée
+}
 
-           // Trouver les bornes pour l'interpolation de distance
-           const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
-           const lowerDistanceIndex = distances.indexOf(lowerDistance);
-           const upperDistanceIndex = distances.indexOf(upperDistance);
+// Trouver les bornes pour l'interpolation de distance
+const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
+const lowerDistanceIndex = distances.indexOf(lowerDistance);
+const upperDistanceIndex = distances.indexOf(upperDistance);
 
-           // Définir les surfaces connues du tableau pour l'interpolation
-           const surfaceValues = [30, 40, 50, 100];
-           
-           // Trouver les surfaces les plus proches pour l'interpolation
-           let lowerSurface, upperSurface;
-           
-           if (surface <= 30) {
-               lowerSurface = 30;
-               upperSurface = 40;
-           } else if (surface <= 40) {
-               lowerSurface = 30;
-               upperSurface = 40;
-           } else if (surface <= 50) {
-               lowerSurface = 40;
-               upperSurface = 50;
-           } else if (surface <= 100) {
-               lowerSurface = 50;
-               upperSurface = 100;
-           } else {
-               lowerSurface = 100;
-               upperSurface = ">100";
-           }
-           
-           // Calculer le pourcentage pour la surface inférieure
-           const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               lowerSurfacePercentageLower, 
-               lowerSurfacePercentageUpper
-           );
-           
-           // Calculer le pourcentage pour la surface supérieure
-           const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-           const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-           const upperSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               upperSurfacePercentageLower, 
-               upperSurfacePercentageUpper
-           );
-           
-           // Interpolation finale entre les surfaces
-           let finalPercentage;
-           
-           // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-           if (surface > 100 && limitingDistance >= 1.2) {
-               if (usage === "habitation") {
-                   finalPercentage = Math.pow(limitingDistance, 2);
-               } else { // commercial
-                   finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
-               }
-               // Limiter à 100%
-               finalPercentage = Math.min(finalPercentage, 100);
-           } else if (lowerSurface === upperSurface || upperSurface === ">100") {
-               finalPercentage = lowerSurfacePercentage;
-           } else {
-               finalPercentage = interpolate(
-                   surface, 
-                   lowerSurface, 
-                   upperSurface, 
-                   lowerSurfacePercentage, 
-                   upperSurfacePercentage
-               );
-           }
-           
-           // Majoration pour gicleurs ou verre armé/briques de verre
-           if (sprinklersOption === "complete") {
-               finalPercentage = Math.min(100, finalPercentage * 2);
-           } else if (glassBrick) {
-               finalPercentage = Math.min(100, finalPercentage * 2);
-           }
-           
-           // Limiter le pourcentage entre 0 et 100
-           finalPercentage = Math.max(0, Math.min(100, finalPercentage));
-           
-           // Calculer la surface maximale
-           const maxArea = (finalPercentage / 100) * surface;
-           
-           // Déterminer les exigences de construction et de protection
-           let constructionRequirements = "";
-           
-           if (limitingDistance < 1.2) {
-               constructionRequirements = `
-                   <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
-                   - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
-                   - Le verre armé et les briques de verre ne sont pas autorisés<br>
-                   - ${exteriorFinish === "incombustible" ? 
-                       "Revêtement incombustible requis pour les façades" : 
-                       "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
-               `;
-           }
-           
+// Définir les surfaces connues du tableau pour l'interpolation
+const surfaceValues = [30, 40, 50, 100];
+
+// Trouver les surfaces les plus proches pour l'interpolation
+let lowerSurface, upperSurface;
+
+if (surface <= 30) {
+    lowerSurface = 30;
+    upperSurface = 40;
+} else if (surface <= 40) {
+    lowerSurface = 30;
+    upperSurface = 40;
+} else if (surface <= 50) {
+    lowerSurface = 40;
+    upperSurface = 50;
+} else if (surface <= 100) {
+    lowerSurface = 50;
+    upperSurface = 100;
+} else {
+    lowerSurface = 100;
+    upperSurface = ">100";
+}
+
+// Calculer le pourcentage pour la surface inférieure
+const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+const lowerSurfacePercentage = interpolate(
+    limitingDistance, 
+    lowerDistance, 
+    upperDistance, 
+    lowerSurfacePercentageLower, 
+    lowerSurfacePercentageUpper
+);
+
+// Calculer le pourcentage pour la surface supérieure
+const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+const upperSurfacePercentage = interpolate(
+    limitingDistance, 
+    lowerDistance, 
+    upperDistance, 
+    upperSurfacePercentageLower, 
+    upperSurfacePercentageUpper
+);
+
+// Interpolation finale entre les surfaces
+let finalPercentage;
+
+// Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+if (surface > 100 && limitingDistance >= 1.2) {
+    if (usage === "habitation") {
+        finalPercentage = Math.pow(limitingDistance, 2);
+    } else { // commercial
+        finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+    }
+    // Limiter à 100%
+    finalPercentage = Math.min(finalPercentage, 100);
+} else if (lowerSurface === upperSurface || upperSurface === ">100") {
+    finalPercentage = lowerSurfacePercentage;
+} else {
+    finalPercentage = interpolate(
+        surface, 
+        lowerSurface, 
+        upperSurface, 
+        lowerSurfacePercentage, 
+        upperSurfacePercentage
+    );
+}
+
+// Majoration pour gicleurs ou verre armé/briques de verre
+if (sprinklersOption === "complete") {
+    finalPercentage = Math.min(100, finalPercentage * 2);
+} else if (glassBrick) {
+    finalPercentage = Math.min(100, finalPercentage * 2);
+}
+
+// Limiter le pourcentage entre 0 et 100
+finalPercentage = Math.max(0, Math.min(100, finalPercentage));
+
+// Calculer la surface maximale
+const maxArea = (finalPercentage / 100) * surface;
+
+// Déterminer les exigences de construction et de protection
+let constructionRequirements = "";
+
+if (limitingDistance < 1.2) {
+    constructionRequirements = `
+        <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
+        - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
+        - Le verre armé et les briques de verre ne sont pas autorisés<br>
+        - ${exteriorFinish === "incombustible" ? 
+            "Revêtement incombustible requis pour les façades" : 
+            "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
+    `;
+}
+
 // Vérification de l'espacement des baies
 let spacingResult = "";
-           
 if (checkSpacing) {
     const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
     const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
@@ -1322,44 +1321,34 @@ if (checkSpacing) {
             <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
             ${maxBaieInfo}<br>
         `;
-                   
-                   // Vérification de l'espacement
-                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                       spacingResult += `
-                           <strong>Espacement des baies :</strong><br>
-                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-                       `;
-                   } else {
-                       spacingResult += `
-                           <strong>Espacement des baies :</strong><br>
-                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                       `;
-                   }
-               } else {
-                   // Pour les distances > 2.0 m, vérification de base
-                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                       spacingResult = `
-                           <br><strong>Vérification de l'espacement des baies :</strong><br>
-                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-                       `;
-                   } else {
-                       spacingResult = `
-                           <br><strong>Vérification de l'espacement des baies :</strong><br>
-                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                       `;
-                   }
-               }
-           }
+        
+        // Vérification de l'espacement
+        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            spacingResult += `
+                <strong>Espacement des baies :</strong><br>
+                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+            `;
+        } else {
+            spacingResult += `
+                <strong>Espacement des baies :</strong><br>
+                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+            `;
+        }
+    } else {
+        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+            prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+            Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+        `;
+    }
+}
            
            // Vérification de la protection des soffites
            let soffitResult = "";
@@ -1638,28 +1627,38 @@ resultHTML += `
            }
            
            // Vérification de l'espacement des baies
-           let spacingResult = "";
-           if (checkSpacing) {
-               const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
-               const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
-               
-               if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                       Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
-                       - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                       - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-                   `;
-               } else {
-                   spacingResult = `
-                       <br><strong>Vérification de l'espacement des baies :</strong><br>
-                       ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                       Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                       Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-                   `;
-               }
-           }
+let spacingResult = "";
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
+    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
+    
+    if (limitingDistance <= 2.0) {
+        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
+                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+            `;
+        } else {
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+            `;
+        }
+    } else {
+        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+            prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+            Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+        `;
+    }
+}
            
            // Vérification de la protection des soffites
            let soffitResult = "";
