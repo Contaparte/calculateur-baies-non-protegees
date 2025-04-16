@@ -200,6 +200,9 @@
    const limitingDistancesNoSprinklers = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
    const limitingDistancesWithSprinklersABCDF3 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9];
    const limitingDistancesWithSprinklersEF1F2 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+function interpolate(value, min1, max1, min2, max2) {
+    return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
    const facadeSurfaces = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
    const facadeSurfacesWithSprinklersABCDF3 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
    const facadeSurfacesWithSprinklersEF1F2 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 200];
