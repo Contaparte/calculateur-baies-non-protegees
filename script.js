@@ -740,360 +740,672 @@ resultHTML += `
           }
       };
           function calculate91014() {
-          const usage = document.getElementById('usage_91014').value;
-          const buildingType = document.getElementById('building_type_91014').value;
-          const exteriorFinish = document.getElementById('exterior_finish_91014').value;
-          const sprinklersOption = document.getElementById('sprinklers_91014').value;
-          const glassBrick = document.getElementById('glass_brick_91014').checked;
-          let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
-          const surface = parseFloat(document.getElementById('surface_91014').value);
-          const response = document.getElementById('response_91014').checked;
-          const proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
-          let checkSpacing = document.getElementById('check_spacing_91014').checked;
-          const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
-          const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
-          const checkSoffit = document.getElementById('check_soffit_91014').checked;
-          const soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value);
-          const soffit_protected = document.getElementById('soffit_protected_91014').checked;
-          const distinction = document.getElementById('distinction_91014').value;
+    const usage = document.getElementById('usage_91014').value;
+    const buildingType = document.getElementById('building_type_91014').value;
+    const exteriorFinish = document.getElementById('exterior_finish_91014').value;
+    const sprinklersOption = document.getElementById('sprinklers_91014').value;
+    const glassBrick = document.getElementById('glass_brick_91014').checked;
+    let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
+    const surface = parseFloat(document.getElementById('surface_91014').value);
+    const response = document.getElementById('response_91014').checked;
+    const proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
+    const checkSpacing = document.getElementById('check_spacing_91014').checked;
+    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
+    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
+    const checkSoffit = document.getElementById('check_soffit_91014').checked;
+    const soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value);
+    const soffit_protected = document.getElementById('soffit_protected_91014').checked;
+    const distinction = document.getElementById('distinction_91014').value;
 
-          // Vérification des entrées
-          if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
-              document.getElementById('method91014-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
-              return;
-          }
-
-          // Ajustement pour le délai d'intervention
-          if (response) {
-              limitingDistance = limitingDistance / 2;
-          }
-          
-          // Exemption pour les garages ou bâtiments secondaires
-          if (buildingType === "garage") {
-              // Selon 9.10.14.4.(10-12), les baies vitrées des garages peuvent être exemptées des restrictions
-               document.getElementById('method91014-result').innerHTML = `
-                   <strong>Résultat pour garage ou bâtiment secondaire :</strong><br>
-                   Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires 
-                   qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes:<br><br>
-                   
-                   - Si le garage dessert un seul logement et est sur la même propriété: 
-                     <strong>pas de limite de surface pour les baies vitrées</strong><br>
-                   - Pour la construction de la façade de rayonnement, si la distance limitative est d'au moins 0,6 m:
-                     <strong>pas d'exigence quant au degré de résistance au feu</strong><br>
-                   - Si la distance limitative est inférieure à 0,6 m: <strong>un degré de résistance au feu d'au moins 
-                     45 min est requis</strong><br>
-                   - <strong>Aucune exigence quant au type de revêtement</strong>, peu importe la distance limitative<br><br>
-                   
-                   Pour une analyse plus spécifique, veuillez sélectionner "Bâtiment standard" dans le type de bâtiment.
-               `;
-               document.getElementById('copy_91014').style.display = 'inline-block';
-               return;
-           }
-
-           const distances = tableau91014[usage].distances;
-           const distancesToUse = distances;
-           const surfacesToUse = Object.keys(tableau91014[usage].surfaces).map(s => s === ">100" ? 101 : parseInt(s));
-             
-           // Si la distance limitative dépasse la plage du tableau
-           if (limitingDistance > distances[distances.length - 1]) {
-               const resultHTML = `
-                   <strong>Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.</strong><br>
-                   Surface maximale des baies non protégées : 100% (${surface.toFixed(2)} m²)
-               `;
-               document.getElementById('method91014-result').innerHTML = resultHTML;
-               document.getElementById('copy_91014').style.display = 'inline-block';
-               return;
-           }
-
-           // Si la distance limitative est d'au plus 2 m, activer automatiquement la vérification d'espacement
-if (limitingDistance <= 2.0) {
-    // Activer la case à cocher et afficher les options d'espacement
-    document.getElementById('check_spacing_91014').checked = true;
-    document.getElementById('spacing_options_91014').style.display = 'block';
-    checkSpacing = true; // S'assurer que la vérification sera effectuée
-}
-
-// Trouver les bornes pour l'interpolation de distance
-const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
-const lowerDistanceIndex = distances.indexOf(lowerDistance);
-const upperDistanceIndex = distances.indexOf(upperDistance);
-
-// Définir les surfaces connues du tableau pour l'interpolation
-const surfaceValues = [30, 40, 50, 100];
-
-// Trouver les surfaces les plus proches pour l'interpolation
-let lowerSurface, upperSurface;
-
-if (surface <= 30) {
-    lowerSurface = 30;
-    upperSurface = 40;
-} else if (surface <= 40) {
-    lowerSurface = 30;
-    upperSurface = 40;
-} else if (surface <= 50) {
-    lowerSurface = 40;
-    upperSurface = 50;
-} else if (surface <= 100) {
-    lowerSurface = 50;
-    upperSurface = 100;
-} else {
-    lowerSurface = 100;
-    upperSurface = ">100";
-}
-
-// Calculer le pourcentage pour la surface inférieure et supérieure
-let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
-let upperSurfacePercentageLower, upperSurfacePercentageUpper;
-
-try {
-    lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-    lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-    upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-    upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-} catch (error) {
-    document.getElementById('method91014-result').innerHTML = "Erreur lors de l'extraction des données: " + error.message;
-    return;
-}
-
-// 1. Premier calcul pour la distance limitative (surface inférieure)
-const lowerSurfacePercentage = lowerSurfacePercentageLower + 
-    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
-    (lowerSurfacePercentageUpper - lowerSurfacePercentageLower);
-
-// 2. Second calcul pour la distance limitative (surface supérieure)
-const upperSurfacePercentage = upperSurfacePercentageLower + 
-    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
-    (upperSurfacePercentageUpper - upperSurfacePercentageLower);
-
-// 3. Troisième calcul pour la surface de façade
-let finalPercentage;
-
-// Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-if (surface > 100 && limitingDistance >= 1.2) {
-    if (usage === "habitation") {
-        finalPercentage = Math.pow(limitingDistance, 2);
-    } else { // commercial
-        finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+    // Vérification des entrées
+    if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
+        document.getElementById('method91014-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+        return;
     }
-    // Limiter à 100%
-    finalPercentage = Math.min(finalPercentage, 100);
-} else if (lowerSurface === upperSurface || upperSurface === ">100") {
-    finalPercentage = lowerSurfacePercentage;
-} else {
-    // Formule exacte selon la méthode du document
-    finalPercentage = lowerSurfacePercentage + 
-        (surface - lowerSurface) / (upperSurface - lowerSurface) * 
-        (upperSurfacePercentage - lowerSurfacePercentage);
-}
-// Majoration pour gicleurs ou verre armé/briques de verre
-if (sprinklersOption === "complete") {
-    finalPercentage = Math.min(100, finalPercentage * 2);
-} else if (glassBrick) {
-    finalPercentage = Math.min(100, finalPercentage * 2);
-}
 
-// Limiter le pourcentage entre 0 et 100
-finalPercentage = Math.max(0, Math.min(100, finalPercentage));
-
-// Calculer la surface maximale
-const maxArea = (finalPercentage / 100) * surface;
-
-// Déterminer les exigences de construction et de protection
-let constructionRequirements = "";
-
-if (limitingDistance < 1.2) {
-    constructionRequirements = `
-        <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
-        - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
-        - Le verre armé et les briques de verre ne sont pas autorisés<br>
-        - ${exteriorFinish === "incombustible" ? 
-            "Revêtement incombustible requis pour les façades" : 
-            "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
-    `;
-}
-
-// Vérification de l'espacement des baies
-let spacingResult = "";
-if (checkSpacing) {
-    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
-    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
+    // Ajustement pour le délai d'intervention
+    if (response) {
+        limitingDistance = limitingDistance / 2;
+    }
     
-    if (limitingDistance <= 2.0) {
-        // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
-        let maxBaieArea = 0;
-        let maxBaieInfo = "";
-        let formulaArea = 0;
-        
-        if (limitingDistance < 1.2) {
-            maxBaieArea = 0.35;
-            maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
-        } else if (limitingDistance <= 1.5) {
-            maxBaieArea = 0.78;
-            formulaArea = Math.pow(limitingDistance, 2);
+    // Exemption pour les garages ou bâtiments secondaires
+    if (buildingType === "garage") {
+        // Selon 9.10.14.4.(10-12), les baies vitrées des garages peuvent être exemptées des restrictions
+        document.getElementById('method91014-result').innerHTML = `
+            <strong>Résultat pour garage ou bâtiment secondaire :</strong><br>
+            Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires 
+            qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes:<br><br>
             
-            if (formulaArea > maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
-            } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
-            }
-        } else if (limitingDistance <= 2.0) {
-            maxBaieArea = 1.88;
-            formulaArea = Math.pow(limitingDistance, 2);
+            - Si le garage dessert un seul logement et est sur la même propriété: 
+              <strong>pas de limite de surface pour les baies vitrées</strong><br>
+            - Pour la construction de la façade de rayonnement, si la distance limitative est d'au moins 0,6 m:
+              <strong>pas d'exigence quant au degré de résistance au feu</strong><br>
+            - Si la distance limitative est inférieure à 0,6 m: <strong>un degré de résistance au feu d'au moins 
+              45 min est requis</strong><br>
+            - <strong>Aucune exigence quant au type de revêtement</strong>, peu importe la distance limitative<br><br>
             
-            if (formulaArea > maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
-            } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
-            }
-        }
-        
-        spacingResult = `
-            <br><strong>Vérification de l'espacement des baies :</strong><br>
-            <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
-            ${maxBaieInfo}<br>
+            Pour une analyse plus spécifique, veuillez sélectionner "Bâtiment standard" dans le type de bâtiment.
         `;
+        document.getElementById('copy_91014').style.display = 'inline-block';
+        return;
+    }
+
+    const distances = tableau91014[usage].distances;
+    
+    // Si la distance limitative dépasse la plage du tableau
+    if (limitingDistance > distances[distances.length - 1]) {
+        const resultHTML = `
+            <strong>Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.</strong><br>
+            Surface maximale des baies non protégées : 100% (${surface.toFixed(2)} m²)
+        `;
+        document.getElementById('method91014-result').innerHTML = resultHTML;
+        document.getElementById('copy_91014').style.display = 'inline-block';
+        return;
+    }
+
+    // Si la distance limitative est d'au plus 2 m, activer automatiquement la vérification d'espacement
+    if (limitingDistance <= 2.0) {
+        // Activer la case à cocher et afficher les options d'espacement
+        document.getElementById('check_spacing_91014').checked = true;
+        document.getElementById('spacing_options_91014').style.display = 'block';
+    }
+
+    // Trouver les bornes pour l'interpolation de distance
+    const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
+    const lowerDistanceIndex = distances.indexOf(lowerDistance);
+    const upperDistanceIndex = distances.indexOf(upperDistance);
+
+    // Définir les surfaces connues du tableau pour l'interpolation
+    const surfaceValues = [30, 40, 50, 100];
+
+    // Trouver les surfaces les plus proches pour l'interpolation
+    let lowerSurface, upperSurface;
+
+    if (surface <= 30) {
+        lowerSurface = 30;
+        upperSurface = 40;
+    } else if (surface <= 40) {
+        lowerSurface = 30;
+        upperSurface = 40;
+    } else if (surface <= 50) {
+        lowerSurface = 40;
+        upperSurface = 50;
+    } else if (surface <= 100) {
+        lowerSurface = 50;
+        upperSurface = 100;
+    } else {
+        lowerSurface = 100;
+        upperSurface = ">100";
+    }
+
+    // Calculer le pourcentage pour la surface inférieure et supérieure
+    let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+    let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+
+    try {
+        lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+        lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+        upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+        upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+    } catch (error) {
+        document.getElementById('method91014-result').innerHTML = "Erreur lors de l'extraction des données: " + error.message;
+        return;
+    }
+
+    // 1. Premier calcul pour la distance limitative (surface inférieure)
+    const lowerSurfacePercentage = lowerSurfacePercentageLower + 
+        (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+        (lowerSurfacePercentageUpper - lowerSurfacePercentageLower);
+
+    // 2. Second calcul pour la distance limitative (surface supérieure)
+    const upperSurfacePercentage = upperSurfacePercentageLower + 
+        (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+        (upperSurfacePercentageUpper - upperSurfacePercentageLower);
+
+    // 3. Troisième calcul pour la surface de façade
+    let finalPercentage;
+
+    // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+    if (surface > 100 && limitingDistance >= 1.2) {
+        if (usage === "habitation") {
+            finalPercentage = Math.pow(limitingDistance, 2);
+        } else { // commercial
+            finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+        }
+        // Limiter à 100%
+        finalPercentage = Math.min(finalPercentage, 100);
+    } else if (lowerSurface === upperSurface || upperSurface === ">100") {
+        finalPercentage = lowerSurfacePercentage;
+    } else {
+        // Formule exacte selon la méthode du document
+        finalPercentage = lowerSurfacePercentage + 
+            (surface - lowerSurface) / (upperSurface - lowerSurface) * 
+            (upperSurfacePercentage - lowerSurfacePercentage);
+    }
+
+    // Majoration pour gicleurs ou verre armé/briques de verre
+    if (sprinklersOption === "complete") {
+        finalPercentage = Math.min(100, finalPercentage * 2);
+    } else if (glassBrick) {
+        finalPercentage = Math.min(100, finalPercentage * 2);
+    }
+
+    // Limiter le pourcentage entre 0 et 100
+    finalPercentage = Math.max(0, Math.min(100, finalPercentage));
+
+    // Calculer la surface maximale
+    const maxArea = (finalPercentage / 100) * surface;
+
+    // Déterminer les exigences de construction et de protection
+    let constructionRequirements = "";
+
+    if (limitingDistance < 1.2) {
+        constructionRequirements = `
+            <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
+            - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
+            - Le verre armé et les briques de verre ne sont pas autorisés<br>
+            - ${exteriorFinish === "incombustible" ? 
+                "Revêtement incombustible requis pour les façades" : 
+                "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
+        `;
+    }
+
+    // Vérification de l'espacement des baies
+    let spacingResult = "";
+    if (checkSpacing) {
+        const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
+        const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
         
-        // Vérification de l'espacement
-        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-            spacingResult += `
-                <strong>Espacement des baies :</strong><br>
-                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+        if (limitingDistance <= 2.0) {
+            // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
+            let maxBaieArea = 0;
+            let maxBaieInfo = "";
+            let formulaArea = 0;
+            
+            if (limitingDistance < 1.2) {
+                maxBaieArea = 0.35;
+                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
+            } else if (limitingDistance <= 1.5) {
+                maxBaieArea = 0.78;
+                formulaArea = Math.pow(limitingDistance, 2);
+                
+                if (formulaArea > maxBaieArea) {
+                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                } else {
+                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                }
+            } else if (limitingDistance <= 2.0) {
+                maxBaieArea = 1.88;
+                formulaArea = Math.pow(limitingDistance, 2);
+                
+                if (formulaArea > maxBaieArea) {
+                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                } else {
+                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                }
+            }
+            
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
+                ${maxBaieInfo}<br>
+            `;
+            
+            // Vérification de l'espacement
+            if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                spacingResult += `
+                    <strong>Espacement des baies :</strong><br>
+                    ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                    Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                    - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                    - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                `;
+            } else {
+                spacingResult += `
+                    <strong>Espacement des baies :</strong><br>
+                    ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                    Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                    Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                `;
+            }
+        } else {
+            // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+                Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+            `;
+        }
+    }
+
+    // Vérification de la protection des soffites
+    let soffitResult = "";
+    if (checkSoffit) {
+        if (soffit_distance < 0.45) {
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                Selon l'article 9.10.14.5.(9), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
+                lorsque la distance limitative est inférieure à 0,45 m.<br>
+                ${soffit_distance < 0.45 ? 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                    "La distance du soffite est conforme."}
+            `;
+        } else if (soffit_distance < 1.2) {
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                Selon l'article 9.10.14.5.(10-12), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
+                ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
+                ${soffit_distance < 0.45 ? 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                    "La distance du soffite est d'au moins 0,45 m."}
+                ${!soffit_protected && soffit_distance < 1.2 ? 
+                    "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
+                    soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
             `;
         } else {
-            spacingResult += `
-                <strong>Espacement des baies :</strong><br>
-                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                Aucune protection spécifique n'est requise.</span>
             `;
         }
-    } else {
-        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
-        spacingResult = `
-            <br><strong>Vérification de l'espacement des baies :</strong><br>
-            ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
-            prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-            Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+    }
+
+    // Distinction entre baies vitrées et baies non protégées
+    let distinctionInfo = "";
+    if (distinction === "glazed") {
+        distinctionInfo = `
+            <br><strong>Type de baies :</strong><br>
+            <i>Vous avez spécifié des baies vitrées. En vertu de 9.10.14, les baies vitrées sont une catégorie 
+            spécifique de baies non protégées. Les baies vitrées sont soumises aux mêmes restrictions de 
+            surface que les baies non protégées, mais peuvent avoir des exigences différentes en matière de 
+            construction et de protection.</i>
         `;
     }
-}
 
-// Vérification de la protection des soffites
-let soffitResult = "";
-if (checkSoffit) {
-    if (soffit_distance < 0.45) {
-        soffitResult = `
-            <br><strong>Protection des soffites :</strong><br>
-            Selon l'article 9.10.14.5.(9), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
-            lorsque la distance limitative est inférieure à 0,45 m.<br>
-            ${soffit_distance < 0.45 ? 
-                "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
-                "La distance du soffite est conforme."}
-        `;
-    } else if (soffit_distance < 1.2) {
-        soffitResult = `
-            <br><strong>Protection des soffites :</strong><br>
-            Selon l'article 9.10.14.5.(10-12), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
-            ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
-            ${soffit_distance < 0.45 ? 
-                "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
-                "La distance du soffite est d'au moins 0,45 m."}
-            ${!soffit_protected && soffit_distance < 1.2 ? 
-                "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
-                soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
-        `;
-    } else {
-        soffitResult = `
-            <br><strong>Protection des soffites :</strong><br>
-            ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
-            Aucune protection spécifique n'est requise.</span>
-        `;
-    }
-}
-
-// Distinction entre baies vitrées et baies non protégées
-let distinctionInfo = "";
-if (distinction === "glazed") {
-    distinctionInfo = `
-        <br><strong>Type de baies :</strong><br>
-        <i>Vous avez spécifié des baies vitrées. En vertu de 9.10.14, les baies vitrées sont une catégorie 
-        spécifique de baies non protégées. Les baies vitrées sont soumises aux mêmes restrictions de 
-        surface que les baies non protégées, mais peuvent avoir des exigences différentes en matière de 
-        construction et de protection.</i>
+    // Afficher les résultats avec les détails des calculs
+    let resultHTML = `
+        <strong>Données de calcul :</strong><br>
+        ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+        Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
+        Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+        Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+        ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+        
+        <br><strong>Détails des calculs selon la méthode exacte:</strong><br>
+        <strong>1. Pour surface de ${lowerSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+        - Calcul: ${lowerSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${lowerSurfacePercentageUpper} - ${lowerSurfacePercentageLower})<br>
+        - Résultat: ${lowerSurfacePercentage.toFixed(2)}%<br>
+        
+        ${upperSurface !== ">100" ? 
+        `<strong>2. Pour surface de ${upperSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+        - Calcul: ${upperSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${upperSurfacePercentageUpper} - ${upperSurfacePercentageLower})<br>
+        - Résultat: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
+        
+        ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
+        `<strong>3. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
+        - Calcul: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})<br>
+        - Résultat: ${finalPercentage.toFixed(2)}%<br>` : ""}
+        
+        <br><strong>Résultats :</strong><br>
+        Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+        Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+        ${constructionRequirements}
+        ${spacingResult}
+        ${soffitResult}
+        ${distinctionInfo}
     `;
+    
+    // Ajouter la comparaison avec la surface proposée si existe
+    if (!isNaN(proposedArea) && proposedArea > 0) {
+        const proposedPercentage = (proposedArea / surface) * 100;
+        let statusClass = "";
+        let comparisonResult = "";
+        
+        if (proposedPercentage > finalPercentage) {
+            statusClass = "color: red; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        } else {
+            statusClass = "color: green; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        }
+        
+        // Ajouter le résultat de comparaison à resultHTML
+        resultHTML += comparisonResult;
+    }
+
+    // Ajouter le message de dégagement de responsabilité
+    resultHTML += `
+        <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+        <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+        L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+        </div>
+    `;
+
+    document.getElementById('method91014-result').innerHTML = resultHTML;
+    document.getElementById('copy_91014').style.display = 'inline-block';
 }
 
-// Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
-let resultHTML = `
-    <strong>Données de calcul :</strong><br>
-    ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-    Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
-    Surface totale de la façade : ${surface.toFixed(2)} m²<br>
-    Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
-    ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-    <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-    <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-    - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-    - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-    ${upperSurface !== ">100" ? 
-    `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-     - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
-    ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
-    `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
-     - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-     - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
-    <br><strong>Résultats :</strong><br>
-    Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
-    Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
-    ${constructionRequirements}
-    ${spacingResult}
-    ${soffitResult}
-    ${distinctionInfo}
-`;
+function calculate91015() {
+    let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
+    const surface = parseFloat(document.getElementById('surface_91015').value);
+    const response = document.getElementById('response_91015').checked;
+    const housingType = document.getElementById('housing_type_91015').value;
+    const revetingType = document.getElementById('reveting_type_91015').value;
+    const sprinklersOption = document.getElementById('sprinklers_91015').value;
+    const glassBrick = document.getElementById('glass_brick_91015').checked;
+    const proposedArea = parseFloat(document.getElementById('proposed_area_91015').value);
+    const checkSpacing = document.getElementById('check_spacing_91015').checked;
+    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91015').value);
+    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91015').value);
+    const checkSoffit = document.getElementById('check_soffit_91015').checked;
+    const soffit_distance = parseFloat(document.getElementById('soffit_distance_91015').value);
+    const soffit_protected = document.getElementById('soffit_protected_91015').checked;
+    const distinction = document.getElementById('distinction_91015').value;
 
-// Ajouter la comparaison avec la surface proposée si existe
-if (!isNaN(proposedArea) && proposedArea > 0) {
-    const proposedPercentage = (proposedArea / surface) * 100;
-    let statusClass = "";
-    let comparisonResult = "";
+    // Vérification des entrées
+    if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
+        document.getElementById('method91015-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+        return;
+    }
+
+    // Ajustement pour le délai d'intervention
+    if (response) {
+        limitingDistance = limitingDistance / 2;
+    }
+
+    const distances = tableau91015.distances;
     
-    if (proposedPercentage > finalPercentage) {
-        statusClass = "color: red; font-weight: bold;";
-        comparisonResult = `
-            <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-            Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-            <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+    // Si la distance limitative dépasse la plage du tableau
+    if (limitingDistance > distances[distances.length - 1]) {
+        const resultHTML = `
+            <strong>Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.</strong><br>
+            Surface maximale des baies non protégées : 100% (${surface.toFixed(2)} m²)
+        `;
+        document.getElementById('method91015-result').innerHTML = resultHTML;
+        document.getElementById('copy_91015').style.display = 'inline-block';
+        return;
+    }
+
+    // Trouver les bornes pour l'interpolation de distance
+    const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
+    const lowerDistanceIndex = distances.indexOf(lowerDistance);
+    const upperDistanceIndex = distances.indexOf(upperDistance);
+
+    // Définir les surfaces connues du tableau pour l'interpolation
+    const surfaceValues = [30, 40, 50, 100];
+    
+    // Trouver les surfaces les plus proches pour l'interpolation
+    let lowerSurface, upperSurface;
+    
+    if (surface <= 30) {
+        lowerSurface = 30;
+        upperSurface = 40;
+    } else if (surface <= 40) {
+        lowerSurface = 30;
+        upperSurface = 40;
+    } else if (surface <= 50) {
+        lowerSurface = 40;
+        upperSurface = 50;
+    } else if (surface <= 100) {
+        lowerSurface = 50;
+        upperSurface = 100;
+    } else {
+        lowerSurface = 100;
+        upperSurface = ">100";
+    }
+    
+    // Calculer le pourcentage pour la surface inférieure
+    const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+    const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+    const lowerSurfacePercentage = interpolate(
+        limitingDistance, 
+        lowerDistance, 
+        upperDistance, 
+        lowerSurfacePercentageLower, 
+        lowerSurfacePercentageUpper
+    );
+    
+    // Calculer le pourcentage pour la surface supérieure
+    const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+    const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+    const upperSurfacePercentage = interpolate(
+        limitingDistance, 
+        lowerDistance, 
+        upperDistance, 
+        upperSurfacePercentageLower, 
+        upperSurfacePercentageUpper
+    );
+    
+    // Interpolation finale entre les surfaces selon la méthode du document de référence
+    let finalPercentage;
+
+    // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+    if (surface > 100 && limitingDistance >= 1.2) {
+        finalPercentage = Math.pow(limitingDistance, 2);
+        // Limiter à 100%
+        finalPercentage = Math.min(finalPercentage, 100);
+    } else if (lowerSurface === upperSurface || upperSurface === ">100") {
+        finalPercentage = lowerSurfacePercentage;
+    } else {
+        // Méthode d'interpolation conforme au document "Méthode de calcul"
+        finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+    }
+    
+    // Majoration pour gicleurs ou verre armé/briques de verre
+    if (sprinklersOption === "complete") {
+        finalPercentage = Math.min(100, finalPercentage * 2);
+    } else if (glassBrick) {
+        finalPercentage = Math.min(100, finalPercentage * 2);
+    }
+    
+    // Limiter le pourcentage entre 0 et 100
+    finalPercentage = Math.max(0, Math.min(100, finalPercentage));
+    
+    // Calculer la surface maximale
+    const maxArea = (finalPercentage / 100) * surface;
+    
+    // Déterminer les exigences de construction
+    let constructionRequirements = "";
+    if (limitingDistance < 0.6) {
+        constructionRequirements = `
+            <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+            - Degré de résistance au feu d'au moins 45 min pour la façade de rayonnement<br>
+            - Revêtement extérieur ${revetingType === "incombustible" ? "incombustible" : "combustible avec contraintes"}<br>
+            ${revetingType === "combustible" ? 
+            `- Le revêtement combustible doit être installé selon l'article 9.10.15.5, paragraphe 2):<br>
+               &nbsp;&nbsp;• Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+               &nbsp;&nbsp;• Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+               &nbsp;&nbsp;• Si c'est un revêtement conforme à 9.27.12, son épaisseur ne doit pas dépasser 2 mm<br>
+               &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+             : ""}
+        `;
+    } else if (limitingDistance < 1.2) {
+        constructionRequirements = `
+            <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+            - Degré de résistance au feu d'au moins 45 min pour la façade de rayonnement<br>
+            ${revetingType === "combustible" ? 
+            `- Revêtement combustible soumis aux exigences du paragraphe 3) de l'article 9.10.15.5:<br>
+               &nbsp;&nbsp;• Si conforme à 9.27.6, 9.27.7, 9.27.8, 9.27.9 ou 9.27.10:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25 après conditionnement<br>
+               &nbsp;&nbsp;• Si conforme à 9.27.12:<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;- Posé sur revêtement en plaques de plâtre d'au moins 12,7 mm ou maçonnerie<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;- Doit avoir un indice de propagation de la flamme d'au plus 25<br>
+               &nbsp;&nbsp;&nbsp;&nbsp;- Ne doit pas dépasser 2 mm d'épaisseur<br>
+               &nbsp;&nbsp;• Peut aussi être conforme à l'alinéa 3.1.5.5.1)b)`
+             : "- Revêtement incombustible selon la section 9.20, la sous-section 9.27.11 ou la section 9.28"}
         `;
     } else {
-        statusClass = "color: green; font-weight: bold;";
-        comparisonResult = `
-            <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-            Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-            <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+        constructionRequirements = `
+            <br><strong>Exigences de construction (selon 9.10.15.5):</strong><br>
+            - Pour distance limitative ≥ 1,2 m: les restrictions sont moins sévères<br>
+            - Les exigences minimales pour les soffites s'appliquent quand ils font saillie à moins de 1,2 m de la limite de propriété<br>
+            - Pour les poteaux en gros bois d'œuvre: pas de conformité nécessaire si distance ≥ 3 m
         `;
     }
     
-    // Ajouter le résultat de comparaison à resultHTML
-    resultHTML += comparisonResult;
+    // Vérification de l'espacement des baies
+    let spacingResult = "";
+    if (checkSpacing) {
+        const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
+        const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
+        
+        if (limitingDistance <= 2.0) {
+            if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                spacingResult = `
+                    <br><strong>Vérification de l'espacement des baies :</strong><br>
+                    ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                    Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
+                    - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                    - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                `;
+            } else {
+                spacingResult = `
+                    <br><strong>Vérification de l'espacement des baies :</strong><br>
+                    ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                    Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                    Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                `;
+            }
+        } else {
+            // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+                Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+            `;
+        }
+    }
+    
+    // Vérification de la protection des soffites
+    let soffitResult = "";
+    if (checkSoffit) {
+        if (soffit_distance < 0.45) {
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                Selon l'article 9.10.15.5.(8), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
+                lorsque la distance limitative est inférieure à 0,45 m.<br>
+                ${soffit_distance < 0.45 ? 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                    "La distance du soffite est conforme."}
+            `;
+        } else if (soffit_distance < 1.2) {
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                Selon l'article 9.10.15.5.(9-11), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
+                ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
+                ${soffit_distance < 0.45 ? 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                    "La distance du soffite est d'au moins 0,45 m."}
+                ${!soffit_protected && soffit_distance < 1.2 ? 
+                    "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
+                    soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
+            `;
+        } else {
+            soffitResult = `
+                <br><strong>Protection des soffites :</strong><br>
+                ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                Aucune protection spécifique n'est requise.</span>
+            `;
+        }
+    }
+    
+    // Ajouter des informations spécifiques au type d'habitation
+    let housingInfo = "";
+    if (housingType === "accessoire") {
+        housingInfo = `
+            <br><strong>Remarque pour logement accessoire:</strong><br>
+            - Les maisons comportant un logement accessoire peuvent avoir des exigences supplémentaires.<br>
+            - Vérifier également les exigences de l'article 9.10.15.5 pour les revêtements.<br>
+        `;
+    }
+    
+    // Distinction entre baies vitrées et baies non protégées
+    let distinctionInfo = "";
+    if (distinction === "glazed") {
+        distinctionInfo = `
+            <br><strong>Type de baies :</strong><br>
+            <i>Vous avez spécifié des baies vitrées. La sous-section 9.10.15 fait spécifiquement référence 
+            aux baies vitrées, qui sont une catégorie de baies non protégées. La distinction est importante 
+            car certaines exigences peuvent varier.</i>
+        `;
+    }
+
+    // Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
+    let resultHTML = `
+        <strong>Données de calcul :</strong><br>
+        ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+        Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+        Type d'habitation : ${housingType === "standard" ? "Habitation standard" : "Maison comportant un logement accessoire"}<br>
+        Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
+        Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+        ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+        <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
+        <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+        - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
+        - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
+        ${upperSurface !== ">100" ? 
+            `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
+            - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
+        ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
+            `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
+            - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
+            - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
+        <br><strong>Résultats :</strong><br>
+        Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+        Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+        ${constructionRequirements}
+        ${spacingResult}
+        ${soffitResult}
+        ${housingInfo}
+        ${distinctionInfo}
+    `;
+
+    // Ajouter la comparaison avec la surface proposée si existe
+    if (!isNaN(proposedArea) && proposedArea > 0) {
+        const proposedPercentage = (proposedArea / surface) * 100;
+        let statusClass = "";
+        let comparisonResult = "";
+        
+        if (proposedPercentage > finalPercentage) {
+            statusClass = "color: red; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        } else {
+            statusClass = "color: green; font-weight: bold;";
+            comparisonResult = `
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+            `;
+        }
+        
+        // Ajouter le résultat de comparaison à resultHTML
+        resultHTML += comparisonResult;
+    }
+
+    // Ajouter le message de dégagement de responsabilité
+    resultHTML += `
+        <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+        <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+        L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+        </div>
+    `;
+
+    document.getElementById('method91015-result').innerHTML = resultHTML;
+    document.getElementById('copy_91015').style.display = 'inline-block';
 }
-
-// Ajouter le message de dégagement de responsabilité
-resultHTML += `
-    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
-    </div>
-`;
-
-document.getElementById('method91014-result').innerHTML = resultHTML;
-document.getElementById('copy_91014').style.display = 'inline-block';
-
-      // Fonction pour gérer l'appui sur la touche Enter
-      function handleEnterKey(event, calculationFunction) {
-          if (event.key === "Enter") {
-              calculationFunction();
-          }
-      }
