@@ -1304,7 +1304,11 @@ resultHTML += `
            },
            distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0]
        };
-       
+
+function interpolate(value, min1, max1, min2, max2) {
+    return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+
 function calculate91015() {
     let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
     const surface = parseFloat(document.getElementById('surface_91015').value);
