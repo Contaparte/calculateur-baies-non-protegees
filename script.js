@@ -867,7 +867,7 @@ if (surface > 100 && limitingDistance >= 1.2) {
     finalPercentage = lowerSurfacePercentage;
 } else {
     // Méthode d'interpolation conforme au document "Méthode de calcul"
-    finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+    finalPercentage = upperSurfacePercentage + ((surface - upperSurface) / (lowerSurface - upperSurface)) * (lowerSurfacePercentage - upperSurfacePercentage);
 }
 
 // Majoration pour gicleurs ou verre armé/briques de verre
@@ -1189,7 +1189,7 @@ resultHTML += `
                finalPercentage = lowerSurfacePercentage;
            } else {
                // Méthode d'interpolation conforme au document "Méthode de calcul"
-               finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+               finalPercentage = upperSurfacePercentage + ((surface - upperSurface) / (lowerSurface - upperSurface)) * (lowerSurfacePercentage - upperSurfacePercentage);
            }
            
            // Majoration pour gicleurs ou verre armé/briques de verre
