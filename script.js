@@ -363,33 +363,6 @@
            }
 
            const ratioCategory = getRatioCategory(length, height);
-           
-           // Déterminer si le bâtiment est protégé par gicleurs ou non
-const sprinklers = sprinklersOption === "complete";
-const partialSprinklers = sprinklersOption === "partial";
-
-// Choix du tableau selon l'usage et les gicleurs
-let tableToUse, distancesToUse, surfacesToUse;
-
-if (sprinklers && !partialSprinklers) {
-    if (usage === "groupes_A_B3_C_D_F3") {
-        tableToUse = tableauAvecGicleursGroupesABCDF3;
-        distancesToUse = limitingDistancesWithSprinklersABCDF3;
-        surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
-    } else {
-        tableToUse = tableauAvecGicleursGroupesEF1F2;
-        distancesToUse = limitingDistancesWithSprinklersEF1F2;
-        surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
-    }
-} else {
-    distancesToUse = limitingDistancesNoSprinklers;
-    surfacesToUse = facadeSurfaces;
-    if (usage === "groupes_A_B3_C_D_F3") {
-        tableToUse = tableauGroupesAB3CDF3;
-    } else {
-        tableToUse = tableauGroupesEF1F2;
-    }
-}
 
            // Si la distance limitative dépasse la plage du tableau
            if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
@@ -467,20 +440,25 @@ if (sprinklers && !partialSprinklers) {
 let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
 let upperSurfacePercentageLower, upperSurfacePercentageUpper;
 
-if (sprinklers && !partialSprinklers) {
-    // Avec gicleurs (pas de ratio)
-    lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-    lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-    
-    upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-    upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
-} else {
-    // Sans gicleurs ou protection partielle (avec ratio)
-    lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-    lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-    
-    upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-    upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+try {
+    if (sprinklers && !partialSprinklers) {
+        // Avec gicleurs (pas de ratio)
+        lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+        lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+        
+        upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+        upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
+    } else {
+        // Sans gicleurs ou protection partielle (avec ratio)
+        lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+        lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+        
+        upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+        upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+    }
+} catch (error) {
+    document.getElementById('cnb-result').innerHTML = "Erreur lors de l'extraction des données: " + error.message;
+    return;
 }
 
 // 1. Premier calcul pour la distance limitative (surface inférieure)
@@ -595,7 +573,7 @@ if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance 
                        ${soffit_distance < 0.45 ? 
                            "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
                            "La distance du soffite est d'au moins 0,45 m."}
-                       ${!soffit_protected && soffit_distance < 0.45 ? 
+                       ${!soffit_protected && soffit_distance < 1.2 ?  
                            "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
                            soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
                    `;
@@ -855,10 +833,18 @@ if (surface <= 30) {
 }
 
 // Calculer le pourcentage pour la surface inférieure et supérieure
-const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+
+try {
+    lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+    upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+} catch (error) {
+    document.getElementById('method91014-result').innerHTML = "Erreur lors de l'extraction des données: " + error.message;
+    return;
+}
 
 // 1. Premier calcul pour la distance limitative (surface inférieure)
 const lowerSurfacePercentage = lowerSurfacePercentageLower + 
@@ -1182,10 +1168,18 @@ resultHTML += `
            }
            
            // Récupérer les valeurs des tableaux pour les surfaces inférieure et supérieure
-const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
-const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
-const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+
+try {
+    lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+    upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
+} catch (error) {
+    document.getElementById('method91015-result').innerHTML = "Erreur lors de l'extraction des données: " + error.message;
+    return;
+}
 
 // 1. Premier calcul pour la distance limitative (surface inférieure)
 const lowerSurfacePercentage = lowerSurfacePercentageLower + 
