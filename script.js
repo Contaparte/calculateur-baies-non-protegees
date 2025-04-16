@@ -271,11 +271,6 @@
            return "> 10:1";
        }
 
-       function interpolate(x, x1, x2, y1, y2) {
-           if (x1 === x2) return y1;
-           return y1 + ((x - x1) / (x2 - x1)) * (y2 - y1);
-       }
-
        function findBounds(value, array) {
            // Si la valeur est inférieure au premier élément
            if (value <= array[0]) {
@@ -370,31 +365,31 @@
            const ratioCategory = getRatioCategory(length, height);
            
            // Déterminer si le bâtiment est protégé par gicleurs ou non
-           const sprinklers = sprinklersOption === "complete";
-           const partialSprinklers = sprinklersOption === "partial";
-           
-           // Choix du tableau selon l'usage et les gicleurs
-           let tableToUse, distancesToUse, surfacesToUse;
-           
-           if (sprinklers && !partialSprinklers) {
-               if (usage === "groupes_A_B3_C_D_F3") {
-                   tableToUse = tableauAvecGicleursGroupesABCDF3;
-                   distancesToUse = limitingDistancesWithSprinklersABCDF3;
-                   surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
-               } else {
-                   tableToUse = tableauAvecGicleursGroupesEF1F2;
-                   distancesToUse = limitingDistancesWithSprinklersEF1F2;
-                   surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
-               }
-           } else {
-               distancesToUse = limitingDistancesNoSprinklers;
-               surfacesToUse = facadeSurfaces;
-               if (usage === "groupes_A_B3_C_D_F3") {
-                   tableToUse = tableauGroupesAB3CDF3;
-               } else {
-                   tableToUse = tableauGroupesEF1F2;
-               }
-           }
+const sprinklers = sprinklersOption === "complete";
+const partialSprinklers = sprinklersOption === "partial";
+
+// Choix du tableau selon l'usage et les gicleurs
+let tableToUse, distancesToUse, surfacesToUse;
+
+if (sprinklers && !partialSprinklers) {
+    if (usage === "groupes_A_B3_C_D_F3") {
+        tableToUse = tableauAvecGicleursGroupesABCDF3;
+        distancesToUse = limitingDistancesWithSprinklersABCDF3;
+        surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
+    } else {
+        tableToUse = tableauAvecGicleursGroupesEF1F2;
+        distancesToUse = limitingDistancesWithSprinklersEF1F2;
+        surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
+    }
+} else {
+    distancesToUse = limitingDistancesNoSprinklers;
+    surfacesToUse = facadeSurfaces;
+    if (usage === "groupes_A_B3_C_D_F3") {
+        tableToUse = tableauGroupesAB3CDF3;
+    } else {
+        tableToUse = tableauGroupesEF1F2;
+    }
+}
 
            // Si la distance limitative dépasse la plage du tableau
            if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
@@ -441,58 +436,83 @@
            let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
            let upperSurfacePercentageLower, upperSurfacePercentageUpper;
 
-           // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
-           if (sprinklers && !partialSprinklers) {
-               // Avec gicleurs (pas de ratio)
-               lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-               lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-               
-               upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-               upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
-           } else {
-               // Sans gicleurs ou protection partielle (avec ratio)
-               lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-               lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-               
-               upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-               upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-           }
+           // Déterminer si le bâtiment est protégé par gicleurs ou non
+const sprinklers = sprinklersOption === "complete";
+const partialSprinklers = sprinklersOption === "partial";
 
-           // Interpolation des pourcentages pour la distance limitative
-           const lowerSurfacePercentage = interpolate(
-               limitingDistance,
-               lowerDistance,
-               upperDistance,
-               lowerSurfacePercentageLower,
-               lowerSurfacePercentageUpper
-           );
+// Choix du tableau selon l'usage et les gicleurs
+let tableToUse, distancesToUse, surfacesToUse;
 
-           const upperSurfacePercentage = interpolate(
-               limitingDistance,
-               lowerDistance,
-               upperDistance,
-               upperSurfacePercentageLower,
-               upperSurfacePercentageUpper
-           );
+if (sprinklers && !partialSprinklers) {
+    if (usage === "groupes_A_B3_C_D_F3") {
+        tableToUse = tableauAvecGicleursGroupesABCDF3;
+        distancesToUse = limitingDistancesWithSprinklersABCDF3;
+        surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
+    } else {
+        tableToUse = tableauAvecGicleursGroupesEF1F2;
+        distancesToUse = limitingDistancesWithSprinklersEF1F2;
+        surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
+    }
+} else {
+    distancesToUse = limitingDistancesNoSprinklers;
+    surfacesToUse = facadeSurfaces;
+    if (usage === "groupes_A_B3_C_D_F3") {
+        tableToUse = tableauGroupesAB3CDF3;
+    } else {
+        tableToUse = tableauGroupesEF1F2;
+    }
+}
 
-           // Interpolation finale entre les surfaces, méthode exacte du document de référence
-           let finalPercentage;
-           
-           // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-           if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
-               if (usage === "groupes_A_B3_C_D_F3") {
-                   finalPercentage = Math.pow(limitingDistance, 2);
-               } else { // groupes_E_F1_F2
-                   finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
-               }
-               // Limiter à 100%
-               finalPercentage = Math.min(finalPercentage, 100);
-           } else if (lowerSurface === upperSurface) {
-               finalPercentage = lowerSurfacePercentage;
-           } else {
-            // Méthode d'interpolation conforme au document "Méthode de calcul"
-              finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
-           }
+// Extraire les pourcentages selon que le bâtiment est protégé par gicleurs ou non
+let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+
+if (sprinklers && !partialSprinklers) {
+    // Avec gicleurs (pas de ratio)
+    lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+    
+    upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
+} else {
+    // Sans gicleurs ou protection partielle (avec ratio)
+    lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+    
+    upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+}
+
+// 1. Premier calcul pour la distance limitative (surface inférieure)
+const lowerSurfacePercentage = lowerSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+    (lowerSurfacePercentageUpper - lowerSurfacePercentageLower);
+
+// 2. Second calcul pour la distance limitative (surface supérieure)
+const upperSurfacePercentage = upperSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) *
+    (upperSurfacePercentageUpper - upperSurfacePercentageLower);
+
+// 3. Troisième calcul pour la surface de façade
+let finalPercentage;
+
+// Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
+    if (usage === "groupes_A_B3_C_D_F3") {
+        finalPercentage = Math.pow(limitingDistance, 2);
+    } else { // groupes_E_F1_F2
+        finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+    }
+    // Limiter à 100%
+    finalPercentage = Math.min(finalPercentage, 100);
+} else if (lowerSurface === upperSurface) {
+    finalPercentage = lowerSurfacePercentage;
+} else {
+    // Formule exacte selon la méthode du document
+    finalPercentage = lowerSurfacePercentage + 
+        (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * 
+        (upperSurfacePercentage - lowerSurfacePercentage);
+}
            
            // Appliquer la méthode de l'aire pondérée si demandée
            if (weightedArea) {
@@ -588,32 +608,37 @@
                }
            }
 
-          // Afficher les résultats détaillés avec les calculs intermédiaires
-          let resultHTML = `
-          <strong>Données de calcul :</strong><br>
-          ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-          Rapport L/H ou H/L : ${ratioCategory}<br>
-          Type de construction : ${constructionType}<br>
-          Type de revêtement : ${revetementType}<br>
-          Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
-          ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-          ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
-          <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-          <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-          - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-          - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-          - Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-          - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>
-          <strong>2. Pour la surface de façade (${facadeSurface.toFixed(2)} m²):</strong><br>
-          - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-          - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})<br>
-          <br><strong>Résultats :</strong><br>
-          Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
-          Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
-          ${constructionRequirements}
-          ${spacingResult}
-          ${soffitResult}
-      `;
+          // Afficher les résultats détaillés avec les calculs intermédiaires exacts
+let resultHTML = `
+<strong>Données de calcul :</strong><br>
+${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+Rapport L/H ou H/L : ${ratioCategory}<br>
+Type de construction : ${constructionType}<br>
+Type de revêtement : ${revetementType}<br>
+Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
+
+<br><strong>Détails des calculs selon la méthode exacte:</strong><br>
+<strong>1. Pour surface de ${lowerSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+- Calcul: ${lowerSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${lowerSurfacePercentageUpper} - ${lowerSurfacePercentageLower})<br>
+- Résultat: ${lowerSurfacePercentage.toFixed(2)}%<br>
+
+<strong>2. Pour surface de ${upperSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+- Calcul: ${upperSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${upperSurfacePercentageUpper} - ${upperSurfacePercentageLower})<br>
+- Résultat: ${upperSurfacePercentage.toFixed(2)}%<br>
+
+<strong>3. Pour la surface de façade (${facadeSurface.toFixed(2)} m²):</strong><br>
+- Calcul: ${lowerSurfacePercentage.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})<br>
+- Résultat: ${finalPercentage.toFixed(2)}%<br>
+
+<br><strong>Résultats :</strong><br>
+Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+${constructionRequirements}
+${spacingResult}
+${soffitResult}
+`;
 
            // Ajouter la comparaison avec la surface proposée
            if (!isNaN(proposedArea) && proposedArea > 0) {
@@ -829,29 +854,23 @@ if (surface <= 30) {
     upperSurface = ">100";
 }
 
-// Calculer le pourcentage pour la surface inférieure
+// Calculer le pourcentage pour la surface inférieure et supérieure
 const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
 const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-const lowerSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    lowerSurfacePercentageLower, 
-    lowerSurfacePercentageUpper
-);
-
-// Calculer le pourcentage pour la surface supérieure
 const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
 const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-const upperSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    upperSurfacePercentageLower, 
-    upperSurfacePercentageUpper
-);
 
-// Interpolation finale entre les surfaces selon la méthode du document de référence
+// 1. Premier calcul pour la distance limitative (surface inférieure)
+const lowerSurfacePercentage = lowerSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+    (lowerSurfacePercentageUpper - lowerSurfacePercentageLower);
+
+// 2. Second calcul pour la distance limitative (surface supérieure)
+const upperSurfacePercentage = upperSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+    (upperSurfacePercentageUpper - upperSurfacePercentageLower);
+
+// 3. Troisième calcul pour la surface de façade
 let finalPercentage;
 
 // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
@@ -866,8 +885,10 @@ if (surface > 100 && limitingDistance >= 1.2) {
 } else if (lowerSurface === upperSurface || upperSurface === ">100") {
     finalPercentage = lowerSurfacePercentage;
 } else {
-    // Méthode d'interpolation conforme au document "Méthode de calcul"
-    finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+    // Formule exacte selon la méthode du document
+    finalPercentage = lowerSurfacePercentage + 
+        (surface - lowerSurface) / (upperSurface - lowerSurface) * 
+        (upperSurfacePercentage - lowerSurfacePercentage);
 }
 
 // Majoration pour gicleurs ou verre armé/briques de verre
@@ -1011,33 +1032,38 @@ if (checkSpacing) {
                `;
            }
 
-           // Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
-           let resultHTML = `
-                <strong>Données de calcul :</strong><br>
-                ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-                Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
-                Surface totale de la façade : ${surface.toFixed(2)} m²<br>
-                Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
-                ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-                <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-                <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-                - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-                - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-                ${upperSurface !== ">100" ? 
-                `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-                 - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
-                ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
-                `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
-                 - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-                 - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
-                <br><strong>Résultats :</strong><br>
-                Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
-                Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
-                ${constructionRequirements}
-                ${spacingResult}
-                ${soffitResult}
-                ${distinctionInfo}
-            `;
+           // Afficher les résultats avec les détails des calculs exacts
+let resultHTML = `
+    <strong>Données de calcul :</strong><br>
+    ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+    Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
+    Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+    Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+    ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+    
+    <br><strong>Détails des calculs selon la méthode exacte:</strong><br>
+    <strong>1. Pour surface de ${lowerSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+    - Calcul: ${lowerSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${lowerSurfacePercentageUpper} - ${lowerSurfacePercentageLower})<br>
+    - Résultat: ${lowerSurfacePercentage.toFixed(2)}%<br>
+    
+    ${upperSurface !== ">100" ? 
+    `<strong>2. Pour surface de ${upperSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+    - Calcul: ${upperSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${upperSurfacePercentageUpper} - ${upperSurfacePercentageLower})<br>
+    - Résultat: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
+    
+    ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
+    `<strong>3. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
+    - Calcul: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})<br>
+    - Résultat: ${finalPercentage.toFixed(2)}%<br>` : ""}
+    
+    <br><strong>Résultats :</strong><br>
+    Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+    Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+    ${constructionRequirements}
+    ${spacingResult}
+    ${soffitResult}
+    ${distinctionInfo}
+`;
            
            // Ajouter la comparaison avec la surface proposée si existe
            if (!isNaN(proposedArea) && proposedArea > 0) {
@@ -1155,42 +1181,38 @@ resultHTML += `
                upperSurface = ">100";
            }
            
-           // Calculer le pourcentage pour la surface inférieure
-           const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               lowerSurfacePercentageLower, 
-               lowerSurfacePercentageUpper
-           );
-           
-           // Calculer le pourcentage pour la surface supérieure
-           const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-           const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-           const upperSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               upperSurfacePercentageLower, 
-               upperSurfacePercentageUpper
-           );
-           
-           // Interpolation finale entre les surfaces selon la méthode du document de référence
-           let finalPercentage;
+           // Récupérer les valeurs des tableaux pour les surfaces inférieure et supérieure
+const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
+const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
 
-           // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-           if (surface > 100 && limitingDistance >= 1.2) {
-               finalPercentage = Math.pow(limitingDistance, 2);
-               // Limiter à 100%
-               finalPercentage = Math.min(finalPercentage, 100);
-           } else if (lowerSurface === upperSurface || upperSurface === ">100") {
-               finalPercentage = lowerSurfacePercentage;
-           } else {
-               // Méthode d'interpolation conforme au document "Méthode de calcul"
-               finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
-           }
+// 1. Premier calcul pour la distance limitative (surface inférieure)
+const lowerSurfacePercentage = lowerSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+    (lowerSurfacePercentageUpper - lowerSurfacePercentageLower);
+
+// 2. Second calcul pour la distance limitative (surface supérieure)
+const upperSurfacePercentage = upperSurfacePercentageLower + 
+    (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
+    (upperSurfacePercentageUpper - upperSurfacePercentageLower);
+
+// 3. Troisième calcul pour la surface de façade
+let finalPercentage;
+
+// Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+if (surface > 100 && limitingDistance >= 1.2) {
+    finalPercentage = Math.pow(limitingDistance, 2);
+    // Limiter à 100%
+    finalPercentage = Math.min(finalPercentage, 100);
+} else if (lowerSurface === upperSurface || upperSurface === ">100") {
+    finalPercentage = lowerSurfacePercentage;
+} else {
+    // Formule exacte selon la méthode du document
+    finalPercentage = lowerSurfacePercentage + 
+        (surface - lowerSurface) / (upperSurface - lowerSurface) * 
+        (upperSurfacePercentage - lowerSurfacePercentage);
+}
            
            // Majoration pour gicleurs ou verre armé/briques de verre
            if (sprinklersOption === "complete") {
@@ -1333,35 +1355,40 @@ if (checkSpacing) {
               `;
           }
 
-          // Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
-          let resultHTML = `
-              <strong>Données de calcul :</strong><br>
-              ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-              Surface totale de la façade : ${surface.toFixed(2)} m²<br>
-              Type d'habitation : ${housingType === "standard" ? "Habitation standard" : "Maison comportant un logement accessoire"}<br>
-              Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
-              Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
-              ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-              <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-              <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-              - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-              - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-              ${upperSurface !== ">100" ? 
-                  `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-                  - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
-              ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
-                  `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
-                  - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-                  - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
-              <br><strong>Résultats :</strong><br>
-              Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
-              Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
-              ${constructionRequirements}
-              ${spacingResult}
-              ${soffitResult}
-              ${housingInfo}
-              ${distinctionInfo}
-          `;
+          // Afficher les résultats avec les détails des calculs selon la méthode exacte
+let resultHTML = `
+    <strong>Données de calcul :</strong><br>
+    ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+    Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+    Type d'habitation : ${housingType === "standard" ? "Habitation standard" : "Maison comportant un logement accessoire"}<br>
+    Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
+    Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+    ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+    
+    <br><strong>Détails des calculs selon la méthode exacte:</strong><br>
+    <strong>1. Pour surface de ${lowerSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+    - Calcul: ${lowerSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${lowerSurfacePercentageUpper} - ${lowerSurfacePercentageLower})<br>
+    - Résultat: ${lowerSurfacePercentage.toFixed(2)}%<br>
+    
+    ${upperSurface !== ">100" ? 
+    `<strong>2. Pour surface de ${upperSurface} m², à la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+    - Calcul: ${upperSurfacePercentageLower} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${upperSurfacePercentageUpper} - ${upperSurfacePercentageLower})<br>
+    - Résultat: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
+    
+    ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
+    `<strong>3. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
+    - Calcul: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})<br>
+    - Résultat: ${finalPercentage.toFixed(2)}%<br>` : ""}
+    
+    <br><strong>Résultats :</strong><br>
+    Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+    Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+    ${constructionRequirements}
+    ${spacingResult}
+    ${soffitResult}
+    ${housingInfo}
+    ${distinctionInfo}
+`;
 
           // Ajouter la comparaison avec la surface proposée si existe
           if (!isNaN(proposedArea) && proposedArea > 0) {
