@@ -784,7 +784,9 @@ resultHTML += `
            }
 
            const distances = tableau91014[usage].distances;
-           
+           const distancesToUse = distances;
+           const surfacesToUse = Object.keys(tableau91014[usage].surfaces).map(s => s === ">100" ? 101 : parseInt(s));
+             
            // Si la distance limitative dépasse la plage du tableau
            if (limitingDistance > distances[distances.length - 1]) {
                const resultHTML = `
@@ -1127,7 +1129,9 @@ resultHTML += `
            }
 
            const distances = tableau91015.distances;
-           
+           const distancesToUse = distances;
+           const surfacesToUse = Object.keys(tableau91015.surfaces).map(s => s === ">100" ? 101 : parseInt(s));
+
            // Si la distance limitative dépasse la plage du tableau
            if (limitingDistance > distances[distances.length - 1]) {
                const resultHTML = `
