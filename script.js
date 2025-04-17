@@ -431,8 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Si la façade est plus grande que la plus grande surface du tableau
         if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
-            lowerSurface = surfacesToUse[surfacesToUse.length - 2];
-            upperSurface = surfacesToUse[surfacesToUse.length - 1];
+           lowerSurface = surfacesToUse[surfacesToUse.length - 2];
+           upperSurface = surfacesToUse[surfacesToUse.length - 1];
         }
 
         let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
@@ -440,38 +440,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
         if (sprinklers && !partialSprinklers) {
-            // Avec gicleurs (pas de ratio)
-            lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-            lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-            
-            upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-            upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
+           // Avec gicleurs (pas de ratio)
+           lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+           lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+   
+           upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+           upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
         } else {
-            // Sans gicleurs ou protection partielle (avec ratio)
-            lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-            lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-            
-            upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-            upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+           // Sans gicleurs ou protection partielle (avec ratio)
+           lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+           lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+   
+           upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+           upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
         }
 
         // Interpolation des pourcentages pour la distance limitative
         const lowerSurfacePercentage = interpolate(
-            limitingDistance,
-            lowerDistance,
-            upperDistance,
-            lowerSurfacePercentageLower,
-            lowerSurfacePercentageUpper
+           limitingDistance,
+           lowerDistance,
+           upperDistance,
+           lowerSurfacePercentageLower,
+           lowerSurfacePercentageUpper
         );
 
         const upperSurfacePercentage = interpolate(
-            limitingDistance,
-            lowerDistance,
-            upperDistance,
-            upperSurfacePercentageLower,
-            upperSurfacePercentageUpper
+           limitingDistance,
+           lowerDistance,
+           upperDistance,
+           upperSurfacePercentageLower,
+           upperSurfacePercentageUpper
         );
-
+        
         // Interpolation finale entre les surfaces selon la méthode du document de référence
         let finalPercentage;
 
@@ -482,20 +482,14 @@ document.addEventListener('DOMContentLoaded', function() {
             } else { // groupes_E_F1_F2
                 finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
             }
-            // Limiter à 100%
-            finalPercentage = Math.min(finalPercentage, 100);
-        } else if (lowerSurface === upperSurface) {
-            finalPercentage = lowerSurfacePercentage;
-        } else {
-            // Pour la distance inférieure
-            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
-    
-            // Pour la distance supérieure
-            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
-    
-            // Interpolation finale pour la distance réelle
-            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
-        }
+        // Limiter à 100%
+        finalPercentage = Math.min(finalPercentage, 100);
+    } else if (lowerSurface === upperSurface) {
+        finalPercentage = lowerSurfacePercentage;
+    } else {
+        // Interpolation selon la surface de façade
+        finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+    }
         
         // Appliquer la méthode de l'aire pondérée si demandée
         if (weightedArea) {
