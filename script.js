@@ -472,24 +472,43 @@ document.addEventListener('DOMContentLoaded', function() {
            upperSurfacePercentageUpper
         );
         
-        // Interpolation finale entre les surfaces selon la méthode du document de référence
+        // Pour le calcul du pourcentage final
         let finalPercentage;
 
-        // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-        if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
+        // Cas spécial pour grandes surfaces et distance >= 1.2m 
+        if (facadeSurface > 100 && limitingDistance >= 1.2) {
             if (usage === "groupes_A_B3_C_D_F3") {
                 finalPercentage = Math.pow(limitingDistance, 2);
             } else { // groupes_E_F1_F2
                 finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
             }
-        // Limiter à 100%
-        finalPercentage = Math.min(finalPercentage, 100);
-    } else if (lowerSurface === upperSurface) {
-        finalPercentage = lowerSurfacePercentage;
-    } else {
-        // Interpolation selon la surface de façade
-        finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
-    }
+            // Limiter à 100%
+            finalPercentage = Math.min(finalPercentage, 100);
+        } else if (lowerSurface === upperSurface || upperSurface === ">100") {
+            finalPercentage = lowerSurfacePercentage;
+        } else {
+            // Étape 1: Calculer le pourcentage à la distance limitative exacte pour la surface inférieure
+            const lowerSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                lowerSurfacePercentageLower,
+                lowerSurfacePercentageUpper
+            );
+    
+            // Étape 2: Calculer le pourcentage à la distance limitative exacte pour la surface supérieure
+            const upperSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                upperSurfacePercentageLower,
+                upperSurfacePercentageUpper
+            );
+    
+            // Étape 3: Interpolation finale entre les surfaces
+            finalPercentage = lowerSurfacePercentage + 
+                ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+        }
         
         // Appliquer la méthode de l'aire pondérée si demandée
         if (weightedArea) {
@@ -850,14 +869,14 @@ document.addEventListener('DOMContentLoaded', function() {
             upperSurfacePercentageUpper
         );
 
-        // Interpolation finale entre les surfaces selon la méthode du document de référence
+        // Pour le calcul du pourcentage final
         let finalPercentage;
 
-        // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-        if (surface > 100 && limitingDistance >= 1.2) {
-            if (usage === "habitation") {
+        // Cas spécial pour grandes surfaces et distance >= 1.2m 
+        if (facadeSurface > 100 && limitingDistance >= 1.2) {
+            if (usage === "groupes_A_B3_C_D_F3") {
                 finalPercentage = Math.pow(limitingDistance, 2);
-            } else { // commercial
+            } else { // groupes_E_F1_F2
                 finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
             }
             // Limiter à 100%
@@ -865,16 +884,28 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (lowerSurface === upperSurface || upperSurface === ">100") {
             finalPercentage = lowerSurfacePercentage;
         } else {
-            // Pour la distance inférieure
-            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+            // Étape 1: Calculer le pourcentage à la distance limitative exacte pour la surface inférieure
+            const lowerSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                lowerSurfacePercentageLower,
+                lowerSurfacePercentageUpper
+            );
     
-            // Pour la distance supérieure
-            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+            // Étape 2: Calculer le pourcentage à la distance limitative exacte pour la surface supérieure
+            const upperSurfacePercentage = interpolate(
+                limitingDistance,
+                lowerDistance,
+                upperDistance,
+                upperSurfacePercentageLower,
+                upperSurfacePercentageUpper
+            );
     
-            // Interpolation finale pour la distance réelle
-            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+            // Étape 3: Interpolation finale entre les surfaces
+            finalPercentage = lowerSurfacePercentage + 
+                ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
         }
-
         // Majoration pour gicleurs ou verre armé/briques de verre
         if (sprinklersOption === "complete") {
             finalPercentage = Math.min(100, finalPercentage * 2);
@@ -1184,25 +1215,41 @@ document.addEventListener('DOMContentLoaded', function() {
            upperSurfacePercentageUpper
        );
        
-       // Interpolation finale entre les surfaces selon la méthode du document de référence
+       // Pour le calcul du pourcentage final
        let finalPercentage;
 
-       // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-       if (surface > 100 && limitingDistance >= 1.2) {
-           finalPercentage = Math.pow(limitingDistance, 2);
+       // Cas spécial pour grandes surfaces et distance >= 1.2m 
+       if (facadeSurface > 100 && limitingDistance >= 1.2) {
+           if (usage === "groupes_A_B3_C_D_F3") {
+               finalPercentage = Math.pow(limitingDistance, 2);
+           } else { // groupes_E_F1_F2
+               finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+           }
            // Limiter à 100%
            finalPercentage = Math.min(finalPercentage, 100);
        } else if (lowerSurface === upperSurface || upperSurface === ">100") {
            finalPercentage = lowerSurfacePercentage;
        } else {
-           // Pour la distance inférieure
-           const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+           // Étape 1: Calculer le pourcentage à la distance limitative exacte pour la surface inférieure
+           const lowerSurfacePercentage = interpolate(
+               limitingDistance,
+               lowerDistance,
+               upperDistance,
+               lowerSurfacePercentageLower,
+               lowerSurfacePercentageUpper
+           );
     
-           // Pour la distance supérieure
-           const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+           // Étape 2: Calculer le pourcentage à la distance limitative exacte pour la surface supérieure
+           const upperSurfacePercentage = interpolate(
+               limitingDistance,
+               lowerDistance,
+               upperDistance,
+               upperSurfacePercentageLower,
+               upperSurfacePercentageUpper
+           );
     
-           // Interpolation finale pour la distance réelle
-           finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+           // Étape 3: Interpolation finale entre les surfaces
+           finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
        }
        
        // Majoration pour gicleurs ou verre armé/briques de verre
