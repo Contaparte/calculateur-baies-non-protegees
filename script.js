@@ -506,8 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
             );
     
             // 3. Interpolation finale pour la surface réelle
-            finalPercentage = lowerSurfaceAtRealDistance + 
-                ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
+            finalPercentage = lowerSurfaceAtRealDistance + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
         }
         
         // Appliquer la méthode de l'aire pondérée si demandée
@@ -903,9 +902,7 @@ document.addEventListener('DOMContentLoaded', function() {
             );
     
             // 3. Interpolation finale pour la surface réelle
-            finalPercentage = lowerSurfaceAtRealDistance + 
-                ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
-                (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
+            finalPercentage = lowerSurfaceAtRealDistance + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
         }
         // Majoration pour gicleurs ou verre armé/briques de verre
         if (sprinklersOption === "complete") {
@@ -1250,8 +1247,7 @@ document.addEventListener('DOMContentLoaded', function() {
            );
     
            // 3. Interpolation finale pour la surface réelle
-           finalPercentage = lowerSurfaceAtRealDistance + 
-               ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
+           finalPercentage = lowerSurfaceAtRealDistance + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfaceAtRealDistance - lowerSurfaceAtRealDistance);
        }
        
        // Majoration pour gicleurs ou verre armé/briques de verre
