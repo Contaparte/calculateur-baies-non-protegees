@@ -295,370 +295,456 @@
        }
 
        function calculateCNB() {
-    const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
-    const length = parseFloat(document.getElementById('length_cnb').value);
-    const height = parseFloat(document.getElementById('height_cnb').value);
-    let limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
-    const sprinklersOption = document.getElementById('sprinklers_cnb').value;
-    const response = document.getElementById('response_cnb').checked;
-    const usage = document.getElementById('usage_cnb').value;
-    const constructionType = document.getElementById('construction_type_cnb').value;
-    const revetementType = document.getElementById('revetement_type_cnb').value;
-    const glassBrick = document.getElementById('glass_brick_cnb').checked;
-    const exemptBuilding = document.getElementById('exempt_building_cnb').value;
-    const proposedArea = parseFloat(document.getElementById('proposed_area_cnb').value);
-    const checkSpacing = document.getElementById('check_spacing_cnb').checked;
-    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_cnb').value);
-    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_cnb').value);
-    const checkSoffit = document.getElementById('check_soffit_cnb').checked;
-    const soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
-    const soffit_protected = document.getElementById('soffit_protected_cnb').checked;
-    const weightedArea = document.getElementById('weighted_area_cnb').checked;
-    const Tu = parseFloat(document.getElementById('Tu_cnb').value);
-    const resistanceAuFeu = document.getElementById('resistance_cnb').value;
+           const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
+           const length = parseFloat(document.getElementById('length_cnb').value);
+           const height = parseFloat(document.getElementById('height_cnb').value);
+           let limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+           const sprinklersOption = document.getElementById('sprinklers_cnb').value;
+           const response = document.getElementById('response_cnb').checked;
+           const usage = document.getElementById('usage_cnb').value;
+           const constructionType = document.getElementById('construction_type_cnb').value;
+           const revetementType = document.getElementById('revetement_type_cnb').value;
+           const glassBrick = document.getElementById('glass_brick_cnb').checked;
+           const exemptBuilding = document.getElementById('exempt_building_cnb').value;
+           const proposedArea = parseFloat(document.getElementById('proposed_area_cnb').value);
+           const checkSpacing = document.getElementById('check_spacing_cnb').checked;
+           const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_cnb').value);
+           const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_cnb').value);
+           const checkSoffit = document.getElementById('check_soffit_cnb').checked;
+           const soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
+           const soffit_protected = document.getElementById('soffit_protected_cnb').checked;
+           const weightedArea = document.getElementById('weighted_area_cnb').checked;
+           const Tu = parseFloat(document.getElementById('Tu_cnb').value);
+           const resistanceAuFeu = document.getElementById('resistance_cnb').value;
 
-    // Vérification des entrées
-    if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
-        facadeSurface <= 0 || length <= 0 || height <= 0 || limitingDistance < 0) {
-        document.getElementById('cnb-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
-        return;
-    }
-    
-    // Vérifier si le bâtiment est exempté
-    if (exemptBuilding !== "none") {
-        let exemptMessage = "";
-        if (exemptBuilding === "parking" && limitingDistance >= 3) {
-            exemptMessage = `
-                <strong>Bâtiment exempté - Garage de stationnement à étages ouverts :</strong><br>
-                Selon l'article 3.2.3.10. 1), les façades de rayonnement d'un garage de stationnement dont 
-                tous les étages sont des étages ouverts peuvent comporter des baies non protégées sans 
-                limitation de surface si la distance limitative est d'au moins 3 m.<br><br>
-                <strong>Surface maximale des baies non protégées : 100%</strong>
-            `;
-        } else if (exemptBuilding === "street_level" && limitingDistance >= 9) {
-            exemptMessage = `
-                <strong>Bâtiment exempté - Façade donnant sur une rue :</strong><br>
-                Selon l'article 3.2.3.10. 2), la partie de la façade de rayonnement donnant sur une rue peut 
-                comporter, à l'étage qui se trouve au niveau de la rue, des baies non protégées sans 
-                limitation de surface si la distance limitative est d'au moins 9 m.<br><br>
-                <strong>Surface maximale des baies non protégées : 100%</strong>
-            `;
-        } else {
-            exemptMessage = `
-                <strong>Bâtiment exempté - Conditions non satisfaites :</strong><br>
-                Le bâtiment que vous avez sélectionné pourrait être exempté, mais les conditions ne sont pas satisfaites.<br>
-                ${exemptBuilding === "parking" ? 
-                    "- Pour un garage de stationnement à étages ouverts, la distance limitative doit être d'au moins 3 m." : 
-                    "- Pour une façade donnant sur une rue, la distance limitative doit être d'au moins 9 m."}
-            `;
-        }
-        
-        if (exemptMessage.includes("100%")) {
-            document.getElementById('copy_cnb').style.display = 'inline-block';
-            document.getElementById('cnb-result').innerHTML = exemptMessage;
-            return;
-        } else {
-            // Continuer le calcul normalement
-        }
-    }
+           // Vérification des entrées
+           if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
+               facadeSurface <= 0 || length <= 0 || height <= 0 || limitingDistance < 0) {
+               document.getElementById('cnb-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+               return;
+           }
+           
+           // Vérifier si le bâtiment est exempté
+           if (exemptBuilding !== "none") {
+               let exemptMessage = "";
+               if (exemptBuilding === "parking" && limitingDistance >= 3) {
+                   exemptMessage = `
+                       <strong>Bâtiment exempté - Garage de stationnement à étages ouverts :</strong><br>
+                       Selon l'article 3.2.3.10. 1), les façades de rayonnement d'un garage de stationnement dont 
+                       tous les étages sont des étages ouverts peuvent comporter des baies non protégées sans 
+                       limitation de surface si la distance limitative est d'au moins 3 m.<br><br>
+                       <strong>Surface maximale des baies non protégées : 100%</strong>
+                   `;
+               } else if (exemptBuilding === "street_level" && limitingDistance >= 9) {
+                   exemptMessage = `
+                       <strong>Bâtiment exempté - Façade donnant sur une rue :</strong><br>
+                       Selon l'article 3.2.3.10. 2), la partie de la façade de rayonnement donnant sur une rue peut 
+                       comporter, à l'étage qui se trouve au niveau de la rue, des baies non protégées sans 
+                       limitation de surface si la distance limitative est d'au moins 9 m.<br><br>
+                       <strong>Surface maximale des baies non protégées : 100%</strong>
+                   `;
+               } else {
+                   exemptMessage = `
+                       <strong>Bâtiment exempté - Conditions non satisfaites :</strong><br>
+                       Le bâtiment que vous avez sélectionné pourrait être exempté, mais les conditions ne sont pas satisfaites.<br>
+                       ${exemptBuilding === "parking" ? 
+                           "- Pour un garage de stationnement à étages ouverts, la distance limitative doit être d'au moins 3 m." : 
+                           "- Pour une façade donnant sur une rue, la distance limitative doit être d'au moins 9 m."}
+                   `;
+               }
+               
+               if (exemptMessage.includes("100%")) {
+                   document.getElementById('copy_cnb').style.display = 'inline-block';
+                   document.getElementById('cnb-result').innerHTML = exemptMessage;
+                   return;
+               } else {
+                   // Continuer le calcul normalement
+               }
+           }
 
-    // Ajustement pour le délai d'intervention
-    if (response) {
-        limitingDistance = limitingDistance / 2;
-    }
+           // Ajustement pour le délai d'intervention
+           if (response) {
+               limitingDistance = limitingDistance / 2;
+           }
 
-    const ratioCategory = getRatioCategory(length, height);
-    
-    // Déterminer si le bâtiment est protégé par gicleurs ou non
-    const sprinklers = sprinklersOption === "complete";
-    const partialSprinklers = sprinklersOption === "partial";
-    
-    // Choix du tableau selon l'usage et les gicleurs
-    let tableToUse, distancesToUse, surfacesToUse;
-    
-    if (sprinklers && !partialSprinklers) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            tableToUse = tableauAvecGicleursGroupesABCDF3;
-            distancesToUse = limitingDistancesWithSprinklersABCDF3;
-            surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
-        } else {
-            tableToUse = tableauAvecGicleursGroupesEF1F2;
-            distancesToUse = limitingDistancesWithSprinklersEF1F2;
-            surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
-        }
-    } else {
-        distancesToUse = limitingDistancesNoSprinklers;
-        surfacesToUse = facadeSurfaces;
-        if (usage === "groupes_A_B3_C_D_F3") {
-            tableToUse = tableauGroupesAB3CDF3;
-        } else {
-            tableToUse = tableauGroupesEF1F2;
-        }
-    }
+           const ratioCategory = getRatioCategory(length, height);
+           
+           // Déterminer si le bâtiment est protégé par gicleurs ou non
+           const sprinklers = sprinklersOption === "complete";
+           const partialSprinklers = sprinklersOption === "partial";
+           
+           // Choix du tableau selon l'usage et les gicleurs
+           let tableToUse, distancesToUse, surfacesToUse;
+           
+           if (sprinklers && !partialSprinklers) {
+               if (usage === "groupes_A_B3_C_D_F3") {
+                   tableToUse = tableauAvecGicleursGroupesABCDF3;
+                   distancesToUse = limitingDistancesWithSprinklersABCDF3;
+                   surfacesToUse = facadeSurfacesWithSprinklersABCDF3;
+               } else {
+                   tableToUse = tableauAvecGicleursGroupesEF1F2;
+                   distancesToUse = limitingDistancesWithSprinklersEF1F2;
+                   surfacesToUse = facadeSurfacesWithSprinklersEF1F2;
+               }
+           } else {
+               distancesToUse = limitingDistancesNoSprinklers;
+               surfacesToUse = facadeSurfaces;
+               if (usage === "groupes_A_B3_C_D_F3") {
+                   tableToUse = tableauGroupesAB3CDF3;
+               } else {
+                   tableToUse = tableauGroupesEF1F2;
+               }
+           }
 
-    // Si la distance limitative dépasse la plage du tableau
-    if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
-        const resultHTML = `
-            <strong>Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.</strong><br>
-            Surface maximale des baies non protégées : 100% (${facadeSurface.toFixed(2)} m²)
-        `;
-        document.getElementById('cnb-result').innerHTML = resultHTML;
-        document.getElementById('copy_cnb').style.display = 'inline-block';
-        
-        return;
-    }
+           // Si la distance limitative dépasse la plage du tableau
+           if (limitingDistance > distancesToUse[distancesToUse.length - 1]) {
+               const resultHTML = `
+                   <strong>Distance limitative (${limitingDistance.toFixed(2)} m) supérieure aux valeurs du tableau.</strong><br>
+                   Surface maximale des baies non protégées : 100% (${facadeSurface.toFixed(2)} m²)
+               `;
+               document.getElementById('cnb-result').innerHTML = resultHTML;
+               document.getElementById('copy_cnb').style.display = 'inline-block';
+               
+               return;
+           }
 
-    // Trouver les bornes pour l'interpolation de distance
-    const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
-    const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
-    const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
+           // Trouver les bornes pour l'interpolation de distance
+           const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
+           const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
+           const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
 
-    // Trouver les surfaces les plus proches pour l'interpolation
-    // Recherche des surfaces encadrantes
-    let lowerSurface = surfacesToUse[0];
-    let upperSurface = surfacesToUse[surfacesToUse.length - 1];
+           // Trouver les surfaces les plus proches pour l'interpolation
+           let lowerSurface = null, upperSurface = null;
+           
+           // Trouver les surfaces encadrantes
+           for (let i = 0; i < surfacesToUse.length - 1; i++) {
+               if (facadeSurface >= surfacesToUse[i] && facadeSurface <= surfacesToUse[i + 1]) {
+                   lowerSurface = surfacesToUse[i];
+                   upperSurface = surfacesToUse[i + 1];
+                   break;
+               }
+           }
+           
+           // Cas limites: surface inférieure à la plus petite du tableau
+           if (facadeSurface < surfacesToUse[0]) {
+               lowerSurface = surfacesToUse[0];
+               upperSurface = surfacesToUse[1];
+           }
+           
+           // Cas limites: surface supérieure à la plus grande du tableau
+           if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
+               lowerSurface = surfacesToUse[surfacesToUse.length - 2];
+               upperSurface = surfacesToUse[surfacesToUse.length - 1];
+           }
 
-    for (let i = 0; i < surfacesToUse.length - 1; i++) {
-        if (facadeSurface >= surfacesToUse[i] && facadeSurface <= surfacesToUse[i + 1]) {
-            lowerSurface = surfacesToUse[i];
-            upperSurface = surfacesToUse[i + 1];
-            break;
-        }
-    }
+           let finalPercentage = 0;
 
-    // Si la façade est plus petite que la plus petite surface du tableau
-    if (facadeSurface < surfacesToUse[0]) {
-        lowerSurface = surfacesToUse[0];
-        upperSurface = surfacesToUse[1];
-    }
-    
-    // Si la façade est plus grande que la plus grande surface du tableau
-    if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
-        lowerSurface = surfacesToUse[surfacesToUse.length - 2];
-        upperSurface = surfacesToUse[surfacesToUse.length - 1];
-    }
+           // Méthode d'interpolation exacte suivant le document "Méthodes de calcul"
+           if (sprinklers && !partialSprinklers) {
+               // Pour les bâtiments protégés par gicleurs (pas de ratio)
+               
+               // 1. Interpolation pour la distance, avec la surface inférieure
+               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][lowerDistanceIndex];
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][upperDistanceIndex];
+               const lowerSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   lowerSurfacePercentageLowerDistance,
+                   lowerSurfacePercentageUpperDistance
+               );
+               
+               // 2. Interpolation pour la distance, avec la surface supérieure
+               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][upperDistanceIndex];
+               const upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   upperSurfacePercentageLowerDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+               
+               // 3. Interpolation finale entre les surfaces
+               finalPercentage = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfaceInterpolatedPercentage,
+                   upperSurfaceInterpolatedPercentage
+               );
+           } else {
+               // Pour les bâtiments sans gicleurs ou à protection partielle (avec ratio)
+               
+               // 1. Interpolation pour la distance, avec la surface inférieure
+               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+               const lowerSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   lowerSurfacePercentageLowerDistance,
+                   lowerSurfacePercentageUpperDistance
+               );
+               
+               // 2. Interpolation pour la distance, avec la surface supérieure
+               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+               const upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   upperSurfacePercentageLowerDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+               
+               // 3. Interpolation finale entre les surfaces
+               finalPercentage = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfaceInterpolatedPercentage,
+                   upperSurfaceInterpolatedPercentage
+               );
+           }
+           
+           // Formule alternative pour les grandes surfaces si la distance est >= 1.2 m
+           if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
+               if (usage === "groupes_A_B3_C_D_F3") {
+                   finalPercentage = Math.pow(limitingDistance, 2);
+               } else { // groupes_E_F1_F2
+                   finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+               }
+           }
+           
+           // Appliquer la méthode de l'aire pondérée si demandée
+           if (weightedArea) {
+               let Te;
+               if (resistanceAuFeu === "45") {
+                   Te = 892;
+               } else if (resistanceAuFeu === "60") {
+                   Te = 927;
+               } else { // 120
+                   Te = 1010;
+               }
+               
+               // Calculer le coefficient d'ouverture équivalente FEO
+               const FEO = Math.pow((Tu / Te), 4);
+               
+               // Calculer la surface corrigée
+               const AF = facadeSurface; // Surface extérieure de la façade 
+               const A = (finalPercentage / 100) * facadeSurface; // Surface réelle de baies non protégées
+               const AC = A + (AF - A) * FEO; // Surface corrigée
+               
+               // Recalculer le pourcentage
+               finalPercentage = (AC / facadeSurface) * 100;
+           }
+           
+           // Limiter le pourcentage entre 0 et 100
+           finalPercentage = Math.max(0, Math.min(100, finalPercentage));
+           
+           // Majoration en cas de briques de verre / verre armé
+           if (glassBrick) {
+               finalPercentage = Math.min(100, finalPercentage * 2);
+           }
+           
+           // Calculer la surface maximale
+           const maxArea = (finalPercentage / 100) * facadeSurface;
+           
+           // Déterminer les exigences de construction selon 3.2.3.7
+           let constructionRequirements = determineConstructionRequirements(finalPercentage, usage, constructionType, revetementType);
+           
+           // Vérification de l'espacement des baies
+           let spacingResult = "";
+           if (checkSpacing) {
+               const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
+               const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
+               
+               if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                   spacingResult = `
+                       <br><strong>Vérification de l'espacement des baies :</strong><br>
+                       ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                       Selon l'article 3.2.3.1.(6), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                       - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                       - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                   `;
+               } else {
+                   spacingResult = `
+                       <br><strong>Vérification de l'espacement des baies :</strong><br>
+                       ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                       Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                       Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                   `;
+               }
+           }
+           
+           // Vérification de la protection des soffites
+           let soffitResult = "";
+           if (checkSoffit) {
+               if (soffit_distance < 0.45) {
+                   soffitResult = `
+                       <br><strong>Protection des soffites :</strong><br>
+                       Selon l'article 3.2.3.6.(2), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
+                       lorsque la distance limitative est inférieure à 0,45 m.<br>
+                       ${soffit_distance < 0.45 ? 
+                           "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                           "La distance du soffite est conforme."}
+                   `;
+               } else if (soffit_distance < 1.2) {
+                   soffitResult = `
+                       <br><strong>Protection des soffites :</strong><br>
+                       Selon l'article 3.2.3.6.(3-5), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
+                       ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
+                       ${soffit_distance < 0.45 ? 
+                           "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                           "La distance du soffite est d'au moins 0,45 m."}
+                       ${!soffit_protected && soffit_distance < 0.45 ? 
+                           "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
+                           soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
+                   `;
+               } else {
+                   soffitResult = `
+                       <br><strong>Protection des soffites :</strong><br>
+                       ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                       Aucune protection spécifique n'est requise.</span>
+                   `;
+               }
+           }
 
-    // Variables pour stocker les pourcentages intermédiaires
-    let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
-    let upperSurfacePercentageLower, upperSurfacePercentageUpper;
-    let percentageAtLowerDistance, percentageAtUpperDistance;
+           // Préparer les détails d'interpolation pour l'affichage
+           let interpolationDetails = "";
+           
+           if (sprinklers && !partialSprinklers) {
+               // Cas des bâtiments protégés par gicleurs
+               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][lowerDistanceIndex];
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][upperDistanceIndex];
+               const lowerSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   lowerSurfacePercentageLowerDistance,
+                   lowerSurfacePercentageUpperDistance
+               );
+               
+               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][upperDistanceIndex];
+               const upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   upperSurfacePercentageLowerDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+               
+               interpolationDetails = `
+                 <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                 <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                 - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                 - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>2. Pour la surface de ${upperSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                 - À ${lowerDistance} m: ${upperSurfacePercentageLowerDistance}%<br>
+                 - À ${upperDistance} m: ${upperSurfacePercentageUpperDistance}%<br>
+                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${upperSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>3. Pour la surface de ${facadeSurface.toFixed(2)} m²:</strong><br>
+                 - Interpolation entre ${lowerSurface} m² (${lowerSurfaceInterpolatedPercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfaceInterpolatedPercentage.toFixed(2)}%)<br>
+                 - Formule: ${lowerSurfaceInterpolatedPercentage.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfaceInterpolatedPercentage.toFixed(2)} - ${lowerSurfaceInterpolatedPercentage.toFixed(2)})
+               `;
+           } else {
+               // Cas des bâtiments sans gicleurs
+               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+               const lowerSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   lowerSurfacePercentageLowerDistance,
+                   lowerSurfacePercentageUpperDistance
+               );
+               
+               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+               const upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   upperSurfacePercentageLowerDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+               
+               interpolationDetails = `
+                 <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                 <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                 - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                 - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>2. Pour la surface de ${upperSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                 - À ${lowerDistance} m: ${upperSurfacePercentageLowerDistance}%<br>
+                 - À ${upperDistance} m: ${upperSurfacePercentageUpperDistance}%<br>
+                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${upperSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>3. Pour la surface de ${facadeSurface.toFixed(2)} m²:</strong><br>
+                 - Interpolation entre ${lowerSurface} m² (${lowerSurfaceInterpolatedPercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfaceInterpolatedPercentage.toFixed(2)}%)<br>
+                 - Formule: ${lowerSurfaceInterpolatedPercentage.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfaceInterpolatedPercentage.toFixed(2)} - ${lowerSurfaceInterpolatedPercentage.toFixed(2)})
+               `;
+           }
 
-    // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
-    if (sprinklers && !partialSprinklers) {
-        // Avec gicleurs (pas de ratio)
-        lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-        lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-        
-        upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-        upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
-    } else {
-        // Sans gicleurs ou protection partielle (avec ratio)
-        lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-        lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-        
-        upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-        upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-    }
+           // Afficher les résultats détaillés avec les calculs intermédiaires
+           let resultHTML = `
+               <strong>Données de calcul :</strong><br>
+               ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+               Rapport L/H ou H/L : ${ratioCategory}<br>
+               Type de construction : ${constructionType}<br>
+               Type de revêtement : ${revetementType}<br>
+               Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
+               ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
+               ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
+               <br>
+               ${interpolationDetails}
+               <br><strong>Résultats :</strong><br>
+               Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
+               Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+               ${constructionRequirements}
+               ${spacingResult}
+               ${soffitResult}
+           `;
 
-    // Étape 1: Interpolation pour la distance limitative inférieure
-    if (lowerSurface === upperSurface) {
-        percentageAtLowerDistance = lowerSurfacePercentageLower;
-    } else {
-        percentageAtLowerDistance = lowerSurfacePercentageLower + 
-            ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
-            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
-    }
-
-    // Étape 2: Interpolation pour la distance limitative supérieure
-    if (lowerSurface === upperSurface) {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper;
-    } else {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper + 
-            ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
-            (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
-    }
-
-    // Étape 3: Interpolation finale entre les distances
-    let finalPercentage;
-    
-    if (lowerDistance === upperDistance) {
-        finalPercentage = percentageAtLowerDistance;
-    } else {
-        finalPercentage = percentageAtLowerDistance + 
-            ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
-            (percentageAtUpperDistance - percentageAtLowerDistance);
-    }
-
-    // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-    if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            finalPercentage = Math.pow(limitingDistance, 2);
-        } else { // groupes_E_F1_F2
-            finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
-        }
-        // Limiter à 100%
-        finalPercentage = Math.min(finalPercentage, 100);
-    }
-    
-    // Appliquer la méthode de l'aire pondérée si demandée
-    if (weightedArea) {
-        let Te;
-        if (resistanceAuFeu === "45") {
-            Te = 892;
-        } else if (resistanceAuFeu === "60") {
-            Te = 927;
-        } else { // 120
-            Te = 1010;
-        }
-        
-        // Calculer le coefficient d'ouverture équivalente FEO
-        const FEO = Math.pow((Tu / Te), 4);
-        
-        // Calculer la surface corrigée
-        const AF = facadeSurface; // Surface extérieure de la façade 
-        const A = (finalPercentage / 100) * facadeSurface; // Surface réelle de baies non protégées
-        const AC = A + (AF - A) * FEO; // Surface corrigée
-        
-        // Recalculer le pourcentage
-        finalPercentage = (AC / facadeSurface) * 100;
-    }
-    
-    // Limiter le pourcentage entre 0 et 100
-    finalPercentage = Math.max(0, Math.min(100, finalPercentage));
-    
-    // Majoration en cas de briques de verre / verre armé
-    if (glassBrick) {
-        finalPercentage = Math.min(100, finalPercentage * 2);
-    }
-    
-    // Calculer la surface maximale
-    const maxArea = (finalPercentage / 100) * facadeSurface;
-    
-    // Déterminer les exigences de construction selon 3.2.3.7
-    let constructionRequirements = determineConstructionRequirements(finalPercentage, usage, constructionType, revetementType);
-    
-    // Vérification de l'espacement des baies
-    let spacingResult = "";
-    if (checkSpacing) {
-        const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
-        const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
-        
-        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-            spacingResult = `
-                <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                Selon l'article 3.2.3.1.(6), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-            `;
-        } else {
-            spacingResult = `
-                <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-            `;
-        }
-    }
-    
-    // Vérification de la protection des soffites
-    let soffitResult = "";
-    if (checkSoffit) {
-        if (soffit_distance < 0.45) {
-            soffitResult = `
-                <br><strong>Protection des soffites :</strong><br>
-                Selon l'article 3.2.3.6.(2), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
-                lorsque la distance limitative est inférieure à 0,45 m.<br>
-                ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
-                    "La distance du soffite est conforme."}
-            `;
-        } else if (soffit_distance < 1.2) {
-            soffitResult = `
-                <br><strong>Protection des soffites :</strong><br>
-                Selon l'article 3.2.3.6.(3-5), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
-                ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
-                ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
-                    "La distance du soffite est d'au moins 0,45 m."}
-                ${!soffit_protected && soffit_distance < 0.45 ? 
-                    "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
-                    soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
-            `;
-        } else {
-            soffitResult = `
-                <br><strong>Protection des soffites :</strong><br>
-                ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
-                Aucune protection spécifique n'est requise.</span>
-            `;
-        }
-    }
-
-    // Afficher les résultats détaillés avec les calculs intermédiaires selon la méthode du document
-    let resultHTML = `
-        <strong>Données de calcul :</strong><br>
-        ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-        Rapport L/H ou H/L : ${ratioCategory}<br>
-        Type de construction : ${constructionType}<br>
-        Type de revêtement : ${revetementType}<br>
-        Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
-        ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-        ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
-        <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-        <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-        - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-        - Valeur interpolée à ${limitingDistance.toFixed(2)}m pour ${lowerSurface}m²: ${lowerSurfacePercentageLower.toFixed(2)}%<br>
-        - Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-        - Valeur interpolée à ${limitingDistance.toFixed(2)}m pour ${upperSurface}m²: ${upperSurfacePercentageLower.toFixed(2)}%<br>
-        <strong>2. Pour la surface de façade (${facadeSurface.toFixed(2)} m²):</strong><br>
-        - À la distance de ${lowerDistance}m: ${percentageAtLowerDistance.toFixed(2)}%<br>
-        - À la distance de ${upperDistance}m: ${percentageAtUpperDistance.toFixed(2)}%<br>
-        - Interpolation entre ${lowerDistance}m et ${upperDistance}m pour ${facadeSurface.toFixed(2)}m²<br>
-        - Formule: ${percentageAtLowerDistance.toFixed(2)} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${percentageAtUpperDistance.toFixed(2)} - ${percentageAtLowerDistance.toFixed(2)})<br>
-        <br><strong>Résultats :</strong><br>
-        Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
-        Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
-        ${constructionRequirements}
-        ${spacingResult}
-        ${soffitResult}
-    `;
-
-    // Ajouter la comparaison avec la surface proposée
-    if (!isNaN(proposedArea) && proposedArea > 0) {
-        const proposedPercentage = (proposedArea / facadeSurface) * 100;
-        let statusClass = "";
-        let comparisonResult = "";
-        
-        if (proposedPercentage > finalPercentage) {
-            statusClass = "color: red; font-weight: bold;";
-            comparisonResult = `
-                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
-            `;
-        } else {
-            statusClass = "color: green; font-weight: bold;";
-            comparisonResult = `
-                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
-            `;
-        }
-        
-        // Ajouter le résultat de comparaison à resultHTML
-        resultHTML += comparisonResult;
-    }
-    
-    // Ajouter le message de dégagement de responsabilité
-    resultHTML += `
-        <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-        <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-        L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
-        </div>
-    `;           
-    document.getElementById('cnb-result').innerHTML = resultHTML;
-    document.getElementById('copy_cnb').style.display = 'inline-block';
-}
+           // Ajouter la comparaison avec la surface proposée
+           if (!isNaN(proposedArea) && proposedArea > 0) {
+               const proposedPercentage = (proposedArea / facadeSurface) * 100;
+               let statusClass = "";
+               let comparisonResult = "";
+               
+               if (proposedPercentage > finalPercentage) {
+                   statusClass = "color: red; font-weight: bold;";
+                   comparisonResult = `
+                       <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                       Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                       <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                   `;
+               } else {
+                   statusClass = "color: green; font-weight: bold;";
+                   comparisonResult = `
+                       <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                       Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                       <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                   `;
+               }
+               
+               // Ajouter le résultat de comparaison à resultHTML
+               resultHTML += comparisonResult;
+           }
+           
+           // Ajouter le message de dégagement de responsabilité
+           resultHTML += `
+               <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+               <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+               L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+               </div>
+           `;           
+               
+           document.getElementById('cnb-result').innerHTML = resultHTML;
+           document.getElementById('copy_cnb').style.display = 'inline-block';
+       }
        
        function determineConstructionRequirements(percentage, usage, constructionType, revetementType) {
            // Déterminer le degré de résistance au feu et les exigences de construction selon 3.2.3.7
@@ -699,7 +785,8 @@
                constructionExigence = "Combustible ou incombustible";
                revetementExigence = "Combustible ou incombustible";
            }
-// Si la construction actuelle n'est pas conforme, ajouter un avertissement
+           
+           // Si la construction actuelle n'est pas conforme, ajouter un avertissement
            let warningMsg = "";
            if ((constructionExigence === "Incombustible" && constructionType === "combustible") ||
                (revetementExigence === "Incombustible" && revetementType === "combustible")) {
@@ -738,7 +825,8 @@
               distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0, 25.0, 30.0]
           }
       };
-          function calculate91014() {
+      
+      function calculate91014() {
           const usage = document.getElementById('usage_91014').value;
           const buildingType = document.getElementById('building_type_91014').value;
           const exteriorFinish = document.getElementById('exterior_finish_91014').value;
@@ -803,177 +891,188 @@
            }
 
            // Si la distance limitative est d'au plus 2 m, activer automatiquement la vérification d'espacement
-if (limitingDistance <= 2.0) {
-    // Activer la case à cocher et afficher les options d'espacement
-    document.getElementById('check_spacing_91014').checked = true;
-    document.getElementById('spacing_options_91014').style.display = 'block';
-    checkSpacing = true; // S'assurer que la vérification sera effectuée
-}
+           if (limitingDistance <= 2.0) {
+               // Activer la case à cocher et afficher les options d'espacement
+               document.getElementById('check_spacing_91014').checked = true;
+               document.getElementById('spacing_options_91014').style.display = 'block';
+               checkSpacing = true; // S'assurer que la vérification sera effectuée
+           }
 
-// Trouver les bornes pour l'interpolation de distance
-const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
-const lowerDistanceIndex = distances.indexOf(lowerDistance);
-const upperDistanceIndex = distances.indexOf(upperDistance);
+           // Trouver les bornes pour l'interpolation de distance
+           const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distances);
+           const lowerDistanceIndex = distances.indexOf(lowerDistance);
+           const upperDistanceIndex = distances.indexOf(upperDistance);
 
-// Définir les surfaces connues du tableau pour l'interpolation
-const surfaceValues = [30, 40, 50, 100];
+           // Identifier les surfaces pour l'interpolation
+           let lowerSurface, upperSurface;
 
-// Trouver les surfaces les plus proches pour l'interpolation
-let lowerSurface, upperSurface;
+           if (surface <= 30) {
+               lowerSurface = 30;
+               upperSurface = 40;
+           } else if (surface <= 40) {
+               lowerSurface = 30;
+               upperSurface = 40;
+           } else if (surface <= 50) {
+               lowerSurface = 40;
+               upperSurface = 50;
+           } else if (surface <= 100) {
+               lowerSurface = 50;
+               upperSurface = 100;
+           } else {
+               lowerSurface = 100;
+               upperSurface = ">100";
+           }
 
-if (surface <= 30) {
-    lowerSurface = 30;
-    upperSurface = 40;
-} else if (surface <= 40) {
-    lowerSurface = 30;
-    upperSurface = 40;
-} else if (surface <= 50) {
-    lowerSurface = 40;
-    upperSurface = 50;
-} else if (surface <= 100) {
-    lowerSurface = 50;
-    upperSurface = 100;
-} else {
-    lowerSurface = 100;
-    upperSurface = ">100";
-}
+           // Appliquer la méthode d'interpolation suivant le document "Méthodes de calcul"
+           
+           // 1. Première interpolation: Pourcentage pour la surface inférieure à la distance limitative
+           const lowerSurfacePercentageLowerDistance = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+           const lowerSurfacePercentageUpperDistance = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+           const lowerSurfaceInterpolatedPercentage = interpolate(
+               limitingDistance, 
+               lowerDistance, 
+               upperDistance, 
+               lowerSurfacePercentageLowerDistance, 
+               lowerSurfacePercentageUpperDistance
+           );
 
-// Calculer le pourcentage pour la surface inférieure
-const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-const lowerSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    lowerSurfacePercentageLower, 
-    lowerSurfacePercentageUpper
-);
+           // 2. Deuxième interpolation: Pourcentage pour la surface supérieure à la distance limitative
+           let upperSurfaceInterpolatedPercentage;
+           if (upperSurface === ">100") {
+               // Pour les grandes surfaces, on conserve la valeur de la surface inférieure
+               upperSurfaceInterpolatedPercentage = lowerSurfaceInterpolatedPercentage;
+           } else {
+               const upperSurfacePercentageLowerDistance = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
+               upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance, 
+                   lowerDistance, 
+                   upperDistance, 
+                   upperSurfacePercentageLowerDistance, 
+                   upperSurfacePercentageUpperDistance
+               );
+           }
 
-// Calculer le pourcentage pour la surface supérieure
-const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-const upperSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    upperSurfacePercentageLower, 
-    upperSurfacePercentageUpper
-);
+           // 3. Troisième interpolation: Entre les surfaces pour obtenir le pourcentage final
+           let finalPercentage;
+           if (upperSurface === ">100" || lowerSurface === upperSurface) {
+               finalPercentage = lowerSurfaceInterpolatedPercentage;
+           } else {
+               finalPercentage = interpolate(
+                   surface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfaceInterpolatedPercentage,
+                   upperSurfaceInterpolatedPercentage
+               );
+           }
 
-// Interpolation finale entre les surfaces selon la méthode du document de référence
-let finalPercentage;
+           // Formule alternative pour les grandes surfaces si la distance est >= 1.2 m
+           if (surface > 100 && limitingDistance >= 1.2) {
+               if (usage === "habitation") {
+                   finalPercentage = Math.pow(limitingDistance, 2);
+               } else { // commercial
+                   finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
+               }
+               // Limiter à 100%
+               finalPercentage = Math.min(finalPercentage, 100);
+           }
 
-// Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
-if (surface > 100 && limitingDistance >= 1.2) {
-    if (usage === "habitation") {
-        finalPercentage = Math.pow(limitingDistance, 2);
-    } else { // commercial
-        finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
-    }
-    // Limiter à 100%
-    finalPercentage = Math.min(finalPercentage, 100);
-} else if (lowerSurface === upperSurface || upperSurface === ">100") {
-    finalPercentage = lowerSurfacePercentage;
-} else {
-    // Méthode d'interpolation conforme au document "Méthode de calcul"
-    finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
-}
+           // Majoration pour gicleurs ou verre armé/briques de verre
+           if (sprinklersOption === "complete") {
+               finalPercentage = Math.min(100, finalPercentage * 2);
+           } else if (glassBrick) {
+               finalPercentage = Math.min(100, finalPercentage * 2);
+           }
 
-// Majoration pour gicleurs ou verre armé/briques de verre
-if (sprinklersOption === "complete") {
-    finalPercentage = Math.min(100, finalPercentage * 2);
-} else if (glassBrick) {
-    finalPercentage = Math.min(100, finalPercentage * 2);
-}
+           // Limiter le pourcentage entre 0 et 100
+           finalPercentage = Math.max(0, Math.min(100, finalPercentage));
 
-// Limiter le pourcentage entre 0 et 100
-finalPercentage = Math.max(0, Math.min(100, finalPercentage));
+           // Calculer la surface maximale
+           const maxArea = (finalPercentage / 100) * surface;
 
-// Calculer la surface maximale
-const maxArea = (finalPercentage / 100) * surface;
+           // Déterminer les exigences de construction et de protection
+           let constructionRequirements = "";
 
-// Déterminer les exigences de construction et de protection
-let constructionRequirements = "";
+           if (limitingDistance < 1.2) {
+               constructionRequirements = `
+                   <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
+                   - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
+                   - Le verre armé et les briques de verre ne sont pas autorisés<br>
+                   - ${exteriorFinish === "incombustible" ? 
+                       "Revêtement incombustible requis pour les façades" : 
+                       "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
+               `;
+           }
 
-if (limitingDistance < 1.2) {
-    constructionRequirements = `
-        <br><strong>Exigences pour distance limitative < 1,2 m (9.10.14.4.2):</strong><br>
-        - Les ouvertures doivent être protégées par des dispositifs d'obturation<br>
-        - Le verre armé et les briques de verre ne sont pas autorisés<br>
-        - ${exteriorFinish === "incombustible" ? 
-            "Revêtement incombustible requis pour les façades" : 
-            "Revêtement combustible soumis à des restrictions importantes (voir 9.10.14.5)"}
-    `;
-}
-
-// Vérification de l'espacement des baies
-let spacingResult = "";
-if (checkSpacing) {
-    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
-    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
-    
-    if (limitingDistance <= 2.0) {
-        // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
-        let maxBaieArea = 0;
-        let maxBaieInfo = "";
-        let formulaArea = 0;
-        
-        if (limitingDistance < 1.2) {
-            maxBaieArea = 0.35;
-            maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
-        } else if (limitingDistance <= 1.5) {
-            maxBaieArea = 0.78;
-            formulaArea = Math.pow(limitingDistance, 2);
-            
-            if (formulaArea > maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
-            } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
-            }
-        } else if (limitingDistance <= 2.0) {
-            maxBaieArea = 1.88;
-            formulaArea = Math.pow(limitingDistance, 2);
-            
-            if (formulaArea > maxBaieArea) {
-                maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
-            } else {
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
-            }
-        }
-        
-        spacingResult = `
-            <br><strong>Vérification de l'espacement des baies :</strong><br>
-            <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
-            ${maxBaieInfo}<br>
-        `;
-        
-        // Vérification de l'espacement
-        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-            spacingResult += `
-                <strong>Espacement des baies :</strong><br>
-                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-            `;
-        } else {
-            spacingResult += `
-                <strong>Espacement des baies :</strong><br>
-                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-            `;
-        }
-    } else {
-        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
-        spacingResult = `
-            <br><strong>Vérification de l'espacement des baies :</strong><br>
-            ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
-            prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-            Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
-        `;
-    }
-}
+           // Vérification de l'espacement des baies
+           let spacingResult = "";
+           if (checkSpacing) {
+               const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
+               const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
+               
+               if (limitingDistance <= 2.0) {
+                   // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
+                   let maxBaieArea = 0;
+                   let maxBaieInfo = "";
+                   let formulaArea = 0;
+                   
+                   if (limitingDistance < 1.2) {
+                       maxBaieArea = 0.35;
+                       maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
+                   } else if (limitingDistance <= 1.5) {
+                       maxBaieArea = 0.78;
+                       formulaArea = Math.pow(limitingDistance, 2);
+                       
+                       if (formulaArea > maxBaieArea) {
+                           maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                       } else {
+                           maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                       }
+                   } else if (limitingDistance <= 2.0) {
+                       maxBaieArea = 1.88;
+                       formulaArea = Math.pow(limitingDistance, 2);
+                       
+                       if (formulaArea > maxBaieArea) {
+                           maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                       } else {
+                           maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                       }
+                   }
+                   
+                   spacingResult = `
+                       <br><strong>Vérification de l'espacement des baies :</strong><br>
+                       <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
+                       ${maxBaieInfo}<br>
+                   `;
+                   
+                   // Vérification de l'espacement
+                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                       spacingResult += `
+                           <strong>Espacement des baies :</strong><br>
+                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                           Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                       `;
+                   } else {
+                       spacingResult += `
+                           <strong>Espacement des baies :</strong><br>
+                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                       `;
+                   }
+               } else {
+                   // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+                   spacingResult = `
+                       <br><strong>Vérification de l'espacement des baies :</strong><br>
+                       ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                       prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+                       Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+                   `;
+               }
+           }
            
            // Vérification de la protection des soffites
            let soffitResult = "";
@@ -1020,6 +1119,43 @@ if (checkSpacing) {
                `;
            }
 
+           // Préparer les détails d'interpolation pour l'affichage
+           let interpolationDetails;
+           
+           if (upperSurface === ">100") {
+               // Si la surface est supérieure à 100 m²
+               interpolationDetails = `
+                   <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                   <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                   - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                   - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                   - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                   <strong>2. Pour les surfaces > 100 m²:</strong><br>
+                   ${surface > 100 && limitingDistance >= 1.2 ?
+                       `- Formule alternative utilisée: ${usage === "habitation" ? "Distance² = " + Math.pow(limitingDistance, 2).toFixed(2) + "%" : "0,5 × Distance² = " + (0.5 * Math.pow(limitingDistance, 2)).toFixed(2) + "%"}` :
+                       `- Même pourcentage que pour la surface de ${lowerSurface} m²: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%`}
+               `;
+           } else {
+               // Interpolation standard entre deux surfaces
+               const upperSurfacePercentageLowerDistance = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
+               
+               interpolationDetails = `
+                   <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                   <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                   - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                   - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                   - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                   <strong>2. Pour la surface de ${upperSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                   - À ${lowerDistance} m: ${upperSurfacePercentageLowerDistance}%<br>
+                   - À ${upperDistance} m: ${upperSurfacePercentageUpperDistance}%<br>
+                   - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${upperSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                   <strong>3. Pour la surface de ${surface.toFixed(2)} m²:</strong><br>
+                   - Interpolation entre ${lowerSurface} m² (${lowerSurfaceInterpolatedPercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfaceInterpolatedPercentage.toFixed(2)}%)<br>
+                   - Formule: ${lowerSurfaceInterpolatedPercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfaceInterpolatedPercentage.toFixed(2)} - ${lowerSurfaceInterpolatedPercentage.toFixed(2)})
+               `;
+           }
+
            // Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
            let resultHTML = `
                 <strong>Données de calcul :</strong><br>
@@ -1028,17 +1164,8 @@ if (checkSpacing) {
                 Surface totale de la façade : ${surface.toFixed(2)} m²<br>
                 Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
                 ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-                <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-                <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-                - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-                - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-                ${upperSurface !== ">100" ? 
-                `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-                 - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
-                ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
-                `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
-                 - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-                 - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
+                <br>
+                ${interpolationDetails}
                 <br><strong>Résultats :</strong><br>
                 Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
                 Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
@@ -1073,13 +1200,15 @@ if (checkSpacing) {
                // Ajouter le résultat de comparaison à resultHTML
                resultHTML += comparisonResult;
            }
-// Ajouter le message de dégagement de responsabilité
-resultHTML += `
-    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
-    </div>
-`;           
+           
+           // Ajouter le message de dégagement de responsabilité
+           resultHTML += `
+               <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+               <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+               L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+               </div>
+           `;
+           
            document.getElementById('method91014-result').innerHTML = resultHTML;
            document.getElementById('copy_91014').style.display = 'inline-block';
        }
@@ -1141,10 +1270,7 @@ resultHTML += `
            const lowerDistanceIndex = distances.indexOf(lowerDistance);
            const upperDistanceIndex = distances.indexOf(upperDistance);
 
-           // Définir les surfaces connues du tableau pour l'interpolation
-           const surfaceValues = [30, 40, 50, 100];
-           
-           // Trouver les surfaces les plus proches pour l'interpolation
+           // Identifier les surfaces pour l'interpolation
            let lowerSurface, upperSurface;
            
            if (surface <= 30) {
@@ -1164,43 +1290,57 @@ resultHTML += `
                upperSurface = ">100";
            }
            
-           // Calculer le pourcentage pour la surface inférieure
-           const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfacePercentage = interpolate(
+           // Appliquer la méthode d'interpolation suivant le document "Méthodes de calcul"
+           
+           // 1. Première interpolation: Pourcentage pour la surface inférieure à la distance limitative
+           const lowerSurfacePercentageLowerDistance = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+           const lowerSurfacePercentageUpperDistance = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+           const lowerSurfaceInterpolatedPercentage = interpolate(
                limitingDistance, 
                lowerDistance, 
                upperDistance, 
-               lowerSurfacePercentageLower, 
-               lowerSurfacePercentageUpper
+               lowerSurfacePercentageLowerDistance, 
+               lowerSurfacePercentageUpperDistance
            );
            
-           // Calculer le pourcentage pour la surface supérieure
-           const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-           const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-           const upperSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               upperSurfacePercentageLower, 
-               upperSurfacePercentageUpper
-           );
+           // 2. Deuxième interpolation: Pourcentage pour la surface supérieure à la distance limitative
+           let upperSurfaceInterpolatedPercentage;
+           if (upperSurface === ">100") {
+               // Pour les grandes surfaces, on conserve la valeur de la surface inférieure
+               upperSurfaceInterpolatedPercentage = lowerSurfaceInterpolatedPercentage;
+           } else {
+               const upperSurfacePercentageLowerDistance = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableau91015.surfaces[upperSurface][upperDistanceIndex];
+               upperSurfaceInterpolatedPercentage = interpolate(
+                   limitingDistance, 
+                   lowerDistance, 
+                   upperDistance, 
+                   upperSurfacePercentageLowerDistance, 
+                   upperSurfacePercentageUpperDistance
+               );
+           }
            
-           // Interpolation finale entre les surfaces selon la méthode du document de référence
+           // 3. Troisième interpolation: Entre les surfaces pour obtenir le pourcentage final
            let finalPercentage;
+           if (upperSurface === ">100" || lowerSurface === upperSurface) {
+               finalPercentage = lowerSurfaceInterpolatedPercentage;
+           } else {
+               finalPercentage = interpolate(
+                   surface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfaceInterpolatedPercentage,
+                   upperSurfaceInterpolatedPercentage
+               );
+           }
 
-           // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
+           // Formule alternative pour les grandes surfaces si la distance est >= 1.2 m
            if (surface > 100 && limitingDistance >= 1.2) {
                finalPercentage = Math.pow(limitingDistance, 2);
                // Limiter à 100%
                finalPercentage = Math.min(finalPercentage, 100);
-           } else if (lowerSurface === upperSurface || upperSurface === ">100") {
-               finalPercentage = lowerSurfacePercentage;
-           } else {
-               // Méthode d'interpolation conforme au document "Méthode de calcul"
-               finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
            }
-           
+
            // Majoration pour gicleurs ou verre armé/briques de verre
            if (sprinklersOption === "complete") {
                finalPercentage = Math.min(100, finalPercentage * 2);
@@ -1255,38 +1395,38 @@ resultHTML += `
            }
            
            // Vérification de l'espacement des baies
-let spacingResult = "";
-if (checkSpacing) {
-    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
-    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
-    
-    if (limitingDistance <= 2.0) {
-        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-            spacingResult = `
-                <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
-                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
-            `;
-        } else {
-            spacingResult = `
-                <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
-            `;
-        }
-    } else {
-        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
-        spacingResult = `
-            <br><strong>Vérification de l'espacement des baies :</strong><br>
-            ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
-            prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-            Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
-        `;
-    }
-}
+           let spacingResult = "";
+           if (checkSpacing) {
+               const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
+               const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
+               
+               if (limitingDistance <= 2.0) {
+                   if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                       spacingResult = `
+                           <br><strong>Vérification de l'espacement des baies :</strong><br>
+                           ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                           Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
+                           - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
+                           - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                       `;
+                   } else {
+                       spacingResult = `
+                           <br><strong>Vérification de l'espacement des baies :</strong><br>
+                           ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                           Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
+                           Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                       `;
+                   }
+               } else {
+                   // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+                   spacingResult = `
+                       <br><strong>Vérification de l'espacement des baies :</strong><br>
+                       ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                       prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+                       Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+                   `;
+               }
+           }
            
            // Vérification de la protection des soffites
            let soffitResult = "";
@@ -1342,6 +1482,43 @@ if (checkSpacing) {
               `;
           }
 
+          // Préparer les détails d'interpolation pour l'affichage
+          let interpolationDetails;
+          
+          if (upperSurface === ">100") {
+              // Si la surface est supérieure à 100 m²
+              interpolationDetails = `
+                  <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                  <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                  - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                  - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                  - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                  <strong>2. Pour les surfaces > 100 m²:</strong><br>
+                  ${surface > 100 && limitingDistance >= 1.2 ?
+                      `- Formule alternative utilisée: Distance² = ${Math.pow(limitingDistance, 2).toFixed(2)}%` :
+                      `- Même pourcentage que pour la surface de ${lowerSurface} m²: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%`}
+              `;
+          } else {
+              // Interpolation standard entre deux surfaces
+              const upperSurfacePercentageLowerDistance = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
+              const upperSurfacePercentageUpperDistance = tableau91015.surfaces[upperSurface][upperDistanceIndex];
+              
+              interpolationDetails = `
+                  <strong>Détails d'interpolation par la méthode exacte:</strong><br>
+                  <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                  - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
+                  - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
+                  - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                  <strong>2. Pour la surface de ${upperSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
+                  - À ${lowerDistance} m: ${upperSurfacePercentageLowerDistance}%<br>
+                  - À ${upperDistance} m: ${upperSurfacePercentageUpperDistance}%<br>
+                  - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${upperSurfaceInterpolatedPercentage.toFixed(2)}%<br>
+                  <strong>3. Pour la surface de ${surface.toFixed(2)} m²:</strong><br>
+                  - Interpolation entre ${lowerSurface} m² (${lowerSurfaceInterpolatedPercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfaceInterpolatedPercentage.toFixed(2)}%)<br>
+                  - Formule: ${lowerSurfaceInterpolatedPercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfaceInterpolatedPercentage.toFixed(2)} - ${lowerSurfaceInterpolatedPercentage.toFixed(2)})
+              `;
+          }
+
           // Afficher les résultats avec les détails des calculs intermédiaires selon la méthode du document
           let resultHTML = `
               <strong>Données de calcul :</strong><br>
@@ -1351,17 +1528,8 @@ if (checkSpacing) {
               Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
               Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
               ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-              <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
-              <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
-              - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
-              - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${lowerSurfacePercentage.toFixed(2)}%<br>
-              ${upperSurface !== ">100" ? 
-                  `- Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
-                  - Valeur interpolée à ${limitingDistance.toFixed(2)}m: ${upperSurfacePercentage.toFixed(2)}%<br>` : ""}
-              ${lowerSurface !== upperSurface && upperSurface !== ">100" ? 
-                  `<strong>2. Pour la surface de façade (${surface.toFixed(2)} m²):</strong><br>
-                  - Interpolation entre ${lowerSurface} m² (${lowerSurfacePercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfacePercentage.toFixed(2)}%)<br>
-                  - Formule: ${lowerSurfacePercentage.toFixed(2)} + (${surface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfacePercentage.toFixed(2)} - ${lowerSurfacePercentage.toFixed(2)})` : ""}
+              <br>
+              ${interpolationDetails}
               <br><strong>Résultats :</strong><br>
               Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
               Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
@@ -1397,13 +1565,14 @@ if (checkSpacing) {
               // Ajouter le résultat de comparaison à resultHTML
               resultHTML += comparisonResult;
           }
-// Ajouter le message de dégagement de responsabilité
-resultHTML += `
-    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
-    </div>
-`;
+          
+          // Ajouter le message de dégagement de responsabilité
+          resultHTML += `
+              <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
+              <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+              L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+              </div>
+          `;
           
           document.getElementById('method91015-result').innerHTML = resultHTML;
           document.getElementById('copy_91015').style.display = 'inline-block';
@@ -1453,4 +1622,3 @@ function copyToClipboard(elementId) {
           if (event.key === "Enter") {
               calculationFunction();
           }
-      }
