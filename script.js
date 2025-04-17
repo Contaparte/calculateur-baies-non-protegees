@@ -1579,17 +1579,27 @@
       }
 
       function openTab(event, tabName) {
-          var tabcontent = document.getElementsByClassName("tab-content");
-          for (var i = 0; i < tabcontent.length; i++) {
-              tabcontent[i].classList.remove("active");
-          }
-          var tablinks = document.getElementsByClassName("tab-link");
-          for (var i = 0; i < tablinks.length; i++) {
-              tablinks[i].classList.remove("active");
-          }
-          document.getElementById(tabName).classList.add("active");
-          event.currentTarget.classList.add("active");
-      }
+    // Masquer tous les contenus d'onglet
+    var tabcontent = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+    }
+    
+    // Désactiver tous les boutons d'onglet
+    var tablinks = document.getElementsByClassName("tab-link");
+    for (var i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+    
+    // Afficher l'onglet sélectionné et activer le bouton
+    document.getElementById(tabName).classList.add("active");
+    event.currentTarget.classList.add("active");
+    
+    // Masquer tous les boutons de copie
+    document.getElementById('copy_cnb').style.display = 'none';
+    document.getElementById('copy_91014').style.display = 'none';
+    document.getElementById('copy_91015').style.display = 'none';
+}
 
       // Fonction pour copier le contenu dans le presse-papier
 function copyToClipboard(elementId) {
