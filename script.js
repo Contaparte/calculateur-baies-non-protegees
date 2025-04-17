@@ -1617,7 +1617,7 @@ function copyToClipboard(elementId) {
         });
 }
 
-      // Fonction pour gérer l'appui sur la touche Enter
+// Fonction pour gérer l'appui sur la touche Enter
 function handleEnterKey(event, calculationFunction) {
     if (event.key === "Enter") {
         calculationFunction();
