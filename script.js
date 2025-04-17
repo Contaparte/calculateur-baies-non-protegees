@@ -472,9 +472,9 @@ document.addEventListener('DOMContentLoaded', function() {
             upperSurfacePercentageUpper
         );
 
-        // Interpolation finale entre les surfaces, conforme à la méthode exacte du document de référence
+        // Interpolation finale entre les surfaces selon la méthode du document de référence
         let finalPercentage;
-        
+
         // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
         if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
             if (usage === "groupes_A_B3_C_D_F3") {
@@ -487,8 +487,14 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (lowerSurface === upperSurface) {
             finalPercentage = lowerSurfacePercentage;
         } else {
-            // Méthode d'interpolation conforme à la méthode exacte du document de référence
-            finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+            // Pour la distance inférieure
+            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+    
+            // Pour la distance supérieure
+            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+    
+            // Interpolation finale pour la distance réelle
+            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
         }
         
         // Appliquer la méthode de l'aire pondérée si demandée
@@ -865,8 +871,14 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (lowerSurface === upperSurface || upperSurface === ">100") {
             finalPercentage = lowerSurfacePercentage;
         } else {
-            // Méthode d'interpolation conforme au document "Méthode de calcul"
-            finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+            // Pour la distance inférieure
+            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+    
+            // Pour la distance supérieure
+            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+    
+            // Interpolation finale pour la distance réelle
+            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
         }
 
         // Majoration pour gicleurs ou verre armé/briques de verre
@@ -1189,8 +1201,14 @@ document.addEventListener('DOMContentLoaded', function() {
        } else if (lowerSurface === upperSurface || upperSurface === ">100") {
            finalPercentage = lowerSurfacePercentage;
        } else {
-           // Méthode d'interpolation conforme au document "Méthode de calcul"
-           finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+           // Pour la distance inférieure
+           const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+    
+           // Pour la distance supérieure
+           const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+    
+           // Interpolation finale pour la distance réelle
+           finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
        }
        
        // Majoration pour gicleurs ou verre armé/briques de verre
