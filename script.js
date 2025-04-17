@@ -405,6 +405,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    // Trouver les bornes pour l'interpolation de distance
+    const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
+    const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
+    const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
+
     // Trouver les surfaces les plus proches pour l'interpolation
     let lowerSurface = null;
     let upperSurface = null;
@@ -431,15 +436,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Nouvelle méthode d'interpolation selon le document de référence
-    // Trouver les bornes pour l'interpolation de distance
-    const { lower: lowerDistance, upper: upperDistance } = findBounds(limitingDistance, distancesToUse);
-    const lowerDistanceIndex = distancesToUse.indexOf(lowerDistance);
-    const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
-
-    // Interpolation par surface pour la distance limitative inférieure
-    let percentageLowerDistance;
-    // Interpolation par surface pour la distance limitative supérieure
-    let percentageUpperDistance;
+    let percentageLowerDistance; // Pourcentage à la distance inférieure pour la surface réelle
+    let percentageUpperDistance; // Pourcentage à la distance supérieure pour la surface réelle
     
     if (sprinklers && !partialSprinklers) {
         // 1. Pour les bâtiments protégés par gicleurs (pas de ratio) - valeurs plus simples
@@ -450,8 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Interpolation par surface pour la distance inférieure
         percentageLowerDistance = lowerSurfacePercentageLower + 
-            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * 
-            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
         
         // Pour la distance limitative supérieure
         let lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
@@ -459,8 +456,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Interpolation par surface pour la distance supérieure
         percentageUpperDistance = lowerSurfacePercentageUpper + 
-            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * 
-            (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     } else {
         // 2. Pour les bâtiments sans gicleurs ou protection partielle (avec ratio)
         
@@ -470,21 +466,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Interpolation par surface pour la distance inférieure
         percentageLowerDistance = lowerSurfacePercentageLower + 
-            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * 
-            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
         
         // Pour la distance limitative supérieure
         let lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
         let upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
         
         // Interpolation par surface pour la distance supérieure
-        percentageUpperDistance = lowerSurfacePercentageUpper + (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+        percentageUpperDistance = lowerSurfacePercentageUpper + 
+            (facadeSurface - lowerSurface) / (upperSurface - lowerSurface) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     }
 
     // Interpolation finale par distance limitative
     let finalPercentage = percentageLowerDistance + 
-        (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * 
-        (percentageUpperDistance - percentageLowerDistance);
+        (limitingDistance - lowerDistance) / (upperDistance - lowerDistance) * (percentageUpperDistance - percentageLowerDistance);
 
     // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
     if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
