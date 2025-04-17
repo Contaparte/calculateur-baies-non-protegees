@@ -443,68 +443,68 @@
            if (sprinklers && !partialSprinklers) {
                // Pour les bâtiments protégés par gicleurs (pas de ratio)
                
-               // 1. Interpolation pour la distance, avec la surface inférieure
+               // 1. Interpolation pour la surface à distance fixe inférieure
                const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][lowerDistanceIndex];
-               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][upperDistanceIndex];
-               const lowerSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   lowerSurfacePercentageLowerDistance,
-                   lowerSurfacePercentageUpperDistance
-               );
-               
-               // 2. Interpolation pour la distance, avec la surface supérieure
                const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][upperDistanceIndex];
-               const upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   upperSurfacePercentageLowerDistance,
-                   upperSurfacePercentageUpperDistance
-               );
-               
-               // 3. Interpolation finale entre les surfaces
-               finalPercentage = interpolate(
+               const interpolatedPercentageLowerDistance = interpolate(
                    facadeSurface,
                    lowerSurface,
                    upperSurface,
-                   lowerSurfaceInterpolatedPercentage,
-                   upperSurfaceInterpolatedPercentage
+                   lowerSurfacePercentageLowerDistance,
+                   upperSurfacePercentageLowerDistance
+               );
+
+               // 2. Interpolation pour la surface à distance fixe supérieure
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][upperDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][upperDistanceIndex];
+               const interpolatedPercentageUpperDistance = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfacePercentageUpperDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+
+               // 3. Interpolation finale entre les distances
+               finalPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   interpolatedPercentageLowerDistance,
+                   interpolatedPercentageUpperDistance
                );
            } else {
                // Pour les bâtiments sans gicleurs ou à protection partielle (avec ratio)
-               
-               // 1. Interpolation pour la distance, avec la surface inférieure
+
+               // 1. Interpolation pour la surface à distance fixe inférieure
                const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-               const lowerSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   lowerSurfacePercentageLowerDistance,
-                   lowerSurfacePercentageUpperDistance
-               );
-               
-               // 2. Interpolation pour la distance, avec la surface supérieure
                const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-               const upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   upperSurfacePercentageLowerDistance,
-                   upperSurfacePercentageUpperDistance
-               );
-               
-               // 3. Interpolation finale entre les surfaces
-               finalPercentage = interpolate(
+               const interpolatedPercentageLowerDistance = interpolate(
                    facadeSurface,
                    lowerSurface,
                    upperSurface,
-                   lowerSurfaceInterpolatedPercentage,
-                   upperSurfaceInterpolatedPercentage
+                   lowerSurfacePercentageLowerDistance,
+                   upperSurfacePercentageLowerDistance
+               );
+
+               // 2. Interpolation pour la surface à distance fixe supérieure
+               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+               const interpolatedPercentageUpperDistance = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerSurfacePercentageUpperDistance,
+                   upperSurfacePercentageUpperDistance
+               );
+
+               // 3. Interpolation finale entre les distances
+               finalPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   interpolatedPercentageLowerDistance,
+                   interpolatedPercentageUpperDistance
                );
            }
            
