@@ -357,6 +357,8 @@
             document.getElementById('copy_cnb').style.display = 'inline-block';
             document.getElementById('cnb-result').innerHTML = exemptMessage;
             return;
+        } else {
+            // Continuer le calcul normalement
         }
     }
 
@@ -402,6 +404,7 @@
         `;
         document.getElementById('cnb-result').innerHTML = resultHTML;
         document.getElementById('copy_cnb').style.display = 'inline-block';
+        
         return;
     }
 
@@ -411,6 +414,7 @@
     const upperDistanceIndex = distancesToUse.indexOf(upperDistance);
 
     // Trouver les surfaces les plus proches pour l'interpolation
+    // Recherche des surfaces encadrantes
     let lowerSurface = surfacesToUse[0];
     let upperSurface = surfacesToUse[surfacesToUse.length - 1];
 
@@ -427,53 +431,56 @@
         lowerSurface = surfacesToUse[0];
         upperSurface = surfacesToUse[1];
     }
-
+    
     // Si la façade est plus grande que la plus grande surface du tableau
     if (facadeSurface > surfacesToUse[surfacesToUse.length - 1]) {
         lowerSurface = surfacesToUse[surfacesToUse.length - 2];
         upperSurface = surfacesToUse[surfacesToUse.length - 1];
     }
 
-    // Extraire les pourcentages pour les surfaces inférieures et supérieures
-    let percentageLowerSurfaceLowerDistance, percentageLowerSurfaceUpperDistance;
-    let percentageUpperSurfaceLowerDistance, percentageUpperSurfaceUpperDistance;
+    // Variables pour stocker les pourcentages intermédiaires
+    let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
+    let upperSurfacePercentageLower, upperSurfacePercentageUpper;
+    let percentageAtLowerDistance, percentageAtUpperDistance;
 
+    // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
     if (sprinklers && !partialSprinklers) {
         // Avec gicleurs (pas de ratio)
-        percentageLowerSurfaceLowerDistance = tableToUse[lowerSurface][lowerDistanceIndex];
-        percentageLowerSurfaceUpperDistance = tableToUse[lowerSurface][upperDistanceIndex];
-        percentageUpperSurfaceLowerDistance = tableToUse[upperSurface][lowerDistanceIndex];
-        percentageUpperSurfaceUpperDistance = tableToUse[upperSurface][upperDistanceIndex];
+        lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+        lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+        
+        upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+        upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
     } else {
         // Sans gicleurs ou protection partielle (avec ratio)
-        percentageLowerSurfaceLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-        percentageLowerSurfaceUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-        percentageUpperSurfaceLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-        percentageUpperSurfaceUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+        lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+        lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+        
+        upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+        upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
     }
 
-    // Étape 1: Interpolation pour la surface à la distance inférieure
-    let percentageAtLowerDistance;
+    // Étape 1: Interpolation pour la distance limitative inférieure
     if (lowerSurface === upperSurface) {
-        percentageAtLowerDistance = percentageLowerSurfaceLowerDistance;
+        percentageAtLowerDistance = lowerSurfacePercentageLower;
     } else {
-        percentageAtLowerDistance = percentageLowerSurfaceLowerDistance + 
+        percentageAtLowerDistance = lowerSurfacePercentageLower + 
             ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
-            (percentageUpperSurfaceLowerDistance - percentageLowerSurfaceLowerDistance);
+            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
     }
 
-    // Étape 2: Interpolation pour la surface à la distance supérieure
-    let percentageAtUpperDistance;
+    // Étape 2: Interpolation pour la distance limitative supérieure
     if (lowerSurface === upperSurface) {
-        percentageAtUpperDistance = percentageLowerSurfaceUpperDistance;
+        percentageAtUpperDistance = lowerSurfacePercentageUpper;
     } else {
-        percentageAtUpperDistance = percentageLowerSurfaceUpperDistance + 
+        percentageAtUpperDistance = lowerSurfacePercentageUpper + 
             ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
-            (percentageUpperSurfaceUpperDistance - percentageLowerSurfaceUpperDistance);
+            (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     }
 
     // Étape 3: Interpolation finale entre les distances
     let finalPercentage;
+    
     if (lowerDistance === upperDistance) {
         finalPercentage = percentageAtLowerDistance;
     } else {
@@ -489,6 +496,7 @@
         } else { // groupes_E_F1_F2
             finalPercentage = 0.5 * Math.pow(limitingDistance, 2);
         }
+        // Limiter à 100%
         finalPercentage = Math.min(finalPercentage, 100);
     }
     
@@ -503,10 +511,15 @@
             Te = 1010;
         }
         
+        // Calculer le coefficient d'ouverture équivalente FEO
         const FEO = Math.pow((Tu / Te), 4);
-        const AF = facadeSurface;
-        const A = (finalPercentage / 100) * facadeSurface;
-        const AC = A + (AF - A) * FEO;
+        
+        // Calculer la surface corrigée
+        const AF = facadeSurface; // Surface extérieure de la façade 
+        const A = (finalPercentage / 100) * facadeSurface; // Surface réelle de baies non protégées
+        const AC = A + (AF - A) * FEO; // Surface corrigée
+        
+        // Recalculer le pourcentage
         finalPercentage = (AC / facadeSurface) * 100;
     }
     
@@ -527,8 +540,8 @@
     // Vérification de l'espacement des baies
     let spacingResult = "";
     if (checkSpacing) {
-        const minHorizontalSpacing = 2.0;
-        const minVerticalSpacing = 2.0;
+        const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
+        const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
         
         if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
             spacingResult = `
@@ -591,17 +604,17 @@
         Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
         ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
         ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
-        <br><strong>Détails d'interpolation par la méthode exacte :</strong><br>
-        <strong>1. Interpolation pour ${lowerDistance} m :</strong><br>
-        - Surface ${lowerSurface} m² : ${percentageLowerSurfaceLowerDistance}%<br>
-        - Surface ${upperSurface} m² : ${percentageUpperSurfaceLowerDistance}%<br>
-        - Pour ${facadeSurface.toFixed(2)} m² : ${percentageAtLowerDistance.toFixed(2)}%<br>
-        <strong>2. Interpolation pour ${upperDistance} m :</strong><br>
-        - Surface ${lowerSurface} m² : ${percentageLowerSurfaceUpperDistance}%<br>
-        - Surface ${upperSurface} m² : ${percentageUpperSurfaceUpperDistance}%<br>
-        - Pour ${facadeSurface.toFixed(2)} m² : ${percentageAtUpperDistance.toFixed(2)}%<br>
-        <strong>3. Interpolation finale pour ${limitingDistance.toFixed(2)} m :</strong><br>
-        - Formule : ${percentageAtLowerDistance.toFixed(2)} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${percentageAtUpperDistance.toFixed(2)} - ${percentageAtLowerDistance.toFixed(2)})<br>
+        <br><strong>Détails d'interpolation par la méthode exacte:</strong><br>
+        <strong>1. Pour la distance limitative (entre ${lowerDistance} m et ${upperDistance} m):</strong><br>
+        - Pour surface de ${lowerSurface} m²: ${lowerSurfacePercentageLower}% à ${lowerDistance}m et ${lowerSurfacePercentageUpper}% à ${upperDistance}m<br>
+        - Valeur interpolée à ${limitingDistance.toFixed(2)}m pour ${lowerSurface}m²: ${lowerSurfacePercentageLower.toFixed(2)}%<br>
+        - Pour surface de ${upperSurface} m²: ${upperSurfacePercentageLower}% à ${lowerDistance}m et ${upperSurfacePercentageUpper}% à ${upperDistance}m<br>
+        - Valeur interpolée à ${limitingDistance.toFixed(2)}m pour ${upperSurface}m²: ${upperSurfacePercentageLower.toFixed(2)}%<br>
+        <strong>2. Pour la surface de façade (${facadeSurface.toFixed(2)} m²):</strong><br>
+        - À la distance de ${lowerDistance}m: ${percentageAtLowerDistance.toFixed(2)}%<br>
+        - À la distance de ${upperDistance}m: ${percentageAtUpperDistance.toFixed(2)}%<br>
+        - Interpolation entre ${lowerDistance}m et ${upperDistance}m pour ${facadeSurface.toFixed(2)}m²<br>
+        - Formule: ${percentageAtLowerDistance.toFixed(2)} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${percentageAtUpperDistance.toFixed(2)} - ${percentageAtLowerDistance.toFixed(2)})<br>
         <br><strong>Résultats :</strong><br>
         Pourcentage maximal de baies non protégées : ${finalPercentage.toFixed(2)}%<br>
         Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
@@ -619,29 +632,30 @@
         if (proposedPercentage > finalPercentage) {
             statusClass = "color: red; font-weight: bold;";
             comparisonResult = `
-                <br><br><strong>Comparaison avec la surface proposée :</strong><br>
-                Votre proposition : ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ NON CONFORME : La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
             comparisonResult = `
-                <br><br><strong>Comparaison avec la surface proposée :</strong><br>
-                Votre proposition : ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">✅ CONFORME : La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
+                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${finalPercentage.toFixed(2)}%).</span>
             `;
         }
+        
+        // Ajouter le résultat de comparaison à resultHTML
         resultHTML += comparisonResult;
     }
-
+    
     // Ajouter le message de dégagement de responsabilité
     resultHTML += `
         <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-        <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
+        <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
         L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
         </div>
-    `;
-
+    `;           
     document.getElementById('cnb-result').innerHTML = resultHTML;
     document.getElementById('copy_cnb').style.display = 'inline-block';
 }
