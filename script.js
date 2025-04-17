@@ -1201,9 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
        }
        
        // Limiter le pourcentage entre 0 et 100
-       finalPercentage = Math.max(0,
-
-      Math.min(100, finalPercentage));
+       finalPercentage = Math.max(0, Math.min(100, finalPercentage));
         
         // Calculer la surface maximale
         const maxArea = (finalPercentage / 100) * surface;
