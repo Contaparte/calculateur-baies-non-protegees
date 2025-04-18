@@ -475,36 +475,36 @@
                );
            } else {
                // Pour les bâtiments sans gicleurs ou à protection partielle (avec ratio)
-               
-               // 1. Interpolation pour la distance, avec la surface inférieure
-               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-               const lowerSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   lowerSurfacePercentageLowerDistance,
-                   lowerSurfacePercentageUpperDistance
-               );
-               
-               // 2. Interpolation pour la distance, avec la surface supérieure
-               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-               const upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   upperSurfacePercentageLowerDistance,
-                   upperSurfacePercentageUpperDistance
-               );
-               
-               // 3. Interpolation finale entre les surfaces
-               finalPercentage = interpolate(
+
+               // 1. D'abord, interpolation par surface à la distance inférieure (lowerDistance)
+               const lowerDistanceLowerSurfacePercentage = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+               const lowerDistanceUpperSurfacePercentage = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+               const lowerDistanceInterpolatedPercentage = interpolate(
                    facadeSurface,
                    lowerSurface,
                    upperSurface,
-                   lowerSurfaceInterpolatedPercentage,
-                   upperSurfaceInterpolatedPercentage
+                   lowerDistanceLowerSurfacePercentage,
+                   lowerDistanceUpperSurfacePercentage
+               );
+
+               // 2. Ensuite, interpolation par surface à la distance supérieure (upperDistance)
+               const upperDistanceLowerSurfacePercentage = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+               const upperDistanceUpperSurfacePercentage = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+               const upperDistanceInterpolatedPercentage = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   upperDistanceLowerSurfacePercentage,
+                   upperDistanceUpperSurfacePercentage
+               );
+
+               // 3. Enfin, interpolation par distance entre les deux pourcentages calculés
+               finalPercentage = interpolate(
+                   limitingDistance,
+                   lowerDistance,
+                   upperDistance,
+                   lowerDistanceInterpolatedPercentage,
+                   upperDistanceInterpolatedPercentage
                );
            }
            
@@ -652,39 +652,39 @@
                `;
            } else {
                // Cas des bâtiments sans gicleurs
-               const lowerSurfacePercentageLowerDistance = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-               const lowerSurfacePercentageUpperDistance = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-               const lowerSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   lowerSurfacePercentageLowerDistance,
-                   lowerSurfacePercentageUpperDistance
+               const lowerDistanceLowerSurfacePercentage = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+               const lowerDistanceUpperSurfacePercentage = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+               const lowerDistanceInterpolatedPercentage = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   lowerDistanceLowerSurfacePercentage,
+                   lowerDistanceUpperSurfacePercentage
                );
-               
-               const upperSurfacePercentageLowerDistance = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-               const upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   upperSurfacePercentageLowerDistance,
-                   upperSurfacePercentageUpperDistance
+
+               const upperDistanceLowerSurfacePercentage = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+               const upperDistanceUpperSurfacePercentage = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+               const upperDistanceInterpolatedPercentage = interpolate(
+                   facadeSurface,
+                   lowerSurface,
+                   upperSurface,
+                   upperDistanceLowerSurfacePercentage,
+                   upperDistanceUpperSurfacePercentage
                );
-               
+
                interpolationDetails = `
                  <strong>Détails d'interpolation par la méthode exacte:</strong><br>
-                 <strong>1. Pour la surface de ${lowerSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
-                 - À ${lowerDistance} m: ${lowerSurfacePercentageLowerDistance}%<br>
-                 - À ${upperDistance} m: ${lowerSurfacePercentageUpperDistance}%<br>
-                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${lowerSurfaceInterpolatedPercentage.toFixed(2)}%<br>
-                 <strong>2. Pour la surface de ${upperSurface} m² (à ${limitingDistance.toFixed(2)} m):</strong><br>
-                 - À ${lowerDistance} m: ${upperSurfacePercentageLowerDistance}%<br>
-                 - À ${upperDistance} m: ${upperSurfacePercentageUpperDistance}%<br>
-                 - Valeur interpolée à ${limitingDistance.toFixed(2)} m: ${upperSurfaceInterpolatedPercentage.toFixed(2)}%<br>
-                 <strong>3. Pour la surface de ${facadeSurface.toFixed(2)} m²:</strong><br>
-                 - Interpolation entre ${lowerSurface} m² (${lowerSurfaceInterpolatedPercentage.toFixed(2)}%) et ${upperSurface} m² (${upperSurfaceInterpolatedPercentage.toFixed(2)}%)<br>
-                 - Formule: ${lowerSurfaceInterpolatedPercentage.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${lowerSurface}) / (${upperSurface} - ${lowerSurface}) × (${upperSurfaceInterpolatedPercentage.toFixed(2)} - ${lowerSurfaceInterpolatedPercentage.toFixed(2)})
+                 <strong>1. Pour la distance de ${lowerDistance} m (avec surface ${facadeSurface.toFixed(2)} m²):</strong><br>
+                 - Surface de ${lowerSurface} m²: ${lowerDistanceLowerSurfacePercentage}%<br>
+                 - Surface de ${upperSurface} m²: ${lowerDistanceUpperSurfacePercentage}%<br>
+                 - Valeur interpolée pour ${facadeSurface.toFixed(2)} m² à ${lowerDistance} m: ${lowerDistanceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>2. Pour la distance de ${upperDistance} m (avec surface ${facadeSurface.toFixed(2)} m²):</strong><br>
+                 - Surface de ${lowerSurface} m²: ${upperDistanceLowerSurfacePercentage}%<br>
+                 - Surface de ${upperSurface} m²: ${upperDistanceUpperSurfacePercentage}%<br>
+                 - Valeur interpolée pour ${facadeSurface.toFixed(2)} m² à ${upperDistance} m: ${upperDistanceInterpolatedPercentage.toFixed(2)}%<br>
+                 <strong>3. Pour la distance limitative de ${limitingDistance.toFixed(2)} m:</strong><br>
+                 - Interpolation entre ${lowerDistance} m (${lowerDistanceInterpolatedPercentage.toFixed(2)}%) et ${upperDistance} m (${upperDistanceInterpolatedPercentage.toFixed(2)}%)<br>
+                 - Formule: ${lowerDistanceInterpolatedPercentage.toFixed(2)} + (${limitingDistance.toFixed(2)} - ${lowerDistance}) / (${upperDistance} - ${lowerDistance}) × (${upperDistanceInterpolatedPercentage.toFixed(2)} - ${lowerDistanceInterpolatedPercentage.toFixed(2)})
                `;
            }
 
@@ -925,45 +925,49 @@
 
            // Appliquer la méthode d'interpolation suivant le document "Méthodes de calcul"
            
-           // 1. Première interpolation: Pourcentage pour la surface inférieure à la distance limitative
-           const lowerSurfacePercentageLowerDistance = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpperDistance = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfaceInterpolatedPercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               lowerSurfacePercentageLowerDistance, 
-               lowerSurfacePercentageUpperDistance
-           );
+           // 1. D'abord, interpolation par surface à la distance inférieure
+           const lowerDistanceLowerSurfacePercentage = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+           let lowerDistanceUpperSurfacePercentage, lowerDistanceInterpolatedPercentage;
 
-           // 2. Deuxième interpolation: Pourcentage pour la surface supérieure à la distance limitative
-           let upperSurfaceInterpolatedPercentage;
            if (upperSurface === ">100") {
-               // Pour les grandes surfaces, on conserve la valeur de la surface inférieure
-               upperSurfaceInterpolatedPercentage = lowerSurfaceInterpolatedPercentage;
+               // Pour les grandes surfaces, pas d'interpolation
+               lowerDistanceInterpolatedPercentage = lowerDistanceLowerSurfacePercentage;
            } else {
-               const upperSurfacePercentageLowerDistance = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
-               upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance, 
-                   lowerDistance, 
-                   upperDistance, 
-                   upperSurfacePercentageLowerDistance, 
-                   upperSurfacePercentageUpperDistance
-               );
-           }
-
-           // 3. Troisième interpolation: Entre les surfaces pour obtenir le pourcentage final
-           let finalPercentage;
-           if (upperSurface === ">100" || lowerSurface === upperSurface) {
-               finalPercentage = lowerSurfaceInterpolatedPercentage;
-           } else {
-               finalPercentage = interpolate(
+               lowerDistanceUpperSurfacePercentage = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
+               lowerDistanceInterpolatedPercentage = interpolate(
                    surface,
                    lowerSurface,
                    upperSurface,
-                   lowerSurfaceInterpolatedPercentage,
-                   upperSurfaceInterpolatedPercentage
+                   lowerDistanceLowerSurfacePercentage,
+                   lowerDistanceUpperSurfacePercentage
+               );
+           }
+
+           // 2. Ensuite, interpolation par surface à la distance supérieure
+           const upperDistanceLowerSurfacePercentage = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+           let upperDistanceUpperSurfacePercentage, upperDistanceInterpolatedPercentage;
+
+           if (upperSurface === ">100") {
+               // Pour les grandes surfaces, pas d'interpolation
+               upperDistanceInterpolatedPercentage = upperDistanceLowerSurfacePercentage;
+           } else {
+               upperDistanceUpperSurfacePercentage = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
+               upperDistanceInterpolatedPercentage = interpolate(
+                   surface,
+                   lowerSurface,
+                   upperSurface,
+                   upperDistanceLowerSurfacePercentage,
+                   upperDistanceUpperSurfacePercentage
+               );
+           }
+
+              // 3. Enfin, interpolation par distance entre les deux pourcentages calculés
+              let finalPercentage = interpolate(
+                  limitingDistance,
+                  lowerDistance,
+                  upperDistance,
+                  lowerDistanceInterpolatedPercentage,
+                  upperDistanceInterpolatedPercentage
                );
            }
 
@@ -1292,47 +1296,50 @@
            
            // Appliquer la méthode d'interpolation suivant le document "Méthodes de calcul"
            
-           // 1. Première interpolation: Pourcentage pour la surface inférieure à la distance limitative
-           const lowerSurfacePercentageLowerDistance = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpperDistance = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfaceInterpolatedPercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               lowerSurfacePercentageLowerDistance, 
-               lowerSurfacePercentageUpperDistance
-           );
-           
-           // 2. Deuxième interpolation: Pourcentage pour la surface supérieure à la distance limitative
-           let upperSurfaceInterpolatedPercentage;
+           // 1. D'abord, interpolation par surface à la distance inférieure
+           const lowerDistanceLowerSurfacePercentage = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+           let lowerDistanceUpperSurfacePercentage, lowerDistanceInterpolatedPercentage;
+
            if (upperSurface === ">100") {
-               // Pour les grandes surfaces, on conserve la valeur de la surface inférieure
-               upperSurfaceInterpolatedPercentage = lowerSurfaceInterpolatedPercentage;
+               // Pour les grandes surfaces, pas d'interpolation
+               lowerDistanceInterpolatedPercentage = lowerDistanceLowerSurfacePercentage;
            } else {
-               const upperSurfacePercentageLowerDistance = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
-               const upperSurfacePercentageUpperDistance = tableau91015.surfaces[upperSurface][upperDistanceIndex];
-               upperSurfaceInterpolatedPercentage = interpolate(
-                   limitingDistance, 
-                   lowerDistance, 
-                   upperDistance, 
-                   upperSurfacePercentageLowerDistance, 
-                   upperSurfacePercentageUpperDistance
-               );
-           }
-           
-           // 3. Troisième interpolation: Entre les surfaces pour obtenir le pourcentage final
-           let finalPercentage;
-           if (upperSurface === ">100" || lowerSurface === upperSurface) {
-               finalPercentage = lowerSurfaceInterpolatedPercentage;
-           } else {
-               finalPercentage = interpolate(
+               lowerDistanceUpperSurfacePercentage = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
+               lowerDistanceInterpolatedPercentage = interpolate(
                    surface,
                    lowerSurface,
                    upperSurface,
-                   lowerSurfaceInterpolatedPercentage,
-                   upperSurfaceInterpolatedPercentage
+                   lowerDistanceLowerSurfacePercentage,
+                   lowerDistanceUpperSurfacePercentage
                );
            }
+
+           // 2. Ensuite, interpolation par surface à la distance supérieure
+           const upperDistanceLowerSurfacePercentage = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+           let upperDistanceUpperSurfacePercentage, upperDistanceInterpolatedPercentage;
+
+           if (upperSurface === ">100") {
+               // Pour les grandes surfaces, pas d'interpolation
+               upperDistanceInterpolatedPercentage = upperDistanceLowerSurfacePercentage;
+           } else {
+               upperDistanceUpperSurfacePercentage = tableau91015.surfaces[upperSurface][upperDistanceIndex];
+               upperDistanceInterpolatedPercentage = interpolate(
+                   surface,
+                   lowerSurface,
+                   upperSurface,
+                   upperDistanceLowerSurfacePercentage,
+                   upperDistanceUpperSurfacePercentage
+               );
+           }
+
+           // 3. Enfin, interpolation par distance entre les deux pourcentages calculés
+           let finalPercentage = interpolate(
+               limitingDistance,
+               lowerDistance,
+               upperDistance,
+               lowerDistanceInterpolatedPercentage,
+               upperDistanceInterpolatedPercentage
+           );
 
            // Formule alternative pour les grandes surfaces si la distance est >= 1.2 m
            if (surface > 100 && limitingDistance >= 1.2) {
