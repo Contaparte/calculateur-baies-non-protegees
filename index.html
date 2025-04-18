@@ -65,8 +65,6 @@
                         </select>
                     </div>
                     
-                    </div>
-                    
                     <div class="mb-3">
                         <label for="revetement323" class="form-label">Type de revêtement <span class="info-icon" title="Sélectionnez le type de revêtement du bâtiment">ⓘ</span></label>
                         <select class="form-select" id="revetement323">
@@ -119,16 +117,53 @@
                         <label class="form-check-label" for="verifierEspacement323">Vérifier l'espacement minimal des baies <span class="info-icon" title="Vérifier si les baies respectent l'espacement minimal requis">ⓘ</span></label>
                     </div>
                     
+                    <div id="spacing_options_323" style="display: none;">
+                        <div class="mb-3">
+                            <label for="horizontal_spacing_323" class="form-label">Espacement horizontal entre baies (m)</label>
+                            <input type="number" class="form-control" id="horizontal_spacing_323" value="2" min="0" step="0.1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vertical_spacing_323" class="form-label">Espacement vertical entre baies (m)</label>
+                            <input type="number" class="form-control" id="vertical_spacing_323" value="2" min="0" step="0.1">
+                        </div>
+                    </div>
+                    
                     <div class="section-title">Méthode de l'aire pondérée</div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="airesPonderees323">
                         <label class="form-check-label" for="airesPonderees323">Utiliser la méthode de l'aire pondérée <span class="info-icon" title="Utiliser la méthode de l'aire pondérée pour le calcul">ⓘ</span></label>
                     </div>
                     
+                    <div id="weighted_options_323" style="display: none;">
+                        <div class="mb-3">
+                            <label for="Tu_323" class="form-label">Température superficielle moyenne (°C)</label>
+                            <input type="number" class="form-control" id="Tu_323" value="500" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="resistance_323" class="form-label">Degré de résistance au feu</label>
+                            <select class="form-select" id="resistance_323">
+                                <option value="45">45 min</option>
+                                <option value="60">1 h</option>
+                                <option value="120">2 h</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="section-title">Protection des éléments externes</div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="protectionSoffites323">
                         <label class="form-check-label" for="protectionSoffites323">Vérifier la protection des soffites <span class="info-icon" title="Vérifier si les soffites nécessitent une protection">ⓘ</span></label>
+                    </div>
+                    
+                    <div id="soffit_options_323" style="display: none;">
+                        <div class="mb-3">
+                            <label for="soffit_distance_323" class="form-label">Distance du soffite à la limite de propriété (m)</label>
+                            <input type="number" class="form-control" id="soffit_distance_323" value="0.5" min="0" step="0.01">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="soffit_protected_323">
+                            <label class="form-check-label" for="soffit_protected_323">Soffite protégé selon exigences</label>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
@@ -146,7 +181,23 @@
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary" id="calculer323">Calculer</button>
+                        <button type="submit" class="btn btn-primary" id="calculer91015">Calculer</button>
+                        <button type="button" class="btn btn-secondary" id="copier91015" style="display: none;">Copier les résultats</button>
+                    </div>
+                </form>
+                
+                <div class="result-section" id="results91015" style="display: none;">
+                    <h4>Résultats</h4>
+                    <div id="resultContent91015"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>btn btn-primary" id="calculer323">Calculer</button>
                         <button type="button" class="btn btn-secondary" id="copier323" style="display: none;">Copier les résultats</button>
                     </div>
                 </form>
@@ -221,10 +272,32 @@
                         <label class="form-check-label" for="protectionSoffites91014">Vérifier la protection des soffites <span class="info-icon" title="Vérifier si les soffites nécessitent une protection">ⓘ</span></label>
                     </div>
                     
+                    <div id="soffit_options_91014" style="display: none;">
+                        <div class="mb-3">
+                            <label for="soffit_distance_91014" class="form-label">Distance du soffite à la limite de propriété (m)</label>
+                            <input type="number" class="form-control" id="soffit_distance_91014" value="0.5" min="0" step="0.01">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="soffit_protected_91014">
+                            <label class="form-check-label" for="soffit_protected_91014">Soffite protégé selon exigences</label>
+                        </div>
+                    </div>
+                    
                     <div class="section-title">Espacement des baies non protégées</div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="verifierEspacement91014">
                         <label class="form-check-label" for="verifierEspacement91014">Vérifier l'espacement minimal des baies <span class="info-icon" title="Vérifier si les baies respectent l'espacement minimal requis">ⓘ</span></label>
+                    </div>
+                    
+                    <div id="spacing_options_91014" style="display: none;">
+                        <div class="mb-3">
+                            <label for="horizontal_spacing_91014" class="form-label">Espacement horizontal entre baies (m)</label>
+                            <input type="number" class="form-control" id="horizontal_spacing_91014" value="2" min="0" step="0.1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vertical_spacing_91014" class="form-label">Espacement vertical entre baies (m)</label>
+                            <input type="number" class="form-control" id="vertical_spacing_91014" value="2" min="0" step="0.1">
+                        </div>
                     </div>
                     
                     <div class="mb-3">
@@ -309,10 +382,32 @@
                         <label class="form-check-label" for="protectionSoffites91015">Vérifier la protection des soffites <span class="info-icon" title="Vérifier si les soffites nécessitent une protection">ⓘ</span></label>
                     </div>
                     
+                    <div id="soffit_options_91015" style="display: none;">
+                        <div class="mb-3">
+                            <label for="soffit_distance_91015" class="form-label">Distance du soffite à la limite de propriété (m)</label>
+                            <input type="number" class="form-control" id="soffit_distance_91015" value="0.5" min="0" step="0.01">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="soffit_protected_91015">
+                            <label class="form-check-label" for="soffit_protected_91015">Soffite protégé selon exigences</label>
+                        </div>
+                    </div>
+                    
                     <div class="section-title">Espacement des baies non protégées</div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="verifierEspacement91015">
                         <label class="form-check-label" for="verifierEspacement91015">Vérifier l'espacement minimal des baies <span class="info-icon" title="Vérifier si les baies respectent l'espacement minimal requis">ⓘ</span></label>
+                    </div>
+                    
+                    <div id="spacing_options_91015" style="display: none;">
+                        <div class="mb-3">
+                            <label for="horizontal_spacing_91015" class="form-label">Espacement horizontal entre baies (m)</label>
+                            <input type="number" class="form-control" id="horizontal_spacing_91015" value="2" min="0" step="0.1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vertical_spacing_91015" class="form-label">Espacement vertical entre baies (m)</label>
+                            <input type="number" class="form-control" id="vertical_spacing_91015" value="2" min="0" step="0.1">
+                        </div>
                     </div>
                     
                     <div class="mb-3">
