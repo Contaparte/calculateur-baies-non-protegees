@@ -297,10 +297,7 @@ function calculer91015() {
 
 // Fonctions auxiliaires pour les calculs
 function calculerPourcentageMaximal323(usage, surfaceFacade, categorieRapport, distanceLimitative) {
-    // Version simplifiée du tableau 3.2.3.1.-B et 3.2.3.1.-C
-    // Dans une implémentation réelle, vous devriez avoir les tableaux complets
-    
-    // Structure pour les tableaux: {surface: {rapport: [pourcentages pour différentes distances]}}
+    // Structure des tableaux 3.2.3.1-B et 3.2.3.1-C
     const tableaux = {
         'A-D-F3': { // Tableau 3.2.3.1.-B
             '10': {
@@ -313,7 +310,36 @@ function calculerPourcentageMaximal323(usage, surfaceFacade, categorieRapport, d
                 '3:1 à 10:1': [0, 8, 10, 17, 25, 37, 67, 100],
                 '> 10:1': [0, 10, 15, 26, 39, 53, 87, 100]
             },
-            // Ajoutez d'autres surfaces selon le tableau complet
+            '20': {
+                '< 3:1': [0, 7, 9, 12, 18, 26, 49, 81, 100],
+                '3:1 à 10:1': [0, 8, 10, 15, 21, 30, 53, 85, 100],
+                '> 10:1': [0, 9, 14, 23, 33, 45, 72, 100]
+            },
+            '25': {
+                '< 3:1': [0, 7, 8, 11, 16, 23, 41, 66, 98, 100],
+                '3:1 à 10:1': [0, 8, 9, 13, 19, 26, 45, 70, 100],
+                '> 10:1': [0, 9, 13, 21, 30, 39, 62, 90, 100]
+            },
+            '30': {
+                '< 3:1': [0, 7, 8, 11, 15, 20, 35, 56, 83, 100],
+                '3:1 à 10:1': [0, 7, 9, 12, 17, 23, 39, 61, 88, 100],
+                '> 10:1': [0, 8, 12, 19, 27, 36, 56, 79, 100]
+            },
+            '40': {
+                '< 3:1': [0, 7, 8, 10, 13, 17, 28, 44, 64, 89, 100],
+                '3:1 à 10:1': [0, 7, 8, 11, 15, 20, 32, 48, 69, 93, 100],
+                '> 10:1': [0, 8, 11, 17, 24, 31, 47, 66, 88, 100]
+            },
+            '50': {
+                '< 3:1': [0, 7, 8, 9, 12, 15, 24, 37, 53, 72, 96, 100],
+                '3:1 à 10:1': [0, 7, 8, 10, 14, 18, 28, 41, 57, 77, 100],
+                '> 10:1': [0, 8, 10, 15, 21, 28, 41, 57, 76, 97, 100]
+            },
+            '100': {
+                '< 3:1': [0, 7, 7, 8, 9, 11, 16, 22, 30, 40, 51, 65, 80, 97, 100],
+                '3:1 à 10:1': [0, 7, 8, 9, 11, 13, 18, 25, 34, 44, 56, 69, 84, 100],
+                '> 10:1': [0, 7, 9, 12, 16, 20, 29, 39, 49, 61, 74, 89, 100]
+            }
         },
         'E-F12': { // Tableau 3.2.3.1.-C
             '10': {
@@ -326,152 +352,227 @@ function calculerPourcentageMaximal323(usage, surfaceFacade, categorieRapport, d
                 '3:1 à 10:1': [0, 4, 5, 8, 13, 18, 34, 55, 82, 100],
                 '> 10:1': [0, 5, 8, 13, 19, 26, 43, 66, 93, 100]
             },
-            // Ajoutez d'autres surfaces selon le tableau complet
+            '20': {
+                '< 3:1': [0, 4, 4, 6, 9, 13, 25, 40, 61, 85, 100],
+                '3:1 à 10:1': [0, 4, 5, 7, 11, 15, 27, 43, 63, 87, 100],
+                '> 10:1': [0, 5, 7, 11, 17, 22, 36, 53, 74, 99, 100]
+            },
+            '25': {
+                '< 3:1': [0, 4, 4, 6, 8, 11, 20, 33, 49, 69, 92, 100],
+                '3:1 à 10:1': [0, 4, 5, 7, 9, 13, 22, 35, 51, 71, 94, 100],
+                '> 10:1': [0, 4, 6, 10, 15, 20, 31, 45, 62, 82, 100]
+            },
+            '30': {
+                '< 3:1': [0, 4, 4, 5, 7, 10, 18, 28, 42, 58, 77, 100],
+                '3:1 à 10:1': [0, 4, 4, 6, 9, 12, 20, 30, 44, 60, 80, 100],
+                '> 10:1': [0, 4, 6, 10, 14, 18, 28, 40, 54, 71, 91, 100]
+            },
+            '40': {
+                '< 3:1': [0, 4, 4, 5, 6, 8, 14, 22, 32, 44, 59, 76, 94, 100],
+                '3:1 à 10:1': [0, 4, 4, 6, 8, 10, 16, 24, 34, 47, 61, 78, 97, 100],
+                '> 10:1': [0, 4, 5, 8, 12, 15, 23, 33, 44, 57, 72, 89, 100]
+            },
+            '50': {
+                '< 3:1': [0, 4, 4, 5, 6, 7, 12, 18, 26, 36, 48, 61, 76, 93, 100],
+                '3:1 à 10:1': [0, 4, 4, 5, 7, 9, 14, 20, 29, 38, 50, 63, 79, 95, 100],
+                '> 10:1': [0, 4, 5, 8, 11, 14, 21, 29, 38, 48, 61, 74, 90, 100]
+            },
+            '100': {
+                '< 3:1': [0, 4, 4, 4, 5, 5, 8, 11, 15, 20, 26, 32, 40, 48, 58, 68, 79, 100],
+                '3:1 à 10:1': [0, 4, 4, 4, 5, 6, 9, 13, 17, 22, 28, 35, 42, 51, 60, 70, 81, 100],
+                '> 10:1': [0, 4, 4, 6, 8, 10, 14, 19, 25, 31, 37, 44, 52, 61, 71, 81, 92, 100]
+            }
         }
     };
     
-    // Distances limitative correspondant aux colonnes dans les tableaux ci-dessus
+    // Distances limitative correspondant aux colonnes dans les tableaux
     const distances = {
-        'A-D-F3': [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0],
-        'E-F12': [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0]
+        'A-D-F3': [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0],
+        'E-F12': [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0]
     };
     
-    // Pour cet exemple, nous simplifions et retournons un pourcentage basé sur la distance limitative
-    // Dans une implémentation réelle, vous interpoleriez les valeurs des tableaux
-    
-    let pourcentage = 0;
-    
-    // Simplification pour l'exemple
-    if (distanceLimitative < 1.2) {
-        pourcentage = 0;
-    } else if (distanceLimitative < 2.0) {
-        pourcentage = usage === 'A-D-F3' ? 10 : 5;
-    } else if (distanceLimitative < 3.0) {
-        pourcentage = usage === 'A-D-F3' ? 30 : 15;
-    } else if (distanceLimitative < 4.0) {
-        pourcentage = usage === 'A-D-F3' ? 50 : 25;
-    } else if (distanceLimitative < 6.0) {
-        pourcentage = usage === 'A-D-F3' ? 90 : 45;
-    } else {
-        pourcentage = 100;
+    // Trouver la catégorie de surface la plus proche
+    const surfacesDisponibles = Object.keys(tableaux[usage]).map(Number);
+    let surfaceCategorie = surfacesDisponibles[0];
+    for (const surface of surfacesDisponibles) {
+        if (Math.abs(surface - surfaceFacade) < Math.abs(surfaceCategorie - surfaceFacade)) {
+            surfaceCategorie = surface;
+        }
     }
     
-    return pourcentage;
+    // Si la surface est supérieure à la plus grande catégorie disponible, utiliser la plus grande
+    if (surfaceFacade > Math.max(...surfacesDisponibles)) {
+        surfaceCategorie = Math.max(...surfacesDisponibles);
+    }
+    
+    // Trouver les indices et les pourcentages pour l'interpolation
+    const distancesTableau = distances[usage];
+    let indiceInf = 0;
+    let indiceSup = 0;
+    
+    for (let i = 0; i < distancesTableau.length; i++) {
+        if (distancesTableau[i] <= distanceLimitative) {
+            indiceInf = i;
+        }
+        if (distancesTableau[i] >= distanceLimitative && (indiceSup === 0 || distancesTableau[i] < distancesTableau[indiceSup])) {
+            indiceSup = i;
+        }
+    }
+    
+    // Si la distance limitative est supérieure à la plus grande valeur du tableau, retourner 100%
+    if (distanceLimitative > distancesTableau[distancesTableau.length - 1]) {
+        return 100;
+    }
+    
+    // Si les indices sont les mêmes, pas besoin d'interpolation
+    if (indiceInf === indiceSup) {
+        return tableaux[usage][surfaceCategorie.toString()][categorieRapport][indiceInf];
+    }
+    
+    // Interpolation entre les deux indices
+    const distInf = distancesTableau[indiceInf];
+    const distSup = distancesTableau[indiceSup];
+    const pctInf = tableaux[usage][surfaceCategorie.toString()][categorieRapport][indiceInf];
+    const pctSup = tableaux[usage][surfaceCategorie.toString()][categorieRapport][indiceSup];
+    
+    // Interpolation linéaire
+    return pctInf + ((distanceLimitative - distInf) / (distSup - distInf)) * (pctSup - pctInf);
 }
 
 function calculerPourcentageMaximal91014(usage, surfaceFacade, distanceLimitative) {
-    // Version simplifiée du tableau 9.10.14.4.-A
-    // Dans une implémentation réelle, vous devriez avoir le tableau complet
+    // Structure du tableau 9.10.14.4.-A
+    const tableau = {
+        'C-D-F3': { // Pour les usages des groupes A, B, division 3, C, D et F, division 3
+            '10': [0, 7, 9, 12, 39, 88, 100],
+            '15': [0, 7, 9, 10, 28, 57, 100],
+            '20': [0, 7, 8, 9, 18, 34, 56, 84, 100],
+            '30': [0, 7, 8, 9, 12, 19, 28, 40, 55, 92, 100],
+            '40': [0, 7, 7, 8, 9, 13, 18, 26, 36, 48, 62, 79, 98, 100],
+            '50': [0, 7, 7, 8, 9, 11, 16, 22, 30, 40, 51, 65, 80, 97, 100],
+            '100': [0, 7, 7, 8, 9, 10, 13, 17, 22, 29, 37, 46, 56, 67, 79, 93, 100]
+        },
+        'E-F12': { // Pour les usages des groupes E et F, divisions 1 et 2
+            '10': [0, 4, 5, 9, 15, 23, 46, 77, 100],
+            '15': [0, 4, 5, 7, 11, 16, 32, 53, 79, 100],
+            '20': [0, 4, 4, 6, 9, 13, 25, 40, 61, 85, 100],
+            '30': [0, 4, 4, 5, 7, 10, 18, 28, 42, 58, 77, 100],
+            '40': [0, 4, 4, 5, 6, 8, 14, 22, 32, 44, 59, 76, 94, 100],
+            '50': [0, 4, 4, 5, 6, 7, 12, 18, 26, 36, 48, 61, 76, 93, 100],
+            '100': [0, 4, 4, 4, 5, 5, 8, 11, 15, 20, 26, 32, 40, 48, 58, 68, 79, 100]
+        }
+    };
     
-    let pourcentage = 0;
+    // Distances limitative correspondant aux colonnes dans le tableau
+    const distances = [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0];
     
-    // Simplification pour l'exemple
-    if (distanceLimitative < 1.2) {
-        pourcentage = 0;
-    } else if (distanceLimitative < 2.0) {
-        pourcentage = usage === 'C-D-F3' ? 10 : 5;
-    } else if (distanceLimitative < 3.0) {
-        pourcentage = usage === 'C-D-F3' ? 20 : 10;
-    } else if (distanceLimitative < 4.0) {
-        pourcentage = usage === 'C-D-F3' ? 30 : 15;
-    } else if (distanceLimitative < 6.0) {
-        pourcentage = usage === 'C-D-F3' ? 50 : 25;
-    } else if (distanceLimitative < 8.0) {
-        pourcentage = usage === 'C-D-F3' ? 70 : 35;
-    } else if (distanceLimitative < 10.0) {
-        pourcentage = usage === 'C-D-F3' ? 90 : 45;
-    } else {
-        pourcentage = usage === 'C-D-F3' ? 100 : 55;
+    // Trouver la catégorie de surface la plus proche
+    const surfacesDisponibles = Object.keys(tableau[usage]).map(Number);
+    let surfaceCategorie = surfacesDisponibles[0];
+    for (const surface of surfacesDisponibles) {
+        if (Math.abs(surface - surfaceFacade) < Math.abs(surfaceCategorie - surfaceFacade)) {
+            surfaceCategorie = surface;
+        }
     }
     
-    // Ajuster en fonction de la surface de la façade (simplification)
-    if (surfaceFacade > 100) {
-        pourcentage *= 0.8;
-    } else if (surfaceFacade < 30) {
-        pourcentage *= 1.2;
+    // Si la surface est supérieure à la plus grande catégorie disponible, utiliser la plus grande
+    if (surfaceFacade > Math.max(...surfacesDisponibles)) {
+        surfaceCategorie = Math.max(...surfacesDisponibles);
     }
     
-    return pourcentage;
+    // Trouver les indices et les pourcentages pour l'interpolation
+    let indiceInf = 0;
+    let indiceSup = 0;
+    
+    for (let i = 0; i < distances.length; i++) {
+        if (distances[i] <= distanceLimitative) {
+            indiceInf = i;
+        }
+        if (distances[i] >= distanceLimitative && (indiceSup === 0 || distances[i] < distances[indiceSup])) {
+            indiceSup = i;
+        }
+    }
+    
+    // Si la distance limitative est supérieure à la plus grande valeur du tableau, retourner 100%
+    if (distanceLimitative > distances[distances.length - 1]) {
+        return 100;
+    }
+    
+    // Si les indices sont les mêmes, pas besoin d'interpolation
+    if (indiceInf === indiceSup) {
+        return tableau[usage][surfaceCategorie.toString()][indiceInf];
+    }
+    
+    // Interpolation entre les deux indices
+    const distInf = distances[indiceInf];
+    const distSup = distances[indiceSup];
+    const pctInf = tableau[usage][surfaceCategorie.toString()][indiceInf];
+    const pctSup = tableau[usage][surfaceCategorie.toString()][indiceSup];
+    
+    // Interpolation linéaire
+    return pctInf + ((distanceLimitative - distInf) / (distSup - distInf)) * (pctSup - pctInf);
 }
 
 function calculerPourcentageMaximal91015(surfaceFacade, distanceLimitative) {
-    // Version simplifiée du tableau 9.10.15.4
-    // Dans une implémentation réelle, vous devriez avoir le tableau complet
+    // Structure du tableau 9.10.15.4
+    const tableau = {
+        '30': [0, 7, 9, 12, 39, 88, 100],
+        '40': [0, 7, 8, 11, 32, 69, 100],
+        '50': [0, 7, 8, 10, 28, 57, 100],
+        '100': [0, 7, 8, 9, 18, 34, 56, 84, 100],
+        '150': [0, 7, 7, 8, 9, 10, 13, 17, 22, 29, 37, 46, 56, 67, 79, 93, 100],
+        '250': [0, 7, 7, 7, 8, 9, 10, 13, 16, 20, 25, 30, 36, 43, 51, 59, 68, 87, 100],
+        '350': [0, 7, 7, 7, 8, 8, 9, 11, 14, 16, 20, 24, 28, 33, 38, 44, 50, 64, 81, 99, 100],
+        '500': [0, 7, 7, 7, 7, 8, 9, 10, 12, 14, 16, 19, 22, 25, 29, 33, 37, 47, 59, 71, 100]
+    };
     
-    let pourcentage = 0;
+    // Distances limitative correspondant aux colonnes dans le tableau
+    const distances = [0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 25.0];
     
-    // Simplification pour l'exemple
-    if (distanceLimitative < 1.2) {
-        pourcentage = 0;
-    } else if (distanceLimitative < 2.0) {
-        pourcentage = 8;
-    } else if (distanceLimitative < 4.0) {
-        pourcentage = 20;
-    } else if (distanceLimitative < 6.0) {
-        pourcentage = 40;
-    } else if (distanceLimitative < 8.0) {
-        pourcentage = 60;
-    } else if (distanceLimitative < 10.0) {
-        pourcentage = 80;
-    } else {
-        pourcentage = 100;
+    // Trouver la catégorie de surface la plus proche
+    const surfacesDisponibles = Object.keys(tableau).map(Number);
+    let surfaceCategorie = surfacesDisponibles[0];
+    for (const surface of surfacesDisponibles) {
+        if (Math.abs(surface - surfaceFacade) < Math.abs(surfaceCategorie - surfaceFacade)) {
+            surfaceCategorie = surface;
+        }
     }
     
-    // Ajuster en fonction de la surface de la façade (simplification)
-    if (surfaceFacade > 100) {
-        pourcentage *= 0.8;
-    } else if (surfaceFacade < 30) {
-        pourcentage *= 1.2;
+    // Si la surface est supérieure à la plus grande catégorie disponible, utiliser la plus grande
+    if (surfaceFacade > Math.max(...surfacesDisponibles)) {
+        surfaceCategorie = Math.max(...surfacesDisponibles);
     }
     
-    return pourcentage;
-}
-
-function determinerConstructionRevetement323(usage, pourcentageMaximalBaies) {
-    // Version simplifiée de la détermination du type de construction et revêtement requis
-    // selon le tableau 3.2.3.7.
+    // Trouver les indices et les pourcentages pour l'interpolation
+    let indiceInf = 0;
+    let indiceSup = 0;
     
-    if (pourcentageMaximalBaies <= 10) {
-        return "Construction incombustible, revêtement incombustible, degré de résistance au feu de 1h (usages A, B3, C, D, F3) ou 2h (usages E, F1, F2)";
-    } else if (pourcentageMaximalBaies <= 25) {
-        return "Construction combustible ou incombustible, revêtement incombustible, degré de résistance au feu de 1h (usages A, B3, C, D, F3) ou 2h (usages E, F1, F2)";
-    } else if (pourcentageMaximalBaies <= 50) {
-        return "Construction combustible ou incombustible, revêtement incombustible, degré de résistance au feu de 45 min (usages A, B3, C, D, F3) ou 1h (usages E, F1, F2)";
-    } else {
-        return "Construction combustible ou incombustible, revêtement combustible ou incombustible, degré de résistance au feu de 45 min (usages A, B3, C, D, F3) ou 1h (usages E, F1, F2)";
-    }
-}
-
-function determinerConstructionRevetement91014(usage, pourcentageMaximalBaies, distanceLimitative, typeBatiment) {
-    // Version simplifiée de la détermination du type de construction et revêtement requis
-    // selon le tableau 9.10.14.5.-A
-    
-    if (typeBatiment === 'garage' && distanceLimitative >= 0.6) {
-        return "Aucun degré de résistance au feu requis";
+    for (let i = 0; i < distances.length; i++) {
+        if (distances[i] <= distanceLimitative) {
+            indiceInf = i;
+        }
+        if (distances[i] >= distanceLimitative && (indiceSup === 0 || distances[i] < distances[indiceSup])) {
+            indiceSup = i;
+        }
     }
     
-    if (pourcentageMaximalBaies <= 10) {
-        return "Construction incombustible, revêtement incombustible, degré de résistance au feu de 1h (usages C, D, F3) ou 2h (usages E, F1, F2)";
-    } else if (pourcentageMaximalBaies <= 25) {
-        return "Construction combustible ou incombustible, revêtement incombustible, degré de résistance au feu de 1h (usages C, D, F3) ou 2h (usages E, F1, F2)";
-    } else if (pourcentageMaximalBaies <= 50) {
-        return "Construction combustible ou incombustible, revêtement incombustible, degré de résistance au feu de 45 min (usages C, D, F3) ou 1h (usages E, F1, F2)";
-    } else {
-        return "Construction combustible ou incombustible, revêtement combustible ou incombustible, degré de résistance au feu de 45 min (usages C, D, F3) ou 1h (usages E, F1, F2)";
+    // Si la distance limitative est supérieure à la plus grande valeur du tableau, retourner 100%
+    if (distanceLimitative > distances[distances.length - 1]) {
+        return 100;
     }
-}
-
-function determinerConstructionRevetement91015(distanceLimitative) {
-    // Version simplifiée de la détermination du type de construction et revêtement requis
-    // selon les articles 9.10.15.5.
     
-    if (distanceLimitative < 0.6) {
-        return "Degré de résistance au feu de 45 min, revêtement incombustible ou métallique";
-    } else if (distanceLimitative < 1.2) {
-        return "Degré de résistance au feu de 45 min, revêtement incombustible, métallique ou combustible selon certaines conditions";
-    } else {
-        return "Aucune restriction sur le type de construction ou de revêtement";
+    // Si les indices sont les mêmes, pas besoin d'interpolation
+    if (indiceInf === indiceSup) {
+        return tableau[surfaceCategorie.toString()][indiceInf];
     }
+    
+    // Interpolation entre les deux indices
+    const distInf = distances[indiceInf];
+    const distSup = distances[indiceSup];
+    const pctInf = tableau[surfaceCategorie.toString()][indiceInf];
+    const pctSup = tableau[surfaceCategorie.toString()][indiceSup];
+    
+    // Interpolation linéaire
+    return pctInf + ((distanceLimitative - distInf) / (distSup - distInf)) * (pctSup - pctInf);
 }
 
 function copierResultats(elementId) {
