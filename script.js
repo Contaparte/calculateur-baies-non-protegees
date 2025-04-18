@@ -499,14 +499,14 @@
                );
 
                // 3. Enfin, interpolation par distance entre les deux pourcentages calculés
-               finalPercentage = interpolate(
-                   limitingDistance,
-                   lowerDistance,
-                   upperDistance,
-                   lowerDistanceInterpolatedPercentage,
-                   upperDistanceInterpolatedPercentage
-               );
-           }
+let finalPercentage = interpolate(
+    limitingDistance,
+    lowerDistance,
+    upperDistance,
+    lowerDistanceInterpolatedPercentage,
+    upperDistanceInterpolatedPercentage
+);
+}
            
            // Formule alternative pour les grandes surfaces si la distance est >= 1.2 m
            if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
