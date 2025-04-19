@@ -1,3 +1,5 @@
+console.log("script.js chargé avec succès");
+
 // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
    const tableauGroupesAB3CDF3 = {
        10: {
