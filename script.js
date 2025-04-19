@@ -441,22 +441,26 @@
            let lowerSurfacePercentageLower, lowerSurfacePercentageUpper;
            let upperSurfacePercentageLower, upperSurfacePercentageUpper;
 
-           // Extraire les pourcentages et interpoler selon que le bâtiment est protégé par gicleurs ou non
-           if (sprinklers && !partialSprinklers) {
-               // Avec gicleurs (pas de ratio)
-               lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
-               lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
-               
-               upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
-               upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
-           } else {
-               // Sans gicleurs ou protection partielle (avec ratio)
-               lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
-               lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
-               
-               upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
-               upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
-           }
+           // Extraction des pourcentages pour l'interpolation
+if (sprinklers && !partialSprinklers) {
+    // Avec gicleurs (pas de ratio)
+    lowerSurfacePercentageLower = tableToUse[lowerSurface][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableToUse[lowerSurface][upperDistanceIndex];
+    
+    upperSurfacePercentageLower = tableToUse[upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableToUse[upperSurface][upperDistanceIndex];
+} else {
+    // Sans gicleurs ou protection partielle (avec ratio)
+    lowerSurfacePercentageLower = tableToUse[lowerSurface][ratioCategory][lowerDistanceIndex];
+    lowerSurfacePercentageUpper = tableToUse[lowerSurface][ratioCategory][upperDistanceIndex];
+    
+    upperSurfacePercentageLower = tableToUse[upperSurface][ratioCategory][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
+}
+
+// Ajouter ces deux lignes pour calculer les valeurs intermédiaires
+const lowerSurfacePercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerSurfacePercentageLower, lowerSurfacePercentageUpper);
+const upperSurfacePercentage = interpolate(limitingDistance, lowerDistance, upperDistance, upperSurfacePercentageLower, upperSurfacePercentageUpper);
 
            // Interpolation pour chaque distance limitative en fonction de la surface
                const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
@@ -817,6 +821,21 @@ if (surface <= 30) {
     upperSurface = ">100";
 }
 
+             // Obtenir les pourcentages pour chaque borne
+lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
+lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
+
+// Si upperSurface n'est pas ">100"
+if (upperSurface !== ">100") {
+    upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
+}
+
+// Calcul des pourcentages interpolés
+const lowerSurfacePercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerSurfacePercentageLower, lowerSurfacePercentageUpper);
+const upperSurfacePercentage = upperSurface !== ">100" ? 
+    interpolate(limitingDistance, lowerDistance, upperDistance, upperSurfacePercentageLower, upperSurfacePercentageUpper) : 0;
+             
 // Interpolation pour chaque distance limitative en fonction de la surface
 const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
@@ -1125,7 +1144,22 @@ resultHTML += `
                lowerSurface = 100;
                upperSurface = ">100";
            }
-           
+
+// Obtenir les pourcentages pour chaque borne
+lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
+lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
+
+// Si upperSurface n'est pas ">100"
+if (upperSurface !== ">100") {
+    upperSurfacePercentageLower = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
+    upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface][upperDistanceIndex];
+}
+
+// Calcul des pourcentages interpolés
+const lowerSurfacePercentage = interpolate(limitingDistance, lowerDistance, upperDistance, lowerSurfacePercentageLower, lowerSurfacePercentageUpper);
+const upperSurfacePercentage = upperSurface !== ">100" ? 
+    interpolate(limitingDistance, lowerDistance, upperDistance, upperSurfacePercentageLower, upperSurfacePercentageUpper) : 0;
+          
            // Interpolation pour chaque distance limitative en fonction de la surface
             const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
