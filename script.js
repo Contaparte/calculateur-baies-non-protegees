@@ -458,25 +458,13 @@
                upperSurfacePercentageUpper = tableToUse[upperSurface][ratioCategory][upperDistanceIndex];
            }
 
-           // Interpolation des pourcentages pour la distance limitative
-           const lowerSurfacePercentage = interpolate(
-               limitingDistance,
-               lowerDistance,
-               upperDistance,
-               lowerSurfacePercentageLower,
-               lowerSurfacePercentageUpper
-           );
+           // Interpolation pour chaque distance limitative en fonction de la surface
+               const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
-           const upperSurfacePercentage = interpolate(
-               limitingDistance,
-               lowerDistance,
-               upperDistance,
-               upperSurfacePercentageLower,
-               upperSurfacePercentageUpper
-           );
+               const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
 
-           // Interpolation finale entre les surfaces, méthode exacte du document de référence
-           let finalPercentage;
+         // Interpolation finale entre les distances
+            let finalPercentage;
            
            // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
            if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
@@ -491,7 +479,7 @@
                finalPercentage = lowerSurfacePercentage;
            } else {
             // Méthode d'interpolation conforme au document "Méthode de calcul"
-              finalPercentage = lowerSurfacePercentage + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+              finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
            }
            
            // Appliquer la méthode de l'aire pondérée si demandée
@@ -829,29 +817,12 @@ if (surface <= 30) {
     upperSurface = ">100";
 }
 
-// Calculer le pourcentage pour la surface inférieure
-const lowerSurfacePercentageLower = tableau91014[usage].surfaces[lowerSurface][lowerDistanceIndex];
-const lowerSurfacePercentageUpper = tableau91014[usage].surfaces[lowerSurface][upperDistanceIndex];
-const lowerSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    lowerSurfacePercentageLower, 
-    lowerSurfacePercentageUpper
-);
+// Interpolation pour chaque distance limitative en fonction de la surface
+const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
-// Calculer le pourcentage pour la surface supérieure
-const upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-const upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-const upperSurfacePercentage = interpolate(
-    limitingDistance, 
-    lowerDistance, 
-    upperDistance, 
-    upperSurfacePercentageLower, 
-    upperSurfacePercentageUpper
-);
+const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
 
-// Interpolation finale entre les surfaces selon la méthode du document de référence
+// Interpolation finale entre les distances
 let finalPercentage;
 
 // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
@@ -867,7 +838,7 @@ if (surface > 100 && limitingDistance >= 1.2) {
     finalPercentage = lowerSurfacePercentage;
 } else {
     // Méthode d'interpolation conforme au document "Méthode de calcul"
-    finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+    finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
 }
 
 // Majoration pour gicleurs ou verre armé/briques de verre
@@ -1155,30 +1126,13 @@ resultHTML += `
                upperSurface = ">100";
            }
            
-           // Calculer le pourcentage pour la surface inférieure
-           const lowerSurfacePercentageLower = tableau91015.surfaces[lowerSurface][lowerDistanceIndex];
-           const lowerSurfacePercentageUpper = tableau91015.surfaces[lowerSurface][upperDistanceIndex];
-           const lowerSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               lowerSurfacePercentageLower, 
-               lowerSurfacePercentageUpper
-           );
-           
-           // Calculer le pourcentage pour la surface supérieure
-           const upperSurfacePercentageLower = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][lowerDistanceIndex];
-           const upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface === ">100" ? ">100" : upperSurface][upperDistanceIndex];
-           const upperSurfacePercentage = interpolate(
-               limitingDistance, 
-               lowerDistance, 
-               upperDistance, 
-               upperSurfacePercentageLower, 
-               upperSurfacePercentageUpper
-           );
-           
-           // Interpolation finale entre les surfaces selon la méthode du document de référence
-           let finalPercentage;
+           // Interpolation pour chaque distance limitative en fonction de la surface
+            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+
+            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+
+            // Interpolation finale entre les distances
+            let finalPercentage;
 
            // Appliquer la formule pour les grandes surfaces si la distance est >= 1.2 m
            if (surface > 100 && limitingDistance >= 1.2) {
@@ -1189,7 +1143,7 @@ resultHTML += `
                finalPercentage = lowerSurfacePercentage;
            } else {
                // Méthode d'interpolation conforme au document "Méthode de calcul"
-               finalPercentage = lowerSurfacePercentage + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentage - lowerSurfacePercentage);
+               finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
            }
            
            // Majoration pour gicleurs ou verre armé/briques de verre
