@@ -458,19 +458,19 @@ function findBounds(value, array) {
 
     // MÉTHODE CORRIGÉE D'INTERPOLATION EN 3 ÉTAPES
     // 1. Interpolation pour la surface à la distance limitative inférieure
-    const percentageLowerDistanceLowerSurface = lowerSurfacePercentageLower;
-    const percentageLowerDistanceUpperSurface = upperSurfacePercentageLower;
-    
-    const percentageAtLowerDistance = percentageLowerDistanceLowerSurface + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (percentageLowerDistanceUpperSurface - percentageLowerDistanceLowerSurface);
+    const percentageAtLowerDistance = lowerSurfacePercentageLower + 
+        ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
+        (upperSurfacePercentageLower - lowerSurfacePercentageLower);
     
     // 2. Interpolation pour la surface à la distance limitative supérieure
-    const percentageUpperDistanceLowerSurface = lowerSurfacePercentageUpper;
-    const percentageUpperDistanceUpperSurface = upperSurfacePercentageUpper;
-    
-    const percentageAtUpperDistance = percentageUpperDistanceLowerSurface + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (percentageUpperDistanceUpperSurface - percentageUpperDistanceLowerSurface);
+    const percentageAtUpperDistance = lowerSurfacePercentageUpper + 
+        ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * 
+        (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     
     // 3. Interpolation finale entre les distances
-    let finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+    let finalPercentage = percentageAtLowerDistance + 
+        ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
+        (percentageAtUpperDistance - percentageAtLowerDistance);
 
     // Cas spécial: formule pour les grandes surfaces si la distance est >= 1.2 m
     if (facadeSurface > surfacesToUse[surfacesToUse.length - 1] && limitingDistance >= 1.2) {
@@ -832,22 +832,28 @@ if (limitingDistance <= 2.0) {
     let percentageAtLowerDistance;
     
     if (upperSurface === ">100") {
-        percentageAtLowerDistance = lowerSurfacePercentageLower;
+        percentageAtLowerDistance = tableau91014[usage].surfaces[">100"][lowerDistanceIndex];
     } else {
-        percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+        percentageAtLowerDistance = lowerSurfacePercentageLower + 
+            ((surface - lowerSurface) / (upperSurface - lowerSurface)) * 
+            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
     }
     
     // 2. Interpolation pour la surface à la distance limitative supérieure
     let percentageAtUpperDistance;
     
     if (upperSurface === ">100") {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper;
+        percentageAtUpperDistance = tableau91014[usage].surfaces[">100"][upperDistanceIndex];
     } else {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+        percentageAtUpperDistance = lowerSurfacePercentageUpper + 
+            ((surface - lowerSurface) / (upperSurface - lowerSurface)) * 
+            (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     }
     
     // 3. Interpolation finale entre les distances
-    let finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+    let finalPercentage = percentageAtLowerDistance + 
+        ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
+        (percentageAtUpperDistance - percentageAtLowerDistance);
 
     // Cas spécial: formule pour les grandes surfaces si la distance est >= 1.2 m
     if (surface > 100 && limitingDistance >= 1.2) {
@@ -1161,22 +1167,28 @@ if (checkSpacing) {
     let percentageAtLowerDistance;
     
     if (upperSurface === ">100") {
-        percentageAtLowerDistance = lowerSurfacePercentageLower;
+        percentageAtLowerDistance = tableau91015.surfaces[">100"][lowerDistanceIndex];
     } else {
-        percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+        percentageAtLowerDistance = lowerSurfacePercentageLower + 
+            ((surface - lowerSurface) / (upperSurface - lowerSurface)) * 
+            (upperSurfacePercentageLower - lowerSurfacePercentageLower);
     }
     
     // 2. Interpolation pour la surface à la distance limitative supérieure
     let percentageAtUpperDistance;
     
     if (upperSurface === ">100") {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper;
+        percentageAtUpperDistance = tableau91015.surfaces[">100"][upperDistanceIndex];
     } else {
-        percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+        percentageAtUpperDistance = lowerSurfacePercentageUpper + 
+            ((surface - lowerSurface) / (upperSurface - lowerSurface)) * 
+            (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     }
     
     // 3. Interpolation finale entre les distances
-    let finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+    let finalPercentage = percentageAtLowerDistance + 
+        ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
+        (percentageAtUpperDistance - percentageAtLowerDistance);
 
     // Cas spécial: formule pour les grandes surfaces si la distance est >= 1.2 m
     if (surface > 100 && limitingDistance >= 1.2) {
