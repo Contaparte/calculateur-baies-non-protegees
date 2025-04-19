@@ -197,6 +197,11 @@
        200: [0, 8, 8, 8, 8, 10, 14, 18, 22, 28, 34, 42, 50, 60, 68, 80, 92, 100]
    };
 
+function interpolateExact(x, x1, x2, y1, y2) {
+    if (x1 === x2) return y1;
+    return y1 + ((x - x1) / (x2 - x1)) * (y2 - y1);
+}
+
    const limitingDistancesNoSprinklers = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
    const limitingDistancesWithSprinklersABCDF3 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9];
    const limitingDistancesWithSprinklersEF1F2 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
