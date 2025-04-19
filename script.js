@@ -294,7 +294,7 @@ function findBounds(value, array) {
     return { lower: array[0], upper: array[1] }; // Valeur par défaut
 }
 
-function interpolateExactMethod(facadeSurface, limitingDistance, lowerSurface, upperSurface, lowerDistance, upperDistance, lowerSurfacePercentageLower, lowerSurfacePercentageUpper, upperSurfacePercentageLower, upperSurfacePercentageUpper) {
+// MÉTHODE CORRIGÉE D'INTERPOLATION EN 3 ÉTAPES
     // 1. Interpolation pour la surface à la distance limitative inférieure
     const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
     
@@ -302,7 +302,7 @@ function interpolateExactMethod(facadeSurface, limitingDistance, lowerSurface, u
     const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
     
     // 3. Interpolation finale entre les distances
-    return percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+    let finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
 }
 
 // Fonction de validation des entrées
@@ -854,9 +854,7 @@ if (limitingDistance <= 2.0) {
             const percentageAtLowerDistance = tableau91014[usage].surfaces[">100"][lowerDistanceIndex];
             const percentageAtUpperDistance = tableau91014[usage].surfaces[">100"][upperDistanceIndex];
             
-            finalPercentage = percentageAtLowerDistance + 
-                ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
-                (percentageAtUpperDistance - percentageAtLowerDistance);
+            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
         }
     } else {
         // Si upperSurface n'est pas ">100"
@@ -864,27 +862,19 @@ if (limitingDistance <= 2.0) {
             upperSurfacePercentageLower = tableau91014[usage].surfaces[upperSurface][lowerDistanceIndex];
             upperSurfacePercentageUpper = tableau91014[usage].surfaces[upperSurface][upperDistanceIndex];
             
-            // Utiliser la méthode d'interpolation exacte
-            finalPercentage = interpolateExactMethod(
-                surface, 
-                limitingDistance, 
-                lowerSurface, 
-                upperSurface, 
-                lowerDistance, 
-                upperDistance, 
-                lowerSurfacePercentageLower, 
-                lowerSurfacePercentageUpper, 
-                upperSurfacePercentageLower, 
-                upperSurfacePercentageUpper
-            );
+            // MÉTHODE D'INTERPOLATION DIRECTE
+    const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+    
+    const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+    
+    finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+           
         } else {
             // Interpolation entre la surface inférieure et 100
             const percentageAtLowerDistance = lowerSurfacePercentageLower;
             const percentageAtUpperDistance = lowerSurfacePercentageUpper;
             
-            finalPercentage = percentageAtLowerDistance + 
-                ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * 
-                (percentageAtUpperDistance - percentageAtLowerDistance);
+            finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
         }
     }
     
@@ -1201,19 +1191,13 @@ if (checkSpacing) {
             upperSurfacePercentageLower = tableau91015.surfaces[upperSurface][lowerDistanceIndex];
             upperSurfacePercentageUpper = tableau91015.surfaces[upperSurface][upperDistanceIndex];
             
-            // Utiliser la méthode d'interpolation exacte
-            finalPercentage = interpolateExactMethod(
-                surface, 
-                limitingDistance, 
-                lowerSurface, 
-                upperSurface, 
-                lowerDistance, 
-                upperDistance, 
-                lowerSurfacePercentageLower, 
-                lowerSurfacePercentageUpper, 
-                upperSurfacePercentageLower, 
-                upperSurfacePercentageUpper
-            );
+            // MÉTHODE D'INTERPOLATION DIRECTE
+    const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+    
+    const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+    
+    finalPercentage = percentageAtLowerDistance + ((limitingDistance - lowerDistance) / (upperDistance - lowerDistance)) * (percentageAtUpperDistance - percentageAtLowerDistance);
+       
         } else {
             // Interpolation entre la surface inférieure et 100
             const percentageAtLowerDistance = lowerSurfacePercentageLower;
