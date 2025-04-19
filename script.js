@@ -1430,16 +1430,3 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).classList.add("active");
     evt.currentTarget.classList.add("active");
 }
-
-// Placeholders pour restaurer les fonctions de calcul
-function calculateCNB() {
-    alert("Calcul CNB lancé !");
-}
-
-function calculate91014() {
-    alert("Calcul 9.10.14 lancé !");
-}
-
-function calculate91015() {
-    alert("Calcul 9.10.15 lancé !");
-}
