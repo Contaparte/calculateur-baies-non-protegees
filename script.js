@@ -837,9 +837,9 @@ const upperSurfacePercentage = upperSurface !== ">100" ?
     interpolate(limitingDistance, lowerDistance, upperDistance, upperSurfacePercentageLower, upperSurfacePercentageUpper) : 0;
              
 // Interpolation pour chaque distance limitative en fonction de la surface
-const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
-const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
 
 // Interpolation finale entre les distances
 let finalPercentage;
@@ -1161,9 +1161,9 @@ const upperSurfacePercentage = upperSurface !== ">100" ?
     interpolate(limitingDistance, lowerDistance, upperDistance, upperSurfacePercentageLower, upperSurfacePercentageUpper) : 0;
           
            // Interpolation pour chaque distance limitative en fonction de la surface
-            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
+            const percentageAtLowerDistance = lowerSurfacePercentageLower + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageLower - lowerSurfacePercentageLower);
 
-            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((facadeSurface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
+            const percentageAtUpperDistance = lowerSurfacePercentageUpper + ((surface - lowerSurface) / (upperSurface - lowerSurface)) * (upperSurfacePercentageUpper - lowerSurfacePercentageUpper);
 
             // Interpolation finale entre les distances
             let finalPercentage;
