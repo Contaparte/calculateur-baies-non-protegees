@@ -1,3 +1,49 @@
+function openTab(event, tabName) {
+   var tabcontent = document.getElementsByClassName("tab-content");
+   for (var i = 0; i < tabcontent.length; i++) {
+       tabcontent[i].classList.remove("active");
+   }
+   var tablinks = document.getElementsByClassName("tab-link");
+   for (var i = 0; i < tablinks.length; i++) {
+       tablinks[i].classList.remove("active");
+   }
+   document.getElementById(tabName).classList.add("active");
+   event.currentTarget.classList.add("active");
+}
+
+// Fonction pour copier le contenu dans le presse-papier
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.innerText;
+    
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            // Pour "method91014-result" ou "method91015-result", extrait "91014" ou "91015"
+            let buttonId;
+            if (elementId.startsWith('method')) {
+                buttonId = elementId.split('-')[0].replace('method', '');
+            } else {
+                buttonId = elementId.split('-')[0];
+            }
+            
+            const originalButtonText = document.getElementById(`copy_${buttonId}`).innerHTML;
+            document.getElementById(`copy_${buttonId}`).innerHTML = "✓ Copié!";
+            setTimeout(() => {
+                document.getElementById(`copy_${buttonId}`).innerHTML = originalButtonText;
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Impossible de copier le texte:', err);
+        });
+}
+
+// Fonction pour gérer l'appui sur la touche Enter
+function handleEnterKey(event, calculationFunction) {
+    if (event.key === "Enter") {
+        calculationFunction();
+    }
+}
+
 // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
    const tableauGroupesAB3CDF3 = {
        10: {
@@ -1369,50 +1415,3 @@ L'utilisateur demeure responsable de valider leur conformité auprès d'un profe
    
    document.getElementById('method91015-result').innerHTML = resultHTML;
    document.getElementById('copy_91015').style.display = 'inline-block';
-}
-
-function openTab(event, tabName) {
-   var tabcontent = document.getElementsByClassName("tab-content");
-   for (var i = 0; i < tabcontent.length; i++) {
-       tabcontent[i].classList.remove("active");
-   }
-   var tablinks = document.getElementsByClassName("tab-link");
-   for (var i = 0; i < tablinks.length; i++) {
-       tablinks[i].classList.remove("active");
-   }
-   document.getElementById(tabName).classList.add("active");
-   event.currentTarget.classList.add("active");
-}
-
-// Fonction pour copier le contenu dans le presse-papier
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.innerText;
-    
-    navigator.clipboard.writeText(text)
-        .then(() => {
-            // Pour "method91014-result" ou "method91015-result", extrait "91014" ou "91015"
-            let buttonId;
-            if (elementId.startsWith('method')) {
-                buttonId = elementId.split('-')[0].replace('method', '');
-            } else {
-                buttonId = elementId.split('-')[0];
-            }
-            
-            const originalButtonText = document.getElementById(`copy_${buttonId}`).innerHTML;
-            document.getElementById(`copy_${buttonId}`).innerHTML = "✓ Copié!";
-            setTimeout(() => {
-                document.getElementById(`copy_${buttonId}`).innerHTML = originalButtonText;
-            }, 2000);
-        })
-        .catch(err => {
-            console.error('Impossible de copier le texte:', err);
-        });
-}
-
-// Fonction pour gérer l'appui sur la touche Enter
-function handleEnterKey(event, calculationFunction) {
-    if (event.key === "Enter") {
-        calculationFunction();
-    }
-}
