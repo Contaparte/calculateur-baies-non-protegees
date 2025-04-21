@@ -241,62 +241,62 @@ const tableau91015 = {
 };
 
    // Afficher/masquer les options supplémentaires
-   document.addEventListener('DOMContentLoaded', function() {
-       // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
-       document.getElementById('check_spacing_cnb').addEventListener('change', function() {
-           document.getElementById('spacing_options_cnb').style.display = this.checked ? 'block' : 'none';
-       });
-                       
-       document.getElementById('check_spacing_91014').addEventListener('change', function() {
-           document.getElementById('spacing_options_91014').style.display = this.checked ? 'block' : 'none';
-       });
-       
-       document.getElementById('check_spacing_91015').addEventListener('change', function() {
-               document.getElementById('spacing_options_91015').style.display = this.checked ? 'block' : 'none';
-           });
-           
-           // Gestionnaires d'événements pour les checkboxes de vérification des soffites
-           document.getElementById('check_soffit_cnb').addEventListener('change', function() {
-               document.getElementById('soffit_options_cnb').style.display = this.checked ? 'block' : 'none';
-           });
-           
-           document.getElementById('check_soffit_91014').addEventListener('change', function() {
-               document.getElementById('soffit_options_91014').style.display = this.checked ? 'block' : 'none';
-           });
-           
-           document.getElementById('check_soffit_91015').addEventListener('change', function() {
-               document.getElementById('soffit_options_91015').style.display = this.checked ? 'block' : 'none';
-           });
-           
-           // Gestionnaire d'événement pour la méthode de l'aire pondérée
-           document.getElementById('weighted_area_cnb').addEventListener('change', function() {
-               document.getElementById('weighted_options_cnb').style.display = this.checked ? 'block' : 'none';
-           });
-           
-           // Ajouter des écouteurs pour l'onglet CNB
-           const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
-           cnbInputs.forEach(input => {
-               input.addEventListener('keypress', function(event) {
-                   handleEnterKey(event, calculateCNB);
-               });
-           });
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
+    document.getElementById('check_spacing_cnb').addEventListener('change', function() {
+        document.getElementById('spacing_options_cnb').style.display = this.checked ? 'block' : 'none';
+    });
+                    
+    document.getElementById('check_spacing_91014').addEventListener('change', function() {
+        document.getElementById('spacing_options_91014').style.display = this.checked ? 'block' : 'none';
+    });
+    
+    document.getElementById('check_spacing_91015').addEventListener('change', function() {
+            document.getElementById('spacing_options_91015').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Gestionnaires d'événements pour les checkboxes de vérification des soffites
+        document.getElementById('check_soffit_cnb').addEventListener('change', function() {
+            document.getElementById('soffit_options_cnb').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('check_soffit_91014').addEventListener('change', function() {
+            document.getElementById('soffit_options_91014').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('check_soffit_91015').addEventListener('change', function() {
+            document.getElementById('soffit_options_91015').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Gestionnaire d'événement pour la méthode de l'aire pondérée
+        document.getElementById('weighted_area_cnb').addEventListener('change', function() {
+            document.getElementById('weighted_options_cnb').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Ajouter des écouteurs pour l'onglet CNB
+        const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
+        cnbInputs.forEach(input => {
+            input.addEventListener('keypress', function(event) {
+                handleEnterKey(event, calculateCNB);
+            });
+        });
 
-           // Ajouter des écouteurs pour l'onglet 9.10.14
-           const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
-           inputs91014.forEach(input => {
-               input.addEventListener('keypress', function(event) {
-                   handleEnterKey(event, calculate91014);
-               });
-           });
+        // Ajouter des écouteurs pour l'onglet 9.10.14
+        const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
+        inputs91014.forEach(input => {
+            input.addEventListener('keypress', function(event) {
+                handleEnterKey(event, calculate91014);
+            });
+        });
 
-           // Ajouter des écouteurs pour l'onglet 9.10.15
-           const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
-           inputs91015.forEach(input => {
-               input.addEventListener('keypress', function(event) {
-                   handleEnterKey(event, calculate91015);
-               });
-           });
-       });
+        // Ajouter des écouteurs pour l'onglet 9.10.15
+        const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
+        inputs91015.forEach(input => {
+            input.addEventListener('keypress', function(event) {
+                handleEnterKey(event, calculate91015);
+            });
+        });
+    });
 
 // Fonction pour déterminer la catégorie du rapport L/H
 function determinerRapportLH(longueur, hauteur) {
@@ -388,30 +388,46 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
     }
     
     // ÉTAPE 1: Interpolation selon la distance limitative inférieure
-let pourcentageDistanceInferieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-} else {
-    const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-    const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
+    let pourcentageDistanceInferieure;
     
-    pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
-}
-
-// ÉTAPE 2: Interpolation selon la distance limitative supérieure
-let pourcentageDistanceSuperieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-} else {
-    const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-    const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
+    if (!avecGicleurs) {
+        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
+        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][rapportLH][distanceInferieureIndex];
+        
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
+    } else {
+        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
+        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][distanceInferieureIndex];
+        
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
+    }
     
-    pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
-}
+    // ÉTAPE 2: Interpolation selon la distance limitative supérieure
+    let pourcentageDistanceSuperieure;
+    
+    if (!avecGicleurs) {
+        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][rapportLH][distanceSuperieureIndex];
+        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][rapportLH][distanceSuperieureIndex];
+        
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
+    } else {
+        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][distanceSuperieureIndex];
+        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][distanceSuperieureIndex];
+        
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
+    }
     
     // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédents
     const pourcentageFinal = pourcentageDistanceInferieure + 
@@ -440,10 +456,10 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
         return pourcentageSurfInf;
     }
     
-    // Interpolation linéaire entre les surfaces - MODIFIÉE selon méthodologie
-    return pourcentageSurfSup + 
+    // Interpolation linéaire entre les surfaces - CORRIGÉE selon méthodologie
+    return pourcentageSurfInf + 
         ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfInf - pourcentageSurfSup);
+        (pourcentageSurfSup - pourcentageSurfInf);
 }
 
 // Fonction pour l'interpolation quand seule la distance varie (surface unique)
@@ -465,7 +481,7 @@ function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, dis
         return pourcentageDistInf;
     }
     
-    // Interpolation linéaire entre les distances - MODIFIÉE selon méthodologie
+    // Interpolation linéaire entre les distances - CORRIGÉE selon méthodologie
     return pourcentageDistInf + 
         ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
         (pourcentageDistSup - pourcentageDistInf);
@@ -509,33 +525,37 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         }
     }
     
-    // ÉTAPE 1: Interpolation selon la distance limitative inférieure - MODIFIÉE
+    // ÉTAPE 1: Interpolation selon la distance limitative inférieure - CORRIGÉE
     let pourcentageDistanceInferieure;
     if (surfaceSuperieure === ">100") {
+        // Pour les grandes surfaces, utiliser directement la valeur
         pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
     } else {
-        const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
         const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
+        const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
         
-        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
+            (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
     }
 
-    // ÉTAPE 2: Interpolation selon la distance limitative supérieure - MODIFIÉE
+    // ÉTAPE 2: Interpolation selon la distance limitative supérieure - CORRIGÉE
     let pourcentageDistanceSuperieure;
     if (surfaceSuperieure === ">100") {
+        // Pour les grandes surfaces, utiliser directement la valeur
         pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
     } else {
-        const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
         const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
+        const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
         
-        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
+        // Formule corrigée selon la méthodologie de référence
+        pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
+            (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
     }
     
-    // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédents
+    // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédentes
     let pourcentageFinal = pourcentageDistanceInferieure + 
         ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
         (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
@@ -557,6 +577,22 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
     
     // Limiter le pourcentage final entre 0 et 100
     return Math.max(0, Math.min(100, pourcentageFinal));
+}
+
+// Fonction pour calculer le pourcentage de baies non protégées selon CNB
+function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, length, height, avecGicleurs, glassBrick) {
+    // Déterminer le rapport L/H
+    const rapportLH = determinerRapportLH(length, height);
+    
+    // Calculer le pourcentage de base
+    let pourcentage = interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs);
+    
+    // Appliquer la majoration pour briques de verre/verre armé si nécessaire
+    if (glassBrick) {
+        pourcentage = Math.min(100, pourcentage * 2);
+    }
+    
+    return pourcentage;
 }
 
 // Version spécifique pour 9.10.14
@@ -748,7 +784,6 @@ function calculateCNB() {
     }
 
    // Afficher les résultats détaillés avec les calculs intermédiaires
-   // La partie d'affichage reste la même
    let resultHTML = `
    <strong>Données de calcul :</strong><br>
    ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
