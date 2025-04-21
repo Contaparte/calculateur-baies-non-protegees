@@ -389,11 +389,16 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
     
     // ÉTAPE 1: Interpolation selon la distance limitative inférieure
 let pourcentageDistanceInferieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
+if (!avecGicleurs) {
+    const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
+    const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][rapportLH][distanceInferieureIndex];
+    
+    pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
+        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+        (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
 } else {
-    const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-    const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
+    const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
+    const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][distanceInferieureIndex];
     
     pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
         ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
@@ -402,11 +407,16 @@ if (surfaceSuperieure === ">100") {
 
 // ÉTAPE 2: Interpolation selon la distance limitative supérieure
 let pourcentageDistanceSuperieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
+if (!avecGicleurs) {
+    const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][rapportLH][distanceSuperieureIndex];
+    const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][rapportLH][distanceSuperieureIndex];
+    
+    pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
+        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+        (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
 } else {
-    const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-    const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
+    const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][distanceSuperieureIndex];
+    const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][distanceSuperieureIndex];
     
     pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
         ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
