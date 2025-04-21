@@ -240,23 +240,28 @@ const tableau91015 = {
     distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0]
 };
 
-   // Fonction pour calculer la dimension manquante
+   // Fonction pour calculer les dimensions automatiquement
 function updateDimensions() {
     const surface = parseFloat(document.getElementById('surface_cnb').value);
     const length = parseFloat(document.getElementById('length_cnb').value);
     const height = parseFloat(document.getElementById('height_cnb').value);
     
-    // Vérifier quelle dimension calculer
-    if (!isNaN(surface)) {
-        if (!isNaN(length) && isNaN(height)) {
-            // Calculer la hauteur si la surface et la longueur sont fournies
-            const calculatedHeight = surface / length;
-            document.getElementById('height_cnb').value = calculatedHeight.toFixed(2);
-        } else if (isNaN(length) && !isNaN(height)) {
-            // Calculer la longueur si la surface et la hauteur sont fournies
-            const calculatedLength = surface / height;
-            document.getElementById('length_cnb').value = calculatedLength.toFixed(2);
-        }
+    // Cas 1: Surface et longueur définies, calculer la hauteur
+    if (!isNaN(surface) && !isNaN(length) && (isNaN(height) || document.activeElement !== document.getElementById('height_cnb'))) {
+        const calculatedHeight = surface / length;
+        document.getElementById('height_cnb').value = calculatedHeight.toFixed(2);
+    }
+    
+    // Cas 2: Surface et hauteur définies, calculer la longueur
+    if (!isNaN(surface) && !isNaN(height) && (isNaN(length) || document.activeElement !== document.getElementById('length_cnb'))) {
+        const calculatedLength = surface / height;
+        document.getElementById('length_cnb').value = calculatedLength.toFixed(2);
+    }
+    
+    // Cas 3: Longueur et hauteur définies, calculer la surface
+    if (!isNaN(length) && !isNaN(height) && (isNaN(surface) || document.activeElement !== document.getElementById('surface_cnb'))) {
+        const calculatedSurface = length * height;
+        document.getElementById('surface_cnb').value = calculatedSurface.toFixed(2);
     }
 }
 
