@@ -441,9 +441,9 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
     }
     
     // Interpolation linéaire entre les surfaces - MODIFIÉE selon méthodologie
-    return pourcentageSurfSup + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfInf - pourcentageSurfSup);
+return pourcentageSurfSup + 
+    ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+    (pourcentageSurfInf - pourcentageSurfSup);
 }
 
 // Fonction pour l'interpolation quand seule la distance varie (surface unique)
@@ -466,9 +466,26 @@ function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, dis
     }
     
     // Interpolation linéaire entre les distances - MODIFIÉE selon méthodologie
-    return pourcentageDistInf + 
-        ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-        (pourcentageDistSup - pourcentageDistInf);
+return pourcentageDistInf + 
+    ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+    (pourcentageDistSup - pourcentageDistInf);
+}
+
+// Fonction pour le calcul selon 3.2.3 (CNB)
+function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, longueur, hauteur, avecGicleurs, avecMajoration) {
+    // Déterminer le rapport L/H
+    const rapportLH = determinerRapportLH(longueur, hauteur);
+    
+    // Utiliser la fonction d'interpolation existante
+    let pourcentage = interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs);
+    
+    // Appliquer la majoration si nécessaire (briques de verre, verre armé)
+    if (avecMajoration) {
+        pourcentage = Math.min(100, pourcentage * 2);
+    }
+    
+    // Limiter le pourcentage final entre 0 et 100
+    return Math.max(0, Math.min(100, pourcentage));
 }
 
 // Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4
