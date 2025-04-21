@@ -240,7 +240,27 @@ const tableau91015 = {
     distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0]
 };
 
-   // Afficher/masquer les options supplémentaires
+   // Fonction pour calculer la dimension manquante
+function updateDimensions() {
+    const surface = parseFloat(document.getElementById('surface_cnb').value);
+    const length = parseFloat(document.getElementById('length_cnb').value);
+    const height = parseFloat(document.getElementById('height_cnb').value);
+    
+    // Vérifier quelle dimension calculer
+    if (!isNaN(surface)) {
+        if (!isNaN(length) && isNaN(height)) {
+            // Calculer la hauteur si la surface et la longueur sont fournies
+            const calculatedHeight = surface / length;
+            document.getElementById('height_cnb').value = calculatedHeight.toFixed(2);
+        } else if (isNaN(length) && !isNaN(height)) {
+            // Calculer la longueur si la surface et la hauteur sont fournies
+            const calculatedLength = surface / height;
+            document.getElementById('length_cnb').value = calculatedLength.toFixed(2);
+        }
+    }
+}
+
+// Afficher/masquer les options supplémentaires
 document.addEventListener('DOMContentLoaded', function() {
     // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
     document.getElementById('check_spacing_cnb').addEventListener('change', function() {
@@ -255,48 +275,53 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('spacing_options_91015').style.display = this.checked ? 'block' : 'none';
         });
         
-        // Gestionnaires d'événements pour les checkboxes de vérification des soffites
-        document.getElementById('check_soffit_cnb').addEventListener('change', function() {
-            document.getElementById('soffit_options_cnb').style.display = this.checked ? 'block' : 'none';
-        });
+    // Gestionnaires d'événements pour les checkboxes de vérification des soffites
+    document.getElementById('check_soffit_cnb').addEventListener('change', function() {
+        document.getElementById('soffit_options_cnb').style.display = this.checked ? 'block' : 'none';
+    });
         
-        document.getElementById('check_soffit_91014').addEventListener('change', function() {
-            document.getElementById('soffit_options_91014').style.display = this.checked ? 'block' : 'none';
-        });
+    document.getElementById('check_soffit_91014').addEventListener('change', function() {
+        document.getElementById('soffit_options_91014').style.display = this.checked ? 'block' : 'none';
+    });
         
-        document.getElementById('check_soffit_91015').addEventListener('change', function() {
-            document.getElementById('soffit_options_91015').style.display = this.checked ? 'block' : 'none';
-        });
+    document.getElementById('check_soffit_91015').addEventListener('change', function() {
+        document.getElementById('soffit_options_91015').style.display = this.checked ? 'block' : 'none';
+    });
         
-        // Gestionnaire d'événement pour la méthode de l'aire pondérée
-        document.getElementById('weighted_area_cnb').addEventListener('change', function() {
-            document.getElementById('weighted_options_cnb').style.display = this.checked ? 'block' : 'none';
-        });
+    // Gestionnaire d'événement pour la méthode de l'aire pondérée
+    document.getElementById('weighted_area_cnb').addEventListener('change', function() {
+        document.getElementById('weighted_options_cnb').style.display = this.checked ? 'block' : 'none';
+    });
         
-        // Ajouter des écouteurs pour l'onglet CNB
-        const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
-        cnbInputs.forEach(input => {
-            input.addEventListener('keypress', function(event) {
-                handleEnterKey(event, calculateCNB);
-            });
-        });
-
-        // Ajouter des écouteurs pour l'onglet 9.10.14
-        const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
-        inputs91014.forEach(input => {
-            input.addEventListener('keypress', function(event) {
-                handleEnterKey(event, calculate91014);
-            });
-        });
-
-        // Ajouter des écouteurs pour l'onglet 9.10.15
-        const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
-        inputs91015.forEach(input => {
-            input.addEventListener('keypress', function(event) {
-                handleEnterKey(event, calculate91015);
-            });
+    // Ajouter des écouteurs pour l'onglet CNB
+    const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
+    cnbInputs.forEach(input => {
+        input.addEventListener('keypress', function(event) {
+            handleEnterKey(event, calculateCNB);
         });
     });
+
+    // Ajouter des écouteurs pour l'onglet 9.10.14
+    const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
+    inputs91014.forEach(input => {
+        input.addEventListener('keypress', function(event) {
+            handleEnterKey(event, calculate91014);
+        });
+    });
+
+    // Ajouter des écouteurs pour l'onglet 9.10.15
+    const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
+    inputs91015.forEach(input => {
+        input.addEventListener('keypress', function(event) {
+            handleEnterKey(event, calculate91015);
+        });
+    });
+
+    // Écouteurs d'événements pour le calcul automatique des dimensions
+    document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
+    document.getElementById('length_cnb').addEventListener('input', updateDimensions);
+    document.getElementById('height_cnb').addEventListener('input', updateDimensions);
+});
 
 // Fonction pour déterminer la catégorie du rapport L/H
 function determinerRapportLH(longueur, hauteur) {
