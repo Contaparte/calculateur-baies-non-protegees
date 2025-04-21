@@ -685,6 +685,13 @@ function calculateCNB() {
         avecGicleurs, 
         glassBrick
     );
+
+if (isNaN(pourcentage)) {
+    // Si la distance limitative est grande, considérer qu'il n'y a aucune restriction
+    if (limitingDistance >= 10) {
+        pourcentage = 100;
+    }
+}
     
     // Appliquer la méthode de l'aire pondérée si demandée
     if (weightedArea) {
