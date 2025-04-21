@@ -296,7 +296,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 handleEnterKey(event, calculate91015);
             });
         });
-    });
+         // Écouteurs d'événements pour le calcul automatique des dimensions
+         document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
+         document.getElementById('length_cnb').addEventListener('input', updateDimensions);
+         document.getElementById('height_cnb').addEventListener('input', updateDimensions);
+            });
+        });
+
+// Fonction pour calculer la dimension manquante
+function updateDimensions() {
+    const surface = parseFloat(document.getElementById('surface_cnb').value);
+    const length = parseFloat(document.getElementById('length_cnb').value);
+    const height = parseFloat(document.getElementById('height_cnb').value);
+    
+    // Vérifier quelle dimension calculer
+    if (!isNaN(surface)) {
+        if (!isNaN(length) && isNaN(height)) {
+            // Calculer la hauteur si la surface et la longueur sont fournies
+            const calculatedHeight = surface / length;
+            document.getElementById('height_cnb').value = calculatedHeight.toFixed(2);
+        } else if (isNaN(length) && !isNaN(height)) {
+            // Calculer la longueur si la surface et la hauteur sont fournies
+            const calculatedLength = surface / height;
+            document.getElementById('length_cnb').value = calculatedLength.toFixed(2);
+        }
+    }
+}
 
 // Fonction pour déterminer la catégorie du rapport L/H
 function determinerRapportLH(longueur, hauteur) {
