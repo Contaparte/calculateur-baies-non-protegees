@@ -424,7 +424,7 @@ if (surfaceSuperieure === ">100") {
 
 // Fonction pour l'interpolation quand seule la surface varie (distance unique)
 function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceInferieure, 
-                                       surfaceSuperieure, distanceIndex, rapportLH, avecGicleurs) {
+                                      surfaceSuperieure, distanceIndex, rapportLH, avecGicleurs) {
     let pourcentageSurfInf, pourcentageSurfSup;
     
     if (!avecGicleurs) {
@@ -440,7 +440,7 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
         return pourcentageSurfInf;
     }
     
-    // Interpolation linéaire entre les surfaces
+    // Interpolation linéaire entre les surfaces - MODIFIÉE selon méthodologie
     return pourcentageSurfSup + 
         ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
         (pourcentageSurfInf - pourcentageSurfSup);
@@ -448,8 +448,8 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
 
 // Fonction pour l'interpolation quand seule la distance varie (surface unique)
 function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, distanceInferieure, 
-                                        distanceSuperieure, surface, distanceInferieureIndex, 
-                                        distanceSuperieureIndex, rapportLH, avecGicleurs) {
+                                       distanceSuperieure, surface, distanceInferieureIndex, 
+                                       distanceSuperieureIndex, rapportLH, avecGicleurs) {
     let pourcentageDistInf, pourcentageDistSup;
     
     if (!avecGicleurs) {
@@ -465,26 +465,10 @@ function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, dis
         return pourcentageDistInf;
     }
     
-    // Interpolation linéaire entre les distances
+    // Interpolation linéaire entre les distances - MODIFIÉE selon méthodologie
     return pourcentageDistInf + 
         ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
         (pourcentageDistSup - pourcentageDistInf);
-}
-
-// Fonction principale pour calculer avec la méthode CNB
-function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, longueur, hauteur, avecGicleurs, avecMajoration) {
-    // Déterminer le rapport L/H
-    const rapportLH = determinerRapportLH(longueur, hauteur);
-    
-    // Calculer le pourcentage de base
-    let pourcentage = interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs);
-    
-    // Appliquer la majoration si nécessaire (briques de verre, verre armé)
-    if (avecMajoration) {
-        pourcentage = Math.min(100, pourcentage * 2);
-    }
-    
-    return pourcentage;
 }
 
 // Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4
@@ -525,31 +509,31 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         }
     }
     
-    // ÉTAPE 1: Interpolation selon la distance limitative inférieure
-let pourcentageDistanceInferieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-} else {
-    const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-    const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
-    
-    pourcentageDistanceInferieure = pourcentageSurfInfDistInf + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfSupDistInf - pourcentageSurfInfDistInf);
-}
+    // ÉTAPE 1: Interpolation selon la distance limitative inférieure - MODIFIÉE
+    let pourcentageDistanceInferieure;
+    if (surfaceSuperieure === ">100") {
+        pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
+    } else {
+        const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
+        const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
+        
+        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
+    }
 
-// ÉTAPE 2: Interpolation selon la distance limitative supérieure
-let pourcentageDistanceSuperieure;
-if (surfaceSuperieure === ">100") {
-    pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-} else {
-    const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-    const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
-    
-    pourcentageDistanceSuperieure = pourcentageSurfInfDistSup + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-        (pourcentageSurfSupDistSup - pourcentageSurfInfDistSup);
-}
+    // ÉTAPE 2: Interpolation selon la distance limitative supérieure - MODIFIÉE
+    let pourcentageDistanceSuperieure;
+    if (surfaceSuperieure === ">100") {
+        pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
+    } else {
+        const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
+        const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
+        
+        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
+    }
     
     // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédents
     let pourcentageFinal = pourcentageDistanceInferieure + 
