@@ -1,18 +1,3 @@
-function openTab(evt, tabName) {
-    const tabs = document.getElementsByClassName("tab-content");
-    for (let i = 0; i < tabs.length; i++) {
-        tabs[i].classList.remove("active");
-    }
-
-    const tabLinks = document.getElementsByClassName("tab-link");
-    for (let i = 0; i < tabLinks.length; i++) {
-        tabLinks[i].classList.remove("active");
-    }
-
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
-
 // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
    const tableauGroupesAB3CDF3 = {
        10: {
@@ -347,8 +332,6 @@ function trouverValeurEncadrantes(valeur, tableau) {
     return { inferieure: tableau[0], superieure: tableau[1] };
 }
 
-// DÉBUT DES FONCTIONS MODIFIÉES
-
 // Fonction d'interpolation principale qui suit exactement la méthodologie de référence
 function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs) {
     // Déterminer les tableaux à utiliser en fonction de l'usage et de la présence de gicleurs
@@ -464,10 +447,10 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
         return pourcentageSurfInf;
     }
     
-    // Interpolation selon la méthodologie précise décrite dans "Explication démarche d'intrepolation"
-    // Pour les surfaces, le premier chiffre correspond au pourcentage de la surface supérieure
+    // Interpolation linéaire entre les surfaces - CORRIGÉE selon méthodologie
     return pourcentageSurfSup + 
-        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * (pourcentageSurfInf - pourcentageSurfSup);
+        ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+        (pourcentageSurfInf - pourcentageSurfSup);
 }
 
 // Fonction pour l'interpolation quand seule la distance varie (surface unique)
@@ -495,15 +478,15 @@ function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, dis
         (pourcentageDistSup - pourcentageDistInf);
 }
 
-// Fonction principale pour le calcul selon 3.2.3
+// AJOUT: Fonction manquante pour le calcul selon 3.2.3
 function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, longueur, hauteur, avecGicleurs, avecMajoration) {
     // Déterminer le rapport L/H
     const rapportLH = determinerRapportLH(longueur, hauteur);
     
-    // Effectuer l'interpolation avec la méthode CNB
+    // Calculer le pourcentage à l'aide de interpolationCNB
     let pourcentage = interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs);
     
-    // Appliquer la majoration si nécessaire (briques de verre, verre armé)
+    // Appliquer la majoration si demandée (briques de verre, verre armé)
     if (avecMajoration) {
         pourcentage = Math.min(100, pourcentage * 2);
     }
@@ -512,6 +495,7 @@ function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, longue
     return Math.max(0, Math.min(100, pourcentage));
 }
 
+// Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4 - CORRIGÉE
 function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     const distances = tableau.distances;
     
@@ -535,7 +519,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
     
     if (surfaceFacade <= surfacesDisponibles[0]) {
         surfaceInferieure = surfacesDisponibles[0];
-        surfaceSuperieure = surfacesDisponibles[0]; // Utilisez la même valeur pour éviter l'interpolation
+        surfaceSuperieure = surfacesDisponibles[0];
     } else if (surfaceFacade > surfacesDisponibles[surfacesDisponibles.length - 1]) {
         surfaceInferieure = surfacesDisponibles[surfacesDisponibles.length - 1];
         surfaceSuperieure = ">100";
@@ -549,15 +533,17 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         }
     }
     
-    // Si les surfaces encadrantes sont identiques, on saute directement à l'interpolation de distance
+    // Si les surfaces sont identiques, pas besoin d'interpolation complexe
     if (surfaceInferieure === surfaceSuperieure) {
-        let valeurPourDistanceInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-        let valeurPourDistanceSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
+        let pourcentageDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
+        let pourcentageDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
         
-        let pourcentageFinal = valeurPourDistanceInf + 
+        // Interpolation linéaire entre les distances
+        let pourcentageFinal = pourcentageDistInf + 
             ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-            (valeurPourDistanceSup - valeurPourDistanceInf);
+            (pourcentageDistSup - pourcentageDistInf);
             
+        // Appliquer la majoration si nécessaire
         if (avecMajoration || avecGicleurs) {
             pourcentageFinal = Math.min(100, pourcentageFinal * 2);
         }
@@ -565,37 +551,35 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         return Math.max(0, Math.min(100, pourcentageFinal));
     }
     
-    // ÉTAPE 1: Interpolation selon la distance limitative inférieure
+    // ÉTAPE 1: Interpolation selon la distance limitative inférieure - CORRIGÉE
     let pourcentageDistanceInferieure;
     if (surfaceSuperieure === ">100") {
-        // Pour les grandes surfaces, utiliser les valeurs de ">100"
-        pourcentageDistanceInferieure = tableau.surfaces[">100"][distanceInferieureIndex];
+        pourcentageDistanceInferieure = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
     } else {
-        const pourcentageSurfInfDistInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
-        const pourcentageSurfSupDistInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
+        const pourcentageSurfSupDLInf = tableau.surfaces[surfaceSuperieure][distanceInferieureIndex];
+        const pourcentageSurfInfDLInf = tableau.surfaces[surfaceInferieure][distanceInferieureIndex];
         
         // Formule selon la méthodologie précise
-        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
+        pourcentageDistanceInferieure = pourcentageSurfSupDLInf + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
+            (pourcentageSurfInfDLInf - pourcentageSurfSupDLInf);
     }
 
-    // ÉTAPE 2: Interpolation selon la distance limitative supérieure
+    // ÉTAPE 2: Interpolation selon la distance limitative supérieure - CORRIGÉE
     let pourcentageDistanceSuperieure;
     if (surfaceSuperieure === ">100") {
-        // Pour les grandes surfaces, utiliser les valeurs de ">100"
-        pourcentageDistanceSuperieure = tableau.surfaces[">100"][distanceSuperieureIndex];
+        pourcentageDistanceSuperieure = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
     } else {
-        const pourcentageSurfInfDistSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
-        const pourcentageSurfSupDistSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
+        const pourcentageSurfSupDLSup = tableau.surfaces[surfaceSuperieure][distanceSuperieureIndex];
+        const pourcentageSurfInfDLSup = tableau.surfaces[surfaceInferieure][distanceSuperieureIndex];
         
         // Formule selon la méthodologie précise
-        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
+        pourcentageDistanceSuperieure = pourcentageSurfSupDLSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
+            (pourcentageSurfInfDLSup - pourcentageSurfSupDLSup);
     }
     
-    // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédents
+    // ÉTAPE 3: Interpolation finale entre les deux résultats
     let pourcentageFinal = pourcentageDistanceInferieure + 
         ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
         (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
@@ -603,7 +587,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
     // Appliquer la formule spéciale pour les grandes surfaces si la distance est >= 1.2 m
     if (surfaceFacade > surfacesDisponibles[surfacesDisponibles.length - 1] && distanceLimitative >= 1.2) {
         // Pour le tableau 9.10.14.4-A avec usage "habitation" ou pour 9.10.15.4
-        if (!tableau.hasOwnProperty("usages") || (tableau.hasOwnProperty("usages") && tableau.usages === "habitation")) {
+        if (!tableau.hasOwnProperty("usages") || tableau.usages === "habitation") {
             pourcentageFinal = Math.pow(distanceLimitative, 2);
         } else { // Pour le tableau 9.10.14.4-A avec usage "commercial"
             pourcentageFinal = 0.5 * Math.pow(distanceLimitative, 2);
