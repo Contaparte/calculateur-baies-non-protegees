@@ -44,6 +44,46 @@
 
         <div id="cnb" class="tab-content active">
             <p>Calcul basé sur la section 3.2.3 du CNB</p>
+            <div id="cnb" class="tab-content active">
+    <!-- Contenu existant -->
+    
+    <div class="section-title">Façade de rayonnement de forme irrégulière</div>
+    <div class="form-group">
+        <label><input type="checkbox" id="irregular_facade_cnb"> Utiliser une façade de rayonnement de forme irrégulière <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Permet de diviser la façade de rayonnement en plusieurs parties avec différentes distances limitatives (pour les murs de forme irrégulière ou à angle).</span></div></label>
+    </div>
+    
+    <div id="irregular_facade_options_cnb" style="display: none;">
+        <div id="irregular_parts_container_cnb">
+            <div class="part-row" id="part_row_cnb_1">
+                <h4>Partie 1</h4>
+                <div class="form-group">
+                    <label for="part_surface_cnb_1">Surface de la partie (m²)</label>
+                    <input type="number" id="part_surface_cnb_1" value="" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="part_distance_cnb_1">Distance limitative (m)</label>
+                    <input type="number" id="part_distance_cnb_1" value="" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="part_length_cnb_1">Longueur (m)</label>
+                    <input type="number" id="part_length_cnb_1" value="" min="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="part_height_cnb_1">Hauteur (m)</label>
+                    <input type="number" id="part_height_cnb_1" value="" min="0" step="0.1">
+                </div>
+            </div>
+        </div>
+        <button type="button" id="add_part_cnb" class="btn btn-secondary">Ajouter une partie</button>
+        <button type="button" id="remove_part_cnb" class="btn btn-secondary">Supprimer une partie</button>
+    </div>
+    
+    <!-- Reste du contenu existant -->
+    <button id="calculate_cnb" onclick="calculateCNB()">Calculer</button>
+    <button id="copy_cnb" class="copy-btn" onclick="copyToClipboard('cnb-result')" style="display: none;">📋 Copier les résultats</button>
+            
+    <div id="cnb-result" class="results"></div>
+</div>
             <div class="form-group">
                 <label for="usage_cnb">Usage du bâtiment <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Les usages sont classés par groupe selon leur risque d'incendie. Les groupes A, B3, C, D et F3 sont généralement à risque moindre que les groupes E, F1 et F2.</span></div></label>
                 <select id="usage_cnb">
