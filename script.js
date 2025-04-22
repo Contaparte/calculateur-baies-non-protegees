@@ -794,9 +794,6 @@ function calculateCNB() {
     const checkSoffit = document.getElementById('check_soffit_cnb').checked;
     const soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
     const soffit_protected = document.getElementById('soffit_protected_cnb').checked;
-    const weightedArea = document.getElementById('weighted_area_cnb').checked;
-    const Tu = parseFloat(document.getElementById('Tu_cnb').value);
-    const resistanceAuFeu = document.getElementById('resistance_cnb').value;
 
     // Vérification des entrées
     if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
@@ -859,32 +856,6 @@ function calculateCNB() {
         glassBrick
     );
     
-    // Appliquer la méthode de l'aire pondérée si demandée
-    if (weightedArea) {
-        let Te;
-        if (resistanceAuFeu === "45") {
-            Te = 892;
-        } else if (resistanceAuFeu === "60") {
-            Te = 927;
-        } else { // 120
-            Te = 1010;
-        }
-        
-        // Calculer le coefficient d'ouverture équivalente FEO
-        const FEO = Math.pow((Tu / Te), 4);
-        
-        // Calculer la surface corrigée
-        const AF = facadeSurface; // Surface extérieure de la façade 
-        const A = (pourcentage / 100) * facadeSurface; // Surface réelle de baies non protégées
-        const AC = A + (AF - A) * FEO; // Surface corrigée
-        
-        // Recalculer le pourcentage
-        pourcentage = (AC / facadeSurface) * 100;
-        
-        // Limiter le pourcentage entre 0 et 100
-        pourcentage = Math.max(0, Math.min(100, pourcentage));
-    }
-    
     // Calculer la surface maximale de baies non protégées
     const maxArea = (pourcentage / 100) * facadeSurface;
     
@@ -946,6 +917,21 @@ function calculateCNB() {
             `;
         }
     }
+    
+    // Message concernant la correction pour le rayonnement selon 3.1.7.2.1) et 3.2.3.1.9)
+    let rayonnementMessage = "";
+    if (limitingDistance < 1.2) {
+        rayonnementMessage = `
+            <br><strong>Note concernant le rayonnement thermique :</strong><br>
+            Selon l'article 3.1.7.2. 1), la limite d'élévation de température sur la face non exposée d'une construction ne s'applique pas 
+            à un mur extérieur ayant une distance limitative d'au moins 1,2 m. Puisque votre distance limitative est de ${limitingDistance.toFixed(2)} m, 
+            le rayonnement émis par la face non exposée du mur devrait être pris en compte conformément au paragraphe 3.2.3.1. 9).
+            <br><br>
+            Ce paragraphe prévoit une formule de correction qui considère les températures superficielles du mur et la surface corrigée des baies non protégées. 
+            Pour les calculs précis, consultez le paragraphe 3.2.3.1. 9) du CNB qui fournit la formule de calcul détaillée pour obtenir la surface corrigée 
+            des baies non protégées en tenant compte du rayonnement émis par un mur dont la température superficielle dépasse les valeurs établies par les essais normalisés.
+        `;
+    }
 
    // Afficher les résultats détaillés avec les calculs intermédiaires
    let resultHTML = `
@@ -956,13 +942,13 @@ function calculateCNB() {
    Type de revêtement : ${revetementType}<br>
    Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
    ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-   ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
    <br><strong>Résultats :</strong><br>
    Pourcentage maximal de baies non protégées : ${pourcentage.toFixed(2)}%<br>
    Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
    ${constructionRequirements}
    ${spacingResult}
    ${soffitResult}
+   ${rayonnementMessage}
 `;
 
     // Ajouter la comparaison avec la surface proposée
@@ -976,14 +962,14 @@ function calculateCNB() {
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
             `;
         }
         
