@@ -241,30 +241,59 @@ const tableau91015 = {
 };
 
    // Fonction pour calculer les dimensions automatiquement
-function updateDimensions() {
-    const surface = parseFloat(document.getElementById('surface_cnb').value);
-    const length = parseFloat(document.getElementById('length_cnb').value);
-    const height = parseFloat(document.getElementById('height_cnb').value);
+function updateDimensions(event) {
+    // Identifier quel champ vient d'être modifié
+    const changedField = event.target.id;
     
-    // Cas 1: Surface et longueur définies, calculer la hauteur
-    if (!isNaN(surface) && !isNaN(length) && (isNaN(height) || document.activeElement !== document.getElementById('height_cnb'))) {
-        const calculatedHeight = surface / length;
-        document.getElementById('height_cnb').value = calculatedHeight.toFixed(2);
+    const surfaceField = document.getElementById('surface_cnb');
+    const lengthField = document.getElementById('length_cnb');
+    const heightField = document.getElementById('height_cnb');
+    
+    const surface = parseFloat(surfaceField.value);
+    const length = parseFloat(lengthField.value);
+    const height = parseFloat(heightField.value);
+    
+    // Ne pas faire de calcul si le champ actif est vidé
+    if (event.target.value === "") {
+        return;
     }
     
-    // Cas 2: Surface et hauteur définies, calculer la longueur
-    if (!isNaN(surface) && !isNaN(height) && (isNaN(length) || document.activeElement !== document.getElementById('length_cnb'))) {
-        const calculatedLength = surface / height;
-        document.getElementById('length_cnb').value = calculatedLength.toFixed(2);
-    }
-    
-    // Cas 3: Longueur et hauteur définies, calculer la surface
-    if (!isNaN(length) && !isNaN(height) && (isNaN(surface) || document.activeElement !== document.getElementById('surface_cnb'))) {
-        const calculatedSurface = length * height;
-        document.getElementById('surface_cnb').value = calculatedSurface.toFixed(2);
+    // Ajuster selon le champ qui a été modifié
+    if (changedField === 'surface_cnb') {
+        // Si la surface est modifiée et que la longueur ou la hauteur existe, mettre à jour l'autre dimension
+        if (!isNaN(length)) {
+            // Calculer la hauteur
+            const calculatedHeight = surface / length;
+            heightField.value = calculatedHeight.toFixed(2).replace('.', ',');
+        } else if (!isNaN(height)) {
+            // Calculer la longueur
+            const calculatedLength = surface / height;
+            lengthField.value = calculatedLength.toFixed(2).replace('.', ',');
+        }
+    } else if (changedField === 'length_cnb') {
+        // Si la longueur est modifiée
+        if (!isNaN(surface)) {
+            // Calculer la hauteur basée sur la surface
+            const calculatedHeight = surface / length;
+            heightField.value = calculatedHeight.toFixed(2).replace('.', ',');
+        } else if (!isNaN(height)) {
+            // Calculer la surface
+            const calculatedSurface = length * height;
+            surfaceField.value = calculatedSurface.toFixed(2).replace('.', ',');
+        }
+    } else if (changedField === 'height_cnb') {
+        // Si la hauteur est modifiée
+        if (!isNaN(surface)) {
+            // Calculer la longueur basée sur la surface
+            const calculatedLength = surface / height;
+            lengthField.value = calculatedLength.toFixed(2).replace('.', ',');
+        } else if (!isNaN(length)) {
+            // Calculer la surface
+            const calculatedSurface = length * height;
+            surfaceField.value = calculatedSurface.toFixed(2).replace('.', ',');
+        }
     }
 }
-
 // Afficher/masquer les options supplémentaires
 document.addEventListener('DOMContentLoaded', function() {
     // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
