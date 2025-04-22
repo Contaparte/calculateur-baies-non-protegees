@@ -1532,10 +1532,509 @@ function openTab(event, tabName) {
     event.currentTarget.classList.add("active");
 }
 
-// Fonction pour copier le contenu dans le presse-papier
+// Fonction pour formater les calculs d'interpolation pour CNB
+function formatCNBCalculationSteps() {
+    const usage = document.getElementById('usage_cnb').value;
+    const limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+    const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
+    const length = parseFloat(document.getElementById('length_cnb').value);
+    const height = parseFloat(document.getElementById('height_cnb').value);
+    const sprinklersOption = document.getElementById('sprinklers_cnb').value;
+    const avecGicleurs = sprinklersOption === "complete";
+    const glassBrick = document.getElementById('glass_brick_cnb').checked;
+    const response = document.getElementById('response_cnb').checked;
+    
+    // Ajustement pour le délai d'intervention
+    const adjustedDistance = response ? limitingDistance / 2 : limitingDistance;
+    
+    // Déterminer le rapport L/H
+    const rapportLH = determinerRapportLH(length, height);
+    
+    // Déterminer les tableaux à utiliser
+    let tableauUtilise, distancesUtilisees, surfacesUtilisees;
+    
+    if (avecGicleurs) {
+        if (usage === "groupes_A_B3_C_D_F3") {
+            tableauUtilise = tableauAvecGicleursGroupesABCDF3;
+            distancesUtilisees = limitingDistancesWithSprinklersABCDF3;
+            surfacesUtilisees = facadeSurfacesWithSprinklersABCDF3;
+        } else {
+            tableauUtilise = tableauAvecGicleursGroupesEF1F2;
+            distancesUtilisees = limitingDistancesWithSprinklersEF1F2;
+            surfacesUtilisees = facadeSurfacesWithSprinklersEF1F2;
+        }
+    } else {
+        distancesUtilisees = limitingDistancesNoSprinklers;
+        surfacesUtilisees = facadeSurfaces;
+        if (usage === "groupes_A_B3_C_D_F3") {
+            tableauUtilise = tableauGroupesAB3CDF3;
+        } else {
+            tableauUtilise = tableauGroupesEF1F2;
+        }
+    }
+    
+    // Trouver les valeurs encadrantes
+    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, distancesUtilisees);
+    const distanceInferieure = distancesEncadrantes.inferieure;
+    const distanceSuperieure = distancesEncadrantes.superieure;
+    const distanceInferieureIndex = distancesUtilisees.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = distancesUtilisees.indexOf(distanceSuperieure);
+    
+    const surfacesEncadrantes = trouverValeurEncadrantes(facadeSurface, surfacesUtilisees);
+    const surfaceInferieure = surfacesEncadrantes.inferieure;
+    const surfaceSuperieure = surfacesEncadrantes.superieure;
+    
+    // Préparer le texte formaté
+    let output = "Selon les données du ";
+    output += avecGicleurs ? 
+        (usage === "groupes_A_B3_C_D_F3" ? "Tableau 3.2.3.1.-D" : "Tableau 3.2.3.1.-E") : 
+        (usage === "groupes_A_B3_C_D_F3" ? "Tableau 3.2.3.1.-B" : "Tableau 3.2.3.1.-C");
+    output += ":\n\n";
+    
+    // Paramètres
+    output += "Paramètres indiqués:\n";
+    output += `DL: ${adjustedDistance.toFixed(2)}m\n`;
+    output += `Surface de la FDR: ${facadeSurface.toFixed(2)}m²\n`;
+    output += `Proportion L/H : Largeur : ${length.toFixed(2)}m ; Hauteur : ${height.toFixed(2)}m\n`;
+    output += `Le rapport L/H est ${rapportLH}\n\n`;
+    
+    // Si c'est une valeur exacte dans le tableau, pas besoin d'interpoler
+    if (distanceInferieure === distanceSuperieure && surfaceInferieure === surfaceSuperieure) {
+        let pourcentageFinal;
+        if (!avecGicleurs) {
+            pourcentageFinal = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
+        } else {
+            pourcentageFinal = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
+        }
+        
+        output += `Valeur exacte trouvée dans le tableau: ${pourcentageFinal}%\n`;
+        if (glassBrick) {
+            output += `Avec majoration pour briques de verre/verre armé (x2): ${Math.min(100, pourcentageFinal * 2)}%\n`;
+        }
+        return output;
+    }
+    
+    // Étape 1: Interpolation selon DL inférieure
+    let pourcentageDistanceInferieure;
+    output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
+    
+    if (!avecGicleurs) {
+        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
+        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][rapportLH][distanceInferieureIndex];
+        
+        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistInf}%\n`;
+        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistInf}%\n`;
+        
+        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
+            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
+        
+        output += `${pourcentageSurfSupDistInf} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistInf} – ${pourcentageSurfSupDistInf}) = `;
+        output += `${pourcentageSurfSupDistInf} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf)).toFixed(2)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
+    } else {
+        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
+        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][distanceInferieureIndex];
+        
+        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistInf}%\n`;
+        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistInf}%\n`;
+        
+        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
+            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
+        
+        output += `${pourcentageSurfSupDistInf} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistInf} – ${pourcentageSurfSupDistInf}) = `;
+        output += `${pourcentageSurfSupDistInf} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf)).toFixed(2)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Si les distances sont identiques, pas besoin d'interpolation supplémentaire
+    if (distanceInferieure === distanceSuperieure) {
+        if (glassBrick) {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+            output += `Avec majoration pour briques de verre/verre armé (x2): ${Math.min(100, pourcentageDistanceInferieure * 2).toFixed(2)}%\n`;
+        } else {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+        }
+        return output;
+    }
+    
+    // Étape 2: Interpolation selon DL supérieure
+    let pourcentageDistanceSuperieure;
+    output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
+    
+    if (!avecGicleurs) {
+        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][rapportLH][distanceSuperieureIndex];
+        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][rapportLH][distanceSuperieureIndex];
+        
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistSup}%\n`;
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistSup}%\n`;
+        
+        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
+            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
+        
+        output += `${pourcentageSurfSupDistSup} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistSup} – ${pourcentageSurfSupDistSup}) = `;
+        output += `${pourcentageSurfSupDistSup} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup)).toFixed(2)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
+    } else {
+        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][distanceSuperieureIndex];
+        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][distanceSuperieureIndex];
+        
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistSup}%\n`;
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistSup}%\n`;
+        
+        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
+            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
+        
+        output += `${pourcentageSurfSupDistSup} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistSup} – ${pourcentageSurfSupDistSup}) = `;
+        output += `${pourcentageSurfSupDistSup} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup)).toFixed(2)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Étape 3: Interpolation finale
+    output += "Étape 3: Interpolation selon les résultats obtenus des deux interpolations précédentes:\n";
+    
+    const pourcentageFinal = pourcentageDistanceInferieure + 
+        ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+        (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
+    
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + (${adjustedDistance.toFixed(2)} – ${distanceInferieure}) / (${distanceSuperieure} – ${distanceInferieure}) x (${pourcentageDistanceSuperieure.toFixed(2)} – ${pourcentageDistanceInferieure.toFixed(2)}) = `;
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + ${((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure) * (pourcentageDistanceSuperieure - pourcentageDistanceInferieure)).toFixed(2)} = ${pourcentageFinal.toFixed(2)} %\n`;
+    
+    // Appliquer la majoration pour briques de verre/verre armé si nécessaire
+    if (glassBrick) {
+        const pourcentageFinalAvecMajoration = Math.min(100, pourcentageFinal * 2);
+        output += `\nAvec majoration pour briques de verre/verre armé (x2): ${pourcentageFinalAvecMajoration.toFixed(2)}%\n`;
+    }
+    
+    return output;
+}
+
+// Fonction pour formater les calculs d'interpolation pour 9.10.14
+function format91014CalculationSteps() {
+    const usage = document.getElementById('usage_91014').value;
+    const buildingType = document.getElementById('building_type_91014').value;
+    let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
+    const surface = parseFloat(document.getElementById('surface_91014').value);
+    const sprinklersOption = document.getElementById('sprinklers_91014').value;
+    const avecGicleurs = sprinklersOption === "complete";
+    const glassBrick = document.getElementById('glass_brick_91014').checked;
+    const response = document.getElementById('response_91014').checked;
+    
+    // Si c'est un garage, ajouter une note spéciale
+    if (buildingType === "garage") {
+        return "Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires " +
+               "qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes pour les baies vitrées " +
+               "et les exigences de construction.";
+    }
+    
+    // Ajustement pour le délai d'intervention
+    const adjustedDistance = response ? limitingDistance / 2 : limitingDistance;
+    
+    // Récupérer le tableau approprié
+    const tableau = {
+        surfaces: tableau91014[usage].surfaces,
+        distances: tableau91014[usage].distances
+    };
+    
+    // Trouver les distances encadrantes
+    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau.distances);
+    const distanceInferieure = distancesEncadrantes.inferieure;
+    const distanceSuperieure = distancesEncadrantes.superieure;
+    const distanceInferieureIndex = tableau.distances.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = tableau.distances.indexOf(distanceSuperieure);
+    
+    // Déterminer les surfaces disponibles dans le tableau
+    const surfacesDisponibles = Object.keys(tableau.surfaces).filter(s => s !== ">100").map(Number);
+    
+    // Trouver les surfaces encadrantes
+    let surfaceInferieure, surfaceSuperieure;
+    let keyInf, keySup;
+    
+    if (surface <= surfacesDisponibles[0]) {
+        surfaceInferieure = surfaceSuperieure = surfacesDisponibles[0];
+        keyInf = keySup = surfacesDisponibles[0].toString();
+    } else if (surface > surfacesDisponibles[surfacesDisponibles.length - 1]) {
+        surfaceInferieure = surfacesDisponibles[surfacesDisponibles.length - 1];
+        surfaceSuperieure = Infinity;
+        keyInf = surfacesDisponibles[surfacesDisponibles.length - 1].toString();
+        keySup = ">100";
+    } else {
+        for (let i = 0; i < surfacesDisponibles.length - 1; i++) {
+            if (surface > surfacesDisponibles[i] && surface <= surfacesDisponibles[i + 1]) {
+                surfaceInferieure = surfacesDisponibles[i];
+                surfaceSuperieure = surfacesDisponibles[i + 1];
+                keyInf = surfaceInferieure.toString();
+                keySup = surfaceSuperieure.toString();
+                break;
+            }
+        }
+    }
+    
+    // Préparer le texte formaté
+    let output = "Selon les données du Tableau 9.10.14.4.-A:\n\n";
+    
+    // Paramètres
+    output += "Paramètres indiqués:\n";
+    output += `DL: ${adjustedDistance.toFixed(2)}m\n`;
+    output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
+    
+    // Cas particulier: Formule du carré de la distance
+    if (surface > surfacesDisponibles[surfacesDisponibles.length - 1] && adjustedDistance >= 1.2) {
+        if (usage === "habitation") {
+            output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule du carré de la distance:\n`;
+            output += `Pourcentage = (DL)² = (${adjustedDistance.toFixed(2)})² = ${Math.pow(adjustedDistance, 2).toFixed(2)}%\n`;
+        } else { // commercial
+            output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule de la moitié du carré de la distance:\n`;
+            output += `Pourcentage = 0,5 × (DL)² = 0,5 × (${adjustedDistance.toFixed(2)})² = ${(0.5 * Math.pow(adjustedDistance, 2)).toFixed(2)}%\n`;
+        }
+        
+        // Appliquer la majoration si nécessaire
+        let resultat = usage === "habitation" ? Math.pow(adjustedDistance, 2) : 0.5 * Math.pow(adjustedDistance, 2);
+        if (avecGicleurs || glassBrick) {
+            output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, resultat * 2).toFixed(2)}%\n`;
+        }
+        
+        return output;
+    }
+    
+    // Étape 1: Interpolation selon DL inférieure
+    let pourcentageDistanceInferieure;
+    output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
+    
+    if (keyInf === keySup) {
+        pourcentageDistanceInferieure = tableau.surfaces[keyInf][distanceInferieureIndex];
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceInferieure}%\n\n`;
+    } else {
+        const pourcentageDistInfSurfInf = tableau.surfaces[keyInf][distanceInferieureIndex];
+        const pourcentageDistInfSurfSup = tableau.surfaces[keySup][distanceInferieureIndex];
+        
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistInfSurfInf}%\n`;
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
+        
+        pourcentageDistanceInferieure = pourcentageDistInfSurfSup + 
+            ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
+        
+        output += `${pourcentageDistInfSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistInfSurfInf} – ${pourcentageDistInfSurfSup}) = `;
+        output += `${pourcentageDistInfSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup)).toFixed(3)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Si les distances sont identiques, pas besoin d'interpolation supplémentaire
+    if (distanceInferieure === distanceSuperieure) {
+        let resultat = pourcentageDistanceInferieure;
+        if (avecGicleurs || glassBrick) {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+            output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, resultat * 2).toFixed(2)}%\n`;
+        } else {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+        }
+        return output;
+    }
+    
+    // Étape 2: Interpolation selon DL supérieure
+    let pourcentageDistanceSuperieure;
+    output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
+    
+    if (keyInf === keySup) {
+        pourcentageDistanceSuperieure = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceSuperieure}%\n\n`;
+    } else {
+        const pourcentageDistSupSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        const pourcentageDistSupSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
+        
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistSupSurfInf}%\n`;
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keySup}m²: ${pourcentageDistSupSurfSup}%\n`;
+        
+        pourcentageDistanceSuperieure = pourcentageDistSupSurfSup + 
+            ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup);
+        
+        output += `${pourcentageDistSupSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistSupSurfInf} – ${pourcentageDistSupSurfSup}) = `;
+        output += `${pourcentageDistSupSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup)).toFixed(3)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Étape 3: Interpolation finale
+    output += "Étape 3: Interpolation selon les résultats obtenus des deux interpolations précédentes:\n";
+    
+    let pourcentageFinal = pourcentageDistanceInferieure + 
+        ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+        (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
+    
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + (${adjustedDistance.toFixed(2)} – ${distanceInferieure}) / (${distanceSuperieure} – ${distanceInferieure}) x (${pourcentageDistanceSuperieure.toFixed(2)} – ${pourcentageDistanceInferieure.toFixed(2)}) = `;
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + ${((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure) * (pourcentageDistanceSuperieure - pourcentageDistanceInferieure)).toFixed(2)} = ${pourcentageFinal.toFixed(2)} %\n`;
+    
+    // Appliquer la majoration si nécessaire
+    if (avecGicleurs || glassBrick) {
+        output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                   avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, pourcentageFinal * 2).toFixed(2)}%\n`;
+    }
+    
+    return output;
+}
+
+// Fonction pour formater les calculs d'interpolation pour 9.10.15
+function format91015CalculationSteps() {
+    const housingType = document.getElementById('housing_type_91015').value;
+    let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
+    const surface = parseFloat(document.getElementById('surface_91015').value);
+    const sprinklersOption = document.getElementById('sprinklers_91015').value;
+    const avecGicleurs = sprinklersOption === "complete";
+    const glassBrick = document.getElementById('glass_brick_91015').checked;
+    const response = document.getElementById('response_91015').checked;
+    
+    // Ajustement pour le délai d'intervention
+    const adjustedDistance = response ? limitingDistance / 2 : limitingDistance;
+    
+    // Trouver les distances encadrantes
+    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau91015.distances);
+    const distanceInferieure = distancesEncadrantes.inferieure;
+    const distanceSuperieure = distancesEncadrantes.superieure;
+    const distanceInferieureIndex = tableau91015.distances.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = tableau91015.distances.indexOf(distanceSuperieure);
+    
+    // Déterminer les surfaces disponibles dans le tableau
+    const surfacesDisponibles = Object.keys(tableau91015.surfaces).filter(s => s !== ">100").map(Number);
+    
+    // Trouver les surfaces encadrantes
+    let surfaceInferieure, surfaceSuperieure;
+    let keyInf, keySup;
+    
+    if (surface <= surfacesDisponibles[0]) {
+        surfaceInferieure = surfaceSuperieure = surfacesDisponibles[0];
+        keyInf = keySup = surfacesDisponibles[0].toString();
+    } else if (surface > surfacesDisponibles[surfacesDisponibles.length - 1]) {
+        surfaceInferieure = surfacesDisponibles[surfacesDisponibles.length - 1];
+        surfaceSuperieure = Infinity;
+        keyInf = surfacesDisponibles[surfacesDisponibles.length - 1].toString();
+        keySup = ">100";
+    } else {
+        for (let i = 0; i < surfacesDisponibles.length - 1; i++) {
+            if (surface > surfacesDisponibles[i] && surface <= surfacesDisponibles[i + 1]) {
+                surfaceInferieure = surfacesDisponibles[i];
+                surfaceSuperieure = surfacesDisponibles[i + 1];
+                keyInf = surfaceInferieure.toString();
+                keySup = surfaceSuperieure.toString();
+                break;
+            }
+        }
+    }
+    
+    // Préparer le texte formaté
+    let output = "Selon les données du Tableau 9.10.15.4.:\n\n";
+    
+    // Paramètres
+    output += "Paramètres indiqués:\n";
+    output += `DL: ${adjustedDistance.toFixed(2)}m\n`;
+    output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
+    
+    // Cas particulier: Formule du carré de la distance
+    if (surface > surfacesDisponibles[surfacesDisponibles.length - 1] && adjustedDistance >= 1.2) {
+        output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule du carré de la distance:\n`;
+        output += `Pourcentage = (DL)² = (${adjustedDistance.toFixed(2)})² = ${Math.pow(adjustedDistance, 2).toFixed(2)}%\n`;
+        
+        // Appliquer la majoration si nécessaire
+        let resultat = Math.pow(adjustedDistance, 2);
+        if (avecGicleurs || glassBrick) {
+            output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, resultat * 2).toFixed(2)}%\n`;
+        }
+        
+        return output;
+    }
+    
+    // Étape 1: Interpolation selon DL inférieure
+    let pourcentageDistanceInferieure;
+    output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
+    
+    if (keyInf === keySup) {
+        pourcentageDistanceInferieure = tableau91015.surfaces[keyInf][distanceInferieureIndex];
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceInferieure}%\n\n`;
+    } else {
+        const pourcentageDistInfSurfInf = tableau91015.surfaces[keyInf][distanceInferieureIndex];
+        const pourcentageDistInfSurfSup = tableau91015.surfaces[keySup][distanceInferieureIndex];
+        
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistInfSurfInf}%\n`;
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
+        
+        pourcentageDistanceInferieure = pourcentageDistInfSurfSup + 
+            ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
+        
+        output += `${pourcentageDistInfSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistInfSurfInf} – ${pourcentageDistInfSurfSup}) = `;
+        output += `${pourcentageDistInfSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup)).toFixed(3)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Si les distances sont identiques, pas besoin d'interpolation supplémentaire
+    if (distanceInferieure === distanceSuperieure) {
+        let resultat = pourcentageDistanceInferieure;
+        if (avecGicleurs || glassBrick) {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+            output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, resultat * 2).toFixed(2)}%\n`;
+        } else {
+            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
+        }
+        return output;
+    }
+    
+    // Étape 2: Interpolation selon DL supérieure
+    let pourcentageDistanceSuperieure;
+    output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
+    
+    if (keyInf === keySup) {
+        pourcentageDistanceSuperieure = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceSuperieure}%\n\n`;
+    } else {
+        const pourcentageDistSupSurfInf = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
+        const pourcentageDistSupSurfSup = tableau91015.surfaces[keySup][distanceSuperieureIndex];
+        
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistSupSurfInf}%\n`;
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keySup}m²: ${pourcentageDistSupSurfSup}%\n`;
+        
+        pourcentageDistanceSuperieure = pourcentageDistSupSurfSup + 
+            ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup);
+        
+        output += `${pourcentageDistSupSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistSupSurfInf} – ${pourcentageDistSupSurfSup}) = `;
+        output += `${pourcentageDistSupSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup)).toFixed(3)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
+    }
+    
+    // Étape 3: Interpolation finale
+    output += "Étape 3: Interpolation selon les résultats obtenus des deux interpolations précédentes:\n";
+    
+    let pourcentageFinal = pourcentageDistanceInferieure + 
+        ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+        (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
+    
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + (${adjustedDistance.toFixed(2)} – ${distanceInferieure}) / (${distanceSuperieure} – ${distanceInferieure}) x (${pourcentageDistanceSuperieure.toFixed(2)} – ${pourcentageDistanceInferieure.toFixed(2)}) = `;
+    output += `${pourcentageDistanceInferieure.toFixed(2)} + ${((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure) * (pourcentageDistanceSuperieure - pourcentageDistanceInferieure)).toFixed(2)} = ${pourcentageFinal.toFixed(2)} %\n`;
+    
+    // Appliquer la majoration si nécessaire
+    if (avecGicleurs || glassBrick) {
+        output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
+                   avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, pourcentageFinal * 2).toFixed(2)}%\n`;
+    }
+    
+    return output;
+}
+
+// Fonction pour copier le contenu dans le presse-papier avec format détaillé
 function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.innerText;
+    let text = "";
+    
+    // Déterminer quelle méthode utiliser
+    if (elementId === 'cnb-result') {
+        text = formatCNBCalculationSteps();
+    } else if (elementId === 'method91014-result') {
+        text = format91014CalculationSteps();
+    } else if (elementId === 'method91015-result') {
+        text = format91015CalculationSteps();
+    } else {
+        // Fallback au comportement d'origine si l'ID n'est pas reconnu
+        const element = document.getElementById(elementId);
+        text = element.innerText;
+    }
     
     navigator.clipboard.writeText(text)
         .then(() => {
