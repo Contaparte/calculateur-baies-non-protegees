@@ -322,11 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('soffit_options_91015').style.display = this.checked ? 'block' : 'none';
     });
         
-    // Gestionnaire d'événement pour la méthode de l'aire pondérée
-    document.getElementById('weighted_area_cnb').addEventListener('change', function() {
-        document.getElementById('weighted_options_cnb').style.display = this.checked ? 'block' : 'none';
-    });
-        
     // Ajouter des écouteurs pour l'onglet CNB
     const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
     cnbInputs.forEach(input => {
@@ -794,10 +789,7 @@ function calculateCNB() {
     const checkSoffit = document.getElementById('check_soffit_cnb').checked;
     const soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
     const soffit_protected = document.getElementById('soffit_protected_cnb').checked;
-    const weightedArea = document.getElementById('weighted_area_cnb').checked;
-    const Tu = parseFloat(document.getElementById('Tu_cnb').value);
-    const resistanceAuFeu = document.getElementById('resistance_cnb').value;
-
+    
     // Vérification des entrées
     if (isNaN(facadeSurface) || isNaN(length) || isNaN(height) || isNaN(limitingDistance) || 
         facadeSurface <= 0 || length <= 0 || height <= 0 || limitingDistance < 0) {
@@ -859,30 +851,19 @@ function calculateCNB() {
         glassBrick
     );
     
-    // Appliquer la méthode de l'aire pondérée si demandée
-    if (weightedArea) {
-        let Te;
-        if (resistanceAuFeu === "45") {
-            Te = 892;
-        } else if (resistanceAuFeu === "60") {
-            Te = 927;
-        } else { // 120
-            Te = 1010;
-        }
-        
-        // Calculer le coefficient d'ouverture équivalente FEO
-        const FEO = Math.pow((Tu / Te), 4);
-        
-        // Calculer la surface corrigée
-        const AF = facadeSurface; // Surface extérieure de la façade 
-        const A = (pourcentage / 100) * facadeSurface; // Surface réelle de baies non protégées
-        const AC = A + (AF - A) * FEO; // Surface corrigée
-        
-        // Recalculer le pourcentage
-        pourcentage = (AC / facadeSurface) * 100;
-        
-        // Limiter le pourcentage entre 0 et 100
-        pourcentage = Math.max(0, Math.min(100, pourcentage));
+    // Ajouter les précisions concernant 3.1.7.2. 1) et 3.2.3.1. 9) lorsque la distance limitative est < 1,2 m
+    let rayonnementInfo = "";
+    if (limitingDistance < 1.2) {
+        rayonnementInfo = `
+            <br><strong>Note concernant le rayonnement thermique :</strong><br>
+            Selon l'article 3.1.7.2. 1), la limite d'élévation de température sur la face non exposée d'une construction ne s'applique pas 
+            à un mur extérieur ayant une distance limitative de 1,2 m ou plus, pourvu que le rayonnement émis par la face non exposée 
+            soit pris en compte pour effectuer une correction conformément au paragraphe 3.2.3.1. 9).<br>
+            <br>
+            Selon le paragraphe 3.2.3.1. 9), si la température superficielle de la face non exposée d'un mur dépasse les valeurs établies 
+            par les essais normalisés de résistance au feu, il faut tenir compte du rayonnement émis par la face non exposée du mur en 
+            ajoutant une surface équivalente de baies non protégées.
+        `;
     }
     
     // Calculer la surface maximale de baies non protégées
@@ -956,11 +937,12 @@ function calculateCNB() {
    Type de revêtement : ${revetementType}<br>
    Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
    ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
-   ${weightedArea ? "Méthode de l'aire pondérée appliquée (Température: " + Tu + "°C, Résistance au feu: " + resistanceAuFeu + " min)<br>" : ""}
+   
    <br><strong>Résultats :</strong><br>
    Pourcentage maximal de baies non protégées : ${pourcentage.toFixed(2)}%<br>
    Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
    ${constructionRequirements}
+   ${rayonnementInfo}
    ${spacingResult}
    ${soffitResult}
 `;
