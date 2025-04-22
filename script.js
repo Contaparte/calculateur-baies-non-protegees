@@ -889,7 +889,7 @@ function calculateCNB() {
         } else {
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
                 Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
                 Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
             `;
@@ -922,7 +922,7 @@ function calculateCNB() {
         } else {
             soffitResult = `
                 <br><strong>Protection des soffites :</strong><br>
-                ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
                 Aucune protection spécifique n'est requise.</span>
             `;
         }
@@ -958,14 +958,14 @@ function calculateCNB() {
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
             `;
         }
         
@@ -1179,7 +1179,7 @@ function calculate91014() {
             } else {
                 spacingResult += `
                     <strong>Espacement des baies :</strong><br>
-                    ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                    <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
                     Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
                     Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
                 `;
@@ -1188,7 +1188,7 @@ function calculate91014() {
             // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
                 prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
                 Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
             `;
@@ -1217,12 +1217,12 @@ function calculate91014() {
                      "La distance du soffite est d'au moins 0,45 m."}
                  ${!soffit_protected && soffit_distance < 1.2 ? 
                      "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
-                     soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
+                     soffit_protected ? "<br><span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
              `;
          } else {
              soffitResult = `
                  <br><strong>Protection des soffites :</strong><br>
-                 ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                 <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
                  Aucune protection spécifique n'est requise.</span>
              `;
          }
@@ -1268,14 +1268,14 @@ function calculate91014() {
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                  Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
              `;
          } else {
              statusClass = "color: green; font-weight: bold;";
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                  Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
              `;
          }
          
@@ -1392,7 +1392,7 @@ function calculate91015() {
             } else {
                 spacingResult = `
                     <br><strong>Vérification de l'espacement des baies :</strong><br>
-                    ✅ <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                    <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
                     Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
                     Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
                 `;
@@ -1401,7 +1401,7 @@ function calculate91015() {
             // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
-                ✅ <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
+                <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
                 prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
                 Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
             `;
@@ -1430,12 +1430,12 @@ function calculate91015() {
                     "La distance du soffite est d'au moins 0,45 m."}
                 ${!soffit_protected && soffit_distance < 1.2 ? 
                     "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
-                    soffit_protected ? "<br>✅ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
+                    soffit_protected ? "<br><span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
             `;
         } else {
             soffitResult = `
                <br><strong>Protection des soffites :</strong><br>
-               ✅ <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+               <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
                Aucune protection spécifique n'est requise.</span>
            `;
        }
@@ -1492,14 +1492,14 @@ function calculate91015() {
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">⚠️ NON CONFORME: La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
            `;
        } else {
            statusClass = "color: green; font-weight: bold;";
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">✅ CONFORME: La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
            `;
        }
        
