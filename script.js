@@ -958,7 +958,7 @@ function calculateCNB() {
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
@@ -1268,7 +1268,7 @@ function calculate91014() {
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                  Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
              `;
          } else {
              statusClass = "color: green; font-weight: bold;";
@@ -1492,7 +1492,7 @@ function calculate91015() {
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
            `;
        } else {
            statusClass = "color: green; font-weight: bold;";
