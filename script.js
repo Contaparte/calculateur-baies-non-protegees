@@ -957,15 +957,15 @@ function calculateCNB() {
             statusClass = "color: red; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+                <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
             `;
         }
         
@@ -1267,15 +1267,15 @@ function calculate91014() {
              statusClass = "color: red; font-weight: bold;";
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+                 <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
              `;
          } else {
              statusClass = "color: green; font-weight: bold;";
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+                 <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
              `;
          }
          
@@ -1491,15 +1491,15 @@ function calculate91015() {
            statusClass = "color: red; font-weight: bold;";
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+               <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
            `;
        } else {
            statusClass = "color: green; font-weight: bold;";
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade de rayonnement)<br>
+               <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
            `;
        }
        
