@@ -2930,7 +2930,7 @@ function format91015CalculationSteps() {
         output += `À DL de ${distanceInferieure}m et surface max. de ${keySup === ">100" ? "plus de 100" : keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
         
         const pourcentageEtape1 = pourcentageDistInfSurfSup + 
-            (surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
         
         output += `${pourcentageDistInfSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${keySup === ">100" ? "Surface maximale du tableau" : surfaceSuperieure} – ${surfaceInferieure}) × (${pourcentageDistInfSurfInf} – ${pourcentageDistInfSurfSup}) = ${pourcentageEtape1.toFixed(3)} = ${pourcentageEtape1.toFixed(2)} %\n\n`;
