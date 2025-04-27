@@ -2564,7 +2564,7 @@ function formatCNBCalculationSteps() {
     rapportLH = determinerRapportLH(length, height);
     
     // Préparer le texte formaté pour le presse-papier selon les exemples fournis
-    let output = "Tableau 3.2.3.1.-B:\n";
+    let output = "Selon le Tableau 3.2.3.1.-B:\n";
     output += "FDR = façade de rayonnement\n";
     output += "DL = distance limitative\n";
     output += "Paramètres indiqués par l'utilisateur:\n";
@@ -2737,7 +2737,7 @@ function format91014CalculationSteps() {
     }
     
     // Préparer le texte formaté
-    let output = "Tableau 9.10.14.4.-A:\n";
+    let output = "Selon le Tableau 9.10.14.4.-A:\n";
     output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
@@ -2882,7 +2882,7 @@ function format91015CalculationSteps() {
     }
     
     // Préparer le texte formaté
-    let output = "Tableau 9.10.15.4.:\n";
+    let output = "Selon le Tableau 9.10.15.4.:\n";
     output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
