@@ -626,22 +626,28 @@ function updateUnitLabels(isImperial) {
     const unitLabels = document.querySelectorAll('.unit-label');
     
     unitLabels.forEach(label => {
-        const labelText = label.textContent;
-        
-        if (isImperial) {
-            // Remplacer les unités métriques par des unités impériales
-            if (labelText.includes('(m)')) {
-                label.textContent = labelText.replace('(m)', '(pi)');
-            } else if (labelText.includes('(m²)')) {
-                label.textContent = labelText.replace('(m²)', '(pi²)');
+        // Préserver les tooltips en modifiant seulement le nœud de texte
+        const textNodes = Array.from(label.childNodes).filter(node => node.nodeType === 3);
+        if (textNodes.length > 0) {
+            let labelText = textNodes[0].nodeValue;
+            
+            if (isImperial) {
+                // Remplacer les unités métriques par des unités impériales
+                if (labelText.includes('(m)')) {
+                    labelText = labelText.replace('(m)', '(pi)');
+                } else if (labelText.includes('(m²)')) {
+                    labelText = labelText.replace('(m²)', '(pi²)');
+                }
+            } else {
+                // Remplacer les unités impériales par des unités métriques
+                if (labelText.includes('(pi)')) {
+                    labelText = labelText.replace('(pi)', '(m)');
+                } else if (labelText.includes('(pi²)')) {
+                    labelText = labelText.replace('(pi²)', '(m²)');
+                }
             }
-        } else {
-            // Remplacer les unités impériales par des unités métriques
-            if (labelText.includes('(pi)')) {
-                label.textContent = labelText.replace('(pi)', '(m)');
-            } else if (labelText.includes('(pi²)')) {
-                label.textContent = labelText.replace('(pi²)', '(m²)');
-            }
+            
+            textNodes[0].nodeValue = labelText;
         }
     });
 }
