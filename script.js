@@ -240,62 +240,315 @@ const tableau91015 = {
     distances: [0, 1.2, 1.5, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0]
 };
 
-   // Fonction pour calculer les dimensions automatiquement
+// Fonctions de conversion entre les formats métrique et impérial
+function validateImperialInput(inputValue) {
+    if (!inputValue) return '';
+    
+    // Remplacer les apostrophes spéciales par le caractère standard '
+    inputValue = inputValue.replace(/[''′]/g, "'");
+    
+    // Simplifier les espaces autour des caractères spéciaux
+    inputValue = inputValue.replace(/\s*(['-/"])\s*/g, '$1');
+    
+    // Normaliser l'apostrophe suivie d'un trait d'union (6'-9) en simple apostrophe (6'9)
+    inputValue = inputValue.replace(/'-/g, "'");
+    
+    // Ajouter un espace entre un nombre et une fraction s'il n'y en a pas
+    inputValue = inputValue.replace(/(\d)(\d+\/\d+)/g, '$1 $2');
+    
+    return inputValue;
+}
+
+// Fonction pour passer de millimètres à une chaîne en format impérial
+function metricToImperial(value, unit = "length") {
+    if (!value && value !== 0) return '';
+    
+    // Conversion pour les longueurs (m -> pieds/pouces)
+    if (unit === "length") {
+        // Convertir de mètres à pouces
+        const inches = value * 39.3701;
+        const feet = Math.floor(inches / 12);
+        const remainingInches = inches % 12;
+        
+        // Arrondir au 1/16 de pouce le plus proche
+        const fraction = Math.round(remainingInches * 16) / 16;
+        const wholePart = Math.floor(fraction);
+        const fractionalPart = fraction - wholePart;
+        
+        let result = '';
+        
+        if (feet > 0) {
+            result += feet + '\'';
+        }
+        
+        if (wholePart > 0 || fractionalPart > 0) {
+            if (feet > 0) result += ' ';
+            
+            if (wholePart > 0) {
+                result += wholePart;
+            }
+            
+            if (fractionalPart > 0) {
+                // Convertir la fraction décimale en fraction
+                const numerator = Math.round(fractionalPart * 16);
+                const denominator = 16;
+                
+                // Réduire la fraction
+                const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+                const divisor = gcd(numerator, denominator);
+                
+                const simplifiedNumerator = numerator / divisor;
+                const simplifiedDenominator = denominator / divisor;
+                
+                if (wholePart > 0) result += ' ';
+                result += simplifiedNumerator + '/' + simplifiedDenominator;
+            }
+            
+            result += '"';
+        } else if (feet === 0) {
+            result = '0"';
+        }
+        
+        return result;
+    }
+    // Conversion pour les surfaces (m² -> pi²)
+    else if (unit === "area") {
+        // Convertir de m² à pi²
+        const sqFeet = value * 10.7639;
+        return Math.round(sqFeet) + ' pi²';
+    }
+    // Valeur par défaut - longueur
+    else {
+        return metricToImperial(value, "length");
+    }
+}
+
+// Convertir des formats impériaux en métriques
+function imperialToMetric(imperialValue, unit = "length") {
+    if (!imperialValue && imperialValue !== 0) return null;
+    
+    // Conversion pour les longueurs (pieds/pouces -> m)
+    if (unit === "length") {
+        // Gestion de différents formats de pieds et pouces
+        imperialValue = imperialValue.toString().trim();
+        
+        // Vérifier si c'est juste une valeur numérique (interprétée comme des pouces)
+        if (/^\d+(?:\.\d+)?$/.test(imperialValue)) {
+            const inches = parseFloat(imperialValue);
+            return inches * 0.0254; // Convertir les pouces en mètres
+        }
+        
+        // Format pi²
+        if (/^\d+(?:\.\d+)?\s*pi(?:ed|²|2)?s?$/i.test(imperialValue)) {
+            const match = imperialValue.match(/^(\d+(?:\.\d+)?)/);
+            const sqFeet = parseFloat(match[1]);
+            return sqFeet / 10.7639; // Convertir les pi² en m²
+        }
+        
+        // Motifs pour capture des pieds et pouces
+        const patterns = [
+            /^(\d+(?:\.\d+)?)'(?:\s*)(\d+(?:\.\d+)?)?(?:\s*(?:"|in|inch|inches))?$/,  // 6'2" ou 6'2
+            /^(\d+(?:\.\d+)?)(?:\s*(?:ft|feet|foot))(?:\s*)(\d+(?:\.\d+)?)?(?:\s*(?:"|in|inch|inches))?$/,  // 6 ft 2 in ou 6 ft 2
+            /^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/,  // 6-2
+            /^(\d+(?:\.\d+)?)(?:\s+)(\d+(?:\.\d+)?)$/  // 6 2
+        ];
+        
+        for (let pattern of patterns) {
+            const match = imperialValue.match(pattern);
+            if (match) {
+                const feet = parseFloat(match[1]) || 0;
+                const inches = match[2] ? parseFloat(match[2]) : 0;
+                const totalInches = feet * 12 + inches;
+                return totalInches * 0.0254; // Convertir en mètres
+            }
+        }
+        
+        // Pour les fractions (ex: "6 1/2")
+        const fractionMatch = imperialValue.match(/^(\d+(?:\.\d+)?)(?:\s*)(\d+)\/(\d+)(?:\s*(?:"|in|inch|inches))?$/);
+        if (fractionMatch) {
+            const wholeNumber = parseFloat(fractionMatch[1]) || 0;
+            const numerator = parseFloat(fractionMatch[2]);
+            const denominator = parseFloat(fractionMatch[3]);
+            const inches = wholeNumber + (numerator / denominator);
+            return inches * 0.0254; // Convertir en mètres
+        }
+        
+        // Pour les pieds avec fractions de pouce (ex: "6' 1/2")
+        const feetWithFractionMatch = imperialValue.match(/^(\d+(?:\.\d+)?)'(?:\s*)(\d+)\/(\d+)(?:\s*(?:"|in|inch|inches))?$/);
+        if (feetWithFractionMatch) {
+            const feet = parseFloat(feetWithFractionMatch[1]) || 0;
+            const numerator = parseFloat(feetWithFractionMatch[2]);
+            const denominator = parseFloat(feetWithFractionMatch[3]);
+            const totalInches = feet * 12 + (numerator / denominator);
+            return totalInches * 0.0254; // Convertir en mètres
+        }
+        
+        // Formats spéciaux comme 6'-9 1/4"
+        const specialFormat = imperialValue.match(/^(\d+(?:\.\d+)?)'[-\s]*(\d+(?:\.\d+)?)(?:\s+(\d+)\/(\d+))?(?:\s*(?:"|in|inch|inches))?$/);
+        if (specialFormat) {
+            const feet = parseFloat(specialFormat[1]) || 0;
+            const inches = parseFloat(specialFormat[2]) || 0;
+            const fraction = specialFormat[3] && specialFormat[4] ? 
+                parseFloat(specialFormat[3]) / parseFloat(specialFormat[4]) : 0;
+            const totalInches = feet * 12 + inches + fraction;
+            return totalInches * 0.0254; // Convertir en mètres
+        }
+        
+        return null; // Format non reconnu
+    }
+    // Conversion pour les surfaces (pi² -> m²)
+    else if (unit === "area") {
+        // Si c'est simplement un nombre (supposé être en pi²)
+        if (/^\d+(?:\.\d+)?$/.test(imperialValue)) {
+            const sqFeet = parseFloat(imperialValue);
+            return sqFeet / 10.7639; // Convertir en m²
+        }
+        
+        // Si le format est "X pi²" ou "X sq ft"
+        const areaMatch = imperialValue.match(/^(\d+(?:\.\d+)?)\s*(?:pi²|pi2|sq\s*ft|pi(?:ed)?s?²?)$/i);
+        if (areaMatch) {
+            const sqFeet = parseFloat(areaMatch[1]);
+            return sqFeet / 10.7639; // Convertir en m²
+        }
+        
+        return null; // Format non reconnu
+    }
+    // Valeur par défaut - longueur
+    else {
+        return imperialToMetric(imperialValue, "length");
+    }
+}
+
+// Fonction pour calculer les dimensions automatiquement
 function updateDimensions(event) {
     // Identifier quel champ vient d'être modifié
     const changedField = event.target.id;
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
-    const surfaceField = document.getElementById('surface_cnb');
-    const lengthField = document.getElementById('length_cnb');
-    const heightField = document.getElementById('height_cnb');
+    let surfaceField, lengthField, heightField;
+    let surfaceValue, lengthValue, heightValue;
     
-    const surface = parseFloat(surfaceField.value);
-    const length = parseFloat(lengthField.value);
-    const height = parseFloat(heightField.value);
+    if (isImperial) {
+        surfaceField = document.getElementById('surface_cnb_imperial');
+        lengthField = document.getElementById('length_cnb_imperial');
+        heightField = document.getElementById('height_cnb_imperial');
+        
+        // Convertir les valeurs impériales en métriques pour le calcul
+        surfaceValue = imperialToMetric(surfaceField.value, "area");
+        lengthValue = imperialToMetric(lengthField.value);
+        heightValue = imperialToMetric(heightField.value);
+    } else {
+        surfaceField = document.getElementById('surface_cnb');
+        lengthField = document.getElementById('length_cnb');
+        heightField = document.getElementById('height_cnb');
+        
+        surfaceValue = parseFloat(surfaceField.value);
+        lengthValue = parseFloat(lengthField.value);
+        heightValue = parseFloat(heightField.value);
+    }
     
+    const metricSurfaceField = document.getElementById('surface_cnb');
+    const metricLengthField = document.getElementById('length_cnb');
+    const metricHeightField = document.getElementById('height_cnb');
+
     // Ne pas faire de calcul si le champ actif est vidé
     if (event.target.value === "") {
         return;
     }
     
     // Ajuster selon le champ qui a été modifié
-    if (changedField === 'surface_cnb') {
+    if (changedField === 'surface_cnb' || changedField === 'surface_cnb_imperial') {
         // Si la surface est modifiée et que la longueur ou la hauteur existe, mettre à jour l'autre dimension
-        if (!isNaN(length)) {
+        if (lengthValue && lengthValue > 0) {
             // Calculer la hauteur
-            const calculatedHeight = surface / length;
-            heightField.value = calculatedHeight.toFixed(2).replace('.', ',');
-        } else if (!isNaN(height)) {
+            const calculatedHeight = surfaceValue / lengthValue;
+            
+            // Mettre à jour les champs métriques
+            metricHeightField.value = calculatedHeight.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                heightField.value = metricToImperial(calculatedHeight);
+            }
+        } else if (heightValue && heightValue > 0) {
             // Calculer la longueur
-            const calculatedLength = surface / height;
-            lengthField.value = calculatedLength.toFixed(2).replace('.', ',');
+            const calculatedLength = surfaceValue / heightValue;
+            
+            // Mettre à jour les champs métriques
+            metricLengthField.value = calculatedLength.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                lengthField.value = metricToImperial(calculatedLength);
+            }
         }
-    } else if (changedField === 'length_cnb') {
+    } else if (changedField === 'length_cnb' || changedField === 'length_cnb_imperial') {
         // Si la longueur est modifiée
-        if (!isNaN(surface)) {
+        if (surfaceValue && surfaceValue > 0) {
             // Calculer la hauteur basée sur la surface
-            const calculatedHeight = surface / length;
-            heightField.value = calculatedHeight.toFixed(2).replace('.', ',');
-        } else if (!isNaN(height)) {
+            const calculatedHeight = surfaceValue / lengthValue;
+            
+            // Mettre à jour les champs métriques
+            metricHeightField.value = calculatedHeight.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                heightField.value = metricToImperial(calculatedHeight);
+            }
+        } else if (heightValue && heightValue > 0) {
             // Calculer la surface
-            const calculatedSurface = length * height;
-            surfaceField.value = calculatedSurface.toFixed(2).replace('.', ',');
+            const calculatedSurface = lengthValue * heightValue;
+            
+            // Mettre à jour les champs métriques
+            metricSurfaceField.value = calculatedSurface.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                surfaceField.value = metricToImperial(calculatedSurface, "area");
+            }
         }
-    } else if (changedField === 'height_cnb') {
+    } else if (changedField === 'height_cnb' || changedField === 'height_cnb_imperial') {
         // Si la hauteur est modifiée
-        if (!isNaN(surface)) {
+        if (surfaceValue && surfaceValue > 0) {
             // Calculer la longueur basée sur la surface
-            const calculatedLength = surface / height;
-            lengthField.value = calculatedLength.toFixed(2).replace('.', ',');
-        } else if (!isNaN(length)) {
+            const calculatedLength = surfaceValue / heightValue;
+            
+            // Mettre à jour les champs métriques
+            metricLengthField.value = calculatedLength.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                lengthField.value = metricToImperial(calculatedLength);
+            }
+        } else if (lengthValue && lengthValue > 0) {
             // Calculer la surface
-            const calculatedSurface = length * height;
-            surfaceField.value = calculatedSurface.toFixed(2).replace('.', ',');
+            const calculatedSurface = lengthValue * heightValue;
+            
+            // Mettre à jour les champs métriques
+            metricSurfaceField.value = calculatedSurface.toFixed(2);
+            
+            // Mettre à jour les champs impériaux si nécessaire
+            if (isImperial) {
+                surfaceField.value = metricToImperial(calculatedSurface, "area");
+            }
         }
     }
 }
+
 // Afficher/masquer les options supplémentaires
 document.addEventListener('DOMContentLoaded', function() {
+    // Système de mesure
+    const measurementSystem = document.getElementById('measurementSystem');
+    
+    measurementSystem.addEventListener('change', function() {
+        const isImperial = this.value === 'imperial';
+        toggleMeasurementSystem(isImperial);
+    });
+    
+    // Initialiser le système de mesure au chargement
+    const isImperial = measurementSystem.value === 'imperial';
+    toggleMeasurementSystem(isImperial);
+
     // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
     document.getElementById('check_spacing_cnb').addEventListener('change', function() {
         document.getElementById('spacing_options_cnb').style.display = this.checked ? 'block' : 'none';
@@ -350,7 +603,85 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
     document.getElementById('length_cnb').addEventListener('input', updateDimensions);
     document.getElementById('height_cnb').addEventListener('input', updateDimensions);
+    
+    // Écouteurs pour les champs impériaux
+    document.getElementById('surface_cnb_imperial').addEventListener('input', updateDimensions);
+    document.getElementById('length_cnb_imperial').addEventListener('input', updateDimensions);
+    document.getElementById('height_cnb_imperial').addEventListener('input', updateDimensions);
+    
+    // Liaison entre les champs métriques et impériaux
+    setupMetricImperialInputPairs();
 });
+
+// Fonction pour basculer entre le système métrique et impérial
+function toggleMeasurementSystem(isImperial) {
+    const metricInputs = document.querySelectorAll('.metric-input');
+    const imperialInputs = document.querySelectorAll('.imperial-input');
+    
+    metricInputs.forEach(input => {
+        input.style.display = isImperial ? 'none' : 'block';
+    });
+    
+    imperialInputs.forEach(input => {
+        input.style.display = isImperial ? 'block' : 'none';
+    });
+}
+
+// Fonction pour configurer les paires d'entrées métriques/impériales
+function setupMetricImperialInputPairs() {
+    // Liste des paires de champs (métrique et impérial)
+    const inputPairs = [
+        // Onglet CNB
+        { metric: 'distance_cnb', imperial: 'distance_cnb_imperial', unit: 'length' },
+        { metric: 'surface_cnb', imperial: 'surface_cnb_imperial', unit: 'area' },
+        { metric: 'length_cnb', imperial: 'length_cnb_imperial', unit: 'length' },
+        { metric: 'height_cnb', imperial: 'height_cnb_imperial', unit: 'length' },
+        { metric: 'horizontal_spacing_cnb', imperial: 'horizontal_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_cnb', imperial: 'vertical_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'soffit_distance_cnb', imperial: 'soffit_distance_cnb_imperial', unit: 'length' },
+        { metric: 'proposed_area_cnb', imperial: 'proposed_area_cnb_imperial', unit: 'area' },
+        
+        // Onglet 9.10.14
+        { metric: 'distance_91014', imperial: 'distance_91014_imperial', unit: 'length' },
+        { metric: 'surface_91014', imperial: 'surface_91014_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91014', imperial: 'horizontal_spacing_91014_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91014', imperial: 'vertical_spacing_91014_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91014', imperial: 'soffit_distance_91014_imperial', unit: 'length' },
+        { metric: 'proposed_area_91014', imperial: 'proposed_area_91014_imperial', unit: 'area' },
+        
+        // Onglet 9.10.15
+        { metric: 'distance_91015', imperial: 'distance_91015_imperial', unit: 'length' },
+        { metric: 'surface_91015', imperial: 'surface_91015_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91015', imperial: 'horizontal_spacing_91015_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91015', imperial: 'vertical_spacing_91015_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91015', imperial: 'soffit_distance_91015_imperial', unit: 'length' },
+        { metric: 'proposed_area_91015', imperial: 'proposed_area_91015_imperial', unit: 'area' }
+    ];
+    
+    // Configurer les écouteurs d'événements pour chaque paire
+    inputPairs.forEach(pair => {
+        const metricInput = document.getElementById(pair.metric);
+        const imperialInput = document.getElementById(pair.imperial);
+        
+        if (metricInput && imperialInput) {
+            // Métrique vers impérial
+            metricInput.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    imperialInput.value = metricToImperial(value, pair.unit);
+                }
+            });
+            
+            // Impérial vers métrique
+            imperialInput.addEventListener('input', function() {
+                const value = imperialToMetric(validateImperialInput(this.value), pair.unit);
+                if (value !== null) {
+                    metricInput.value = pair.unit === 'area' ? value.toFixed(2) : value.toFixed(2);
+                }
+            });
+        }
+    });
+}
 
 // Fonction pour déterminer la catégorie du rapport L/H
 function determinerRapportLH(longueur, hauteur) {
@@ -384,7 +715,8 @@ function trouverValeurEncadrantes(valeur, tableau) {
     // Si la valeur est inférieure au premier élément (et non nulle)
     if (valeur <= tableau[0]) {
         return { inferieure: tableau[0], superieure: tableau[0], extrapolation: false };
-    }
+
+   }
     
     // Si la valeur est supérieure au dernier élément
     if (valeur >= tableau[tableau.length - 1]) {
@@ -1084,10 +1416,26 @@ function calculerPourcentage91015(distanceLimitative, surfaceFacade, avecGicleur
 }
 
 function calculateCNB() {
-    const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
-    const length = parseFloat(document.getElementById('length_cnb').value);
-    const height = parseFloat(document.getElementById('height_cnb').value);
-    let limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+    // Déterminer le système de mesure
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
+    
+    // Obtenir les valeurs des champs
+    let facadeSurface, length, height, limitingDistance, proposedArea;
+    
+    if (isImperial) {
+        facadeSurface = imperialToMetric(document.getElementById('surface_cnb_imperial').value, "area");
+        length = imperialToMetric(document.getElementById('length_cnb_imperial').value);
+        height = imperialToMetric(document.getElementById('height_cnb_imperial').value);
+        limitingDistance = imperialToMetric(document.getElementById('distance_cnb_imperial').value);
+        proposedArea = imperialToMetric(document.getElementById('proposed_area_cnb_imperial').value, "area");
+    } else {
+        facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
+        length = parseFloat(document.getElementById('length_cnb').value);
+        height = parseFloat(document.getElementById('height_cnb').value);
+        limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+        proposedArea = parseFloat(document.getElementById('proposed_area_cnb').value);
+    }
+    
     const sprinklersOption = document.getElementById('sprinklers_cnb').value;
     const response = document.getElementById('response_cnb').checked;
     const usage = document.getElementById('usage_cnb').value;
@@ -1095,12 +1443,21 @@ function calculateCNB() {
     const revetementType = document.getElementById('revetement_type_cnb').value;
     const glassBrick = document.getElementById('glass_brick_cnb').checked;
     const exemptBuilding = document.getElementById('exempt_building_cnb').value;
-    const proposedArea = parseFloat(document.getElementById('proposed_area_cnb').value);
     const checkSpacing = document.getElementById('check_spacing_cnb').checked;
-    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_cnb').value);
-    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_cnb').value);
+    
+    let horizontalSpacing, verticalSpacing, soffit_distance;
+    
+    if (isImperial) {
+        horizontalSpacing = imperialToMetric(document.getElementById('horizontal_spacing_cnb_imperial').value);
+        verticalSpacing = imperialToMetric(document.getElementById('vertical_spacing_cnb_imperial').value);
+        soffit_distance = imperialToMetric(document.getElementById('soffit_distance_cnb_imperial').value);
+    } else {
+        horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_cnb').value);
+        verticalSpacing = parseFloat(document.getElementById('vertical_spacing_cnb').value);
+        soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
+    }
+    
     const checkSoffit = document.getElementById('check_soffit_cnb').checked;
-    const soffit_distance = parseFloat(document.getElementById('soffit_distance_cnb').value);
     const soffit_protected = document.getElementById('soffit_protected_cnb').checked;
     
     // Vérification des entrées
@@ -1192,19 +1549,37 @@ function calculateCNB() {
         const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
         
         if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
+            } else {
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
+            }
+            
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
                 ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
                 Selon l'article 3.2.3.1.(6), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
+                - 2 m verticalement (valeur saisie: ${spacingDisplayV})
             `;
         } else {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
+            } else {
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
+            }
+            
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
                 <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
+                Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
             `;
         }
     }
@@ -1212,13 +1587,20 @@ function calculateCNB() {
     // Vérification de la protection des soffites
     let soffitResult = "";
     if (checkSoffit) {
+        let soffitDistanceDisplay;
+        if (isImperial) {
+            soffitDistanceDisplay = metricToImperial(soffit_distance);
+        } else {
+            soffitDistanceDisplay = soffit_distance + " m";
+        }
+        
         if (soffit_distance < 0.45) {
             soffitResult = `
                 <br><strong>Protection des soffites :</strong><br>
                 Selon l'article 3.2.3.6.(2), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
                 lorsque la distance limitative est inférieure à 0,45 m.<br>
                 ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
                     "La distance du soffite est conforme."}
             `;
         } else if (soffit_distance < 1.2) {
@@ -1227,7 +1609,7 @@ function calculateCNB() {
                 Selon l'article 3.2.3.6.(3-5), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
                 ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
                 ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Une protection est requise.</span>" : 
                     "La distance du soffite est d'au moins 0,45 m."}
                 ${!soffit_protected && soffit_distance < 0.45 ? 
                     "<br>⚠️ <span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
@@ -1235,7 +1617,7 @@ function calculateCNB() {
         } else {
             soffitResult = `
                 <br><strong>Protection des soffites :</strong><br>
-                <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                <span style="color: green;">La distance du soffite (${soffitDistanceDisplay}) est supérieure à 1,2 m. 
                 Aucune protection spécifique n'est requise.</span>
             `;
         }
@@ -1255,7 +1637,7 @@ function calculateCNB() {
    // Afficher les résultats détaillés avec les calculs intermédiaires
    let resultHTML = `
    <strong>Données de calcul :</strong><br>
-   ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+   ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
    Rapport L/H ou H/L : ${determinerRapportLH(length, height)}<br>
    Type de construction : ${constructionType}<br>
    Type de revêtement : ${revetementType}<br>
@@ -1264,7 +1646,7 @@ function calculateCNB() {
    
    <br><strong>Résultats :</strong><br>
    Pourcentage maximal de baies non protégées : ${pourcentage.toFixed(2)}%<br>
-   Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+   Surface maximale de baies non protégées : ${isImperial ? metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)" : maxArea.toFixed(2) + " m²"}
    ${constructionRequirements}
    ${extrapolationInfo}
    ${rayonnementInfo}
@@ -1278,19 +1660,33 @@ function calculateCNB() {
         let statusClass = "";
         let comparisonResult = "";
         
+        let proposedAreaDisplay;
+        if (isImperial) {
+            proposedAreaDisplay = metricToImperial(proposedArea, "area") + " (" + proposedArea.toFixed(2) + " m²)";
+        } else {
+            proposedAreaDisplay = proposedArea.toFixed(2) + " m²";
+        }
+        
+        let maxAreaDisplay;
+        if (isImperial) {
+            maxAreaDisplay = metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)";
+        } else {
+            maxAreaDisplay = maxArea.toFixed(2) + " m²";
+        }
+        
         if (proposedPercentage > pourcentage) {
             statusClass = "color: red; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
             `;
         }
         
@@ -1366,20 +1762,36 @@ function determineConstructionRequirements(percentage, usage, constructionType, 
 }
 
 function calculate91014() {
+    // Déterminer le système de mesure
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
+    
+    // Obtenir les valeurs des champs
+    let limitingDistance, surface, proposedArea, horizontalSpacing, verticalSpacing, soffit_distance;
+    
+    if (isImperial) {
+        limitingDistance = imperialToMetric(document.getElementById('distance_91014_imperial').value);
+        surface = imperialToMetric(document.getElementById('surface_91014_imperial').value, "area");
+        proposedArea = imperialToMetric(document.getElementById('proposed_area_91014_imperial').value, "area");
+        horizontalSpacing = imperialToMetric(document.getElementById('horizontal_spacing_91014_imperial').value);
+        verticalSpacing = imperialToMetric(document.getElementById('vertical_spacing_91014_imperial').value);
+        soffit_distance = imperialToMetric(document.getElementById('soffit_distance_91014_imperial').value);
+    } else {
+        limitingDistance = parseFloat(document.getElementById('distance_91014').value);
+        surface = parseFloat(document.getElementById('surface_91014').value);
+        proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
+        horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
+        verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
+        soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value);
+    }
+    
     const usage = document.getElementById('usage_91014').value;
     const buildingType = document.getElementById('building_type_91014').value;
     const exteriorFinish = document.getElementById('exterior_finish_91014').value;
     const sprinklersOption = document.getElementById('sprinklers_91014').value;
     const glassBrick = document.getElementById('glass_brick_91014').checked;
-    let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
-    const surface = parseFloat(document.getElementById('surface_91014').value);
     const response = document.getElementById('response_91014').checked;
-    const proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
-    let checkSpacing = document.getElementById('check_spacing_91014').checked;
-    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
-    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
+    const checkSpacing = document.getElementById('check_spacing_91014').checked;
     const checkSoffit = document.getElementById('check_soffit_91014').checked;
-    const soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value);
     const soffit_protected = document.getElementById('soffit_protected_91014').checked;
     const distinction = document.getElementById('distinction_91014').value;
 
@@ -1463,26 +1875,49 @@ function calculate91014() {
             let maxBaieInfo = "";
             let formulaArea = 0;
             
+            let maxBaieDisplay, formulaAreaDisplay;
+            
             if (limitingDistance < 1.2) {
                 maxBaieArea = 0.35;
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser 0,35 m².`;
+                if (isImperial) {
+                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
+                } else {
+                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
+                }
+                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser ${maxBaieDisplay}.`;
             } else if (limitingDistance <= 1.5) {
                 maxBaieArea = 0.78;
                 formulaArea = Math.pow(limitingDistance, 2);
                 
-                if (formulaArea > maxBaieArea) {
-                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                if (isImperial) {
+                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
+                    formulaAreaDisplay = metricToImperial(formulaArea, "area") + " (" + formulaArea.toFixed(2) + " m²)";
                 } else {
-                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
+                    formulaAreaDisplay = formulaArea.toFixed(2) + " m²";
+                }
+                
+                if (formulaArea > maxBaieArea) {
+                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaAreaDisplay} (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieDisplay}).`;
+                } else {
+                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieDisplay} (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaAreaDisplay}).`;
                 }
             } else if (limitingDistance <= 2.0) {
                 maxBaieArea = 1.88;
                 formulaArea = Math.pow(limitingDistance, 2);
                 
-                if (formulaArea > maxBaieArea) {
-                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaArea.toFixed(2)} m² (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieArea.toFixed(2)} m²).`;
+                if (isImperial) {
+                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
+                    formulaAreaDisplay = metricToImperial(formulaArea, "area") + " (" + formulaArea.toFixed(2) + " m²)";
                 } else {
-                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieArea.toFixed(2)} m² (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaArea.toFixed(2)} m²).`;
+                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
+                    formulaAreaDisplay = formulaArea.toFixed(2) + " m²";
+                }
+                
+                if (formulaArea > maxBaieArea) {
+                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaAreaDisplay} (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieDisplay}).`;
+                } else {
+                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieDisplay} (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaAreaDisplay}).`;
                 }
             }
             
@@ -1494,19 +1929,37 @@ function calculate91014() {
             
             // Vérification de l'espacement
             if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                let spacingDisplayH, spacingDisplayV;
+                if (isImperial) {
+                    spacingDisplayH = metricToImperial(horizontalSpacing);
+                    spacingDisplayV = metricToImperial(verticalSpacing);
+                } else {
+                    spacingDisplayH = horizontalSpacing + " m";
+                    spacingDisplayV = verticalSpacing + " m";
+                }
+                
                 spacingResult += `
                     <strong>Espacement des baies :</strong><br>
                     ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
                     Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                    - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                    - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                    - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
+                    - 2 m verticalement (valeur saisie: ${spacingDisplayV})
                 `;
             } else {
+                let spacingDisplayH, spacingDisplayV;
+                if (isImperial) {
+                    spacingDisplayH = metricToImperial(horizontalSpacing);
+                    spacingDisplayV = metricToImperial(verticalSpacing);
+                } else {
+                    spacingDisplayH = horizontalSpacing + " m";
+                    spacingDisplayV = verticalSpacing + " m";
+                }
+                
                 spacingResult += `
                     <strong>Espacement des baies :</strong><br>
                     <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                    Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                    Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                    Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
+                    Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
                 `;
             }
         } else {
@@ -1515,7 +1968,7 @@ function calculate91014() {
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
                 <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
                 prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-                Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+                Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
             `;
         }
     }
@@ -1523,13 +1976,20 @@ function calculate91014() {
      // Vérification de la protection des soffites
      let soffitResult = "";
      if (checkSoffit) {
+         let soffitDistanceDisplay;
+         if (isImperial) {
+             soffitDistanceDisplay = metricToImperial(soffit_distance);
+         } else {
+             soffitDistanceDisplay = soffit_distance + " m";
+         }
+         
          if (soffit_distance < 0.45) {
              soffitResult = `
                  <br><strong>Protection des soffites :</strong><br>
                  Selon l'article 9.10.14.5.(9), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
                  lorsque la distance limitative est inférieure à 0,45 m.<br>
                  ${soffit_distance < 0.45 ? 
-                     "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                     "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
                      "La distance du soffite est conforme."}
              `;
          } else if (soffit_distance < 1.2) {
@@ -1538,7 +1998,7 @@ function calculate91014() {
                  Selon l'article 9.10.14.5.(10-12), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
                  ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
                  ${soffit_distance < 0.45 ? 
-                     "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                     "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Une protection est requise.</span>" : 
                      "La distance du soffite est d'au moins 0,45 m."}
                  ${!soffit_protected && soffit_distance < 1.2 ? 
                      "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
@@ -1547,7 +2007,7 @@ function calculate91014() {
          } else {
              soffitResult = `
                  <br><strong>Protection des soffites :</strong><br>
-                 <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+                 <span style="color: green;">La distance du soffite (${soffitDistanceDisplay}) est supérieure à 1,2 m. 
                  Aucune protection spécifique n'est requise.</span>
              `;
          }
@@ -1594,14 +2054,14 @@ function calculate91014() {
      // Afficher les résultats (la partie d'affichage reste la même)
      let resultHTML = `
           <strong>Données de calcul :</strong><br>
-          ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
+          ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
           Type d'usage : ${usage === "habitation" ? "Habitation, établissement d'affaires et établissement industriel à risques faibles" : "Établissement commercial et établissement industriel à risques moyens"}<br>
-          Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+          Surface totale de la façade : ${isImperial ? metricToImperial(surface, "area") : surface.toFixed(2) + " m²"}<br>
           Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
           ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
           <br><strong>Résultats :</strong><br>
           Pourcentage maximal de baies non protégées : ${pourcentage.toFixed(2)}%<br>
-          Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+          Surface maximale de baies non protégées : ${isImperial ? metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)" : maxArea.toFixed(2) + " m²"}
           ${constructionRequirements}
           ${extrapolationInfo}
           ${spacingResult}
@@ -1615,19 +2075,28 @@ function calculate91014() {
          let statusClass = "";
          let comparisonResult = "";
          
+         let proposedAreaDisplay, maxAreaDisplay;
+         if (isImperial) {
+             proposedAreaDisplay = metricToImperial(proposedArea, "area") + " (" + proposedArea.toFixed(2) + " m²)";
+             maxAreaDisplay = metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)";
+         } else {
+             proposedAreaDisplay = proposedArea.toFixed(2) + " m²";
+             maxAreaDisplay = maxArea.toFixed(2) + " m²";
+         }
+         
          if (proposedPercentage > pourcentage) {
              statusClass = "color: red; font-weight: bold;";
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                 <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
              `;
          } else {
              statusClass = "color: green; font-weight: bold;";
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-                 Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+                 Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+                 <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
              `;
          }
          
@@ -1647,19 +2116,35 @@ function calculate91014() {
 }
 
 function calculate91015() {
+    // Déterminer le système de mesure
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
+    
+    // Obtenir les valeurs des champs
+    let limitingDistance, surface, proposedArea, horizontalSpacing, verticalSpacing, soffit_distance;
+    
+    if (isImperial) {
+        limitingDistance = imperialToMetric(document.getElementById('distance_91015_imperial').value);
+        surface = imperialToMetric(document.getElementById('surface_91015_imperial').value, "area");
+        proposedArea = imperialToMetric(document.getElementById('proposed_area_91015_imperial').value, "area");
+        horizontalSpacing = imperialToMetric(document.getElementById('horizontal_spacing_91015_imperial').value);
+        verticalSpacing = imperialToMetric(document.getElementById('vertical_spacing_91015_imperial').value);
+        soffit_distance = imperialToMetric(document.getElementById('soffit_distance_91015_imperial').value);
+    } else {
+        limitingDistance = parseFloat(document.getElementById('distance_91015').value);
+        surface = parseFloat(document.getElementById('surface_91015').value);
+        proposedArea = parseFloat(document.getElementById('proposed_area_91015').value);
+        horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91015').value);
+        verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91015').value);
+        soffit_distance = parseFloat(document.getElementById('soffit_distance_91015').value);
+    }
+    
     const sprinklersOption = document.getElementById('sprinklers_91015').value;
     const glassBrick = document.getElementById('glass_brick_91015').checked;
-    let limitingDistance = parseFloat(document.getElementById('distance_91015').value);
-    const surface = parseFloat(document.getElementById('surface_91015').value);
     const response = document.getElementById('response_91015').checked;
     const housingType = document.getElementById('housing_type_91015').value;
     const revetingType = document.getElementById('reveting_type_91015').value;
-    const proposedArea = parseFloat(document.getElementById('proposed_area_91015').value);
     const checkSpacing = document.getElementById('check_spacing_91015').checked;
-    const horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91015').value);
-    const verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91015').value);
     const checkSoffit = document.getElementById('check_soffit_91015').checked;
-    const soffit_distance = parseFloat(document.getElementById('soffit_distance_91015').value);
     const soffit_protected = document.getElementById('soffit_protected_91015').checked;
     const distinction = document.getElementById('distinction_91015').value;
 
@@ -1734,19 +2219,37 @@ function calculate91015() {
         
         if (limitingDistance <= 2.0) {
             if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+                let spacingDisplayH, spacingDisplayV;
+                if (isImperial) {
+                    spacingDisplayH = metricToImperial(horizontalSpacing);
+                    spacingDisplayV = metricToImperial(verticalSpacing);
+                } else {
+                    spacingDisplayH = horizontalSpacing + " m";
+                    spacingDisplayV = verticalSpacing + " m";
+                }
+                
                 spacingResult = `
                     <br><strong>Vérification de l'espacement des baies :</strong><br>
                     ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
                     Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
-                    - 2 m horizontalement (valeur saisie: ${horizontalSpacing} m)<br>
-                    - 2 m verticalement (valeur saisie: ${verticalSpacing} m)
+                    - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
+                    - 2 m verticalement (valeur saisie: ${spacingDisplayV})
                 `;
             } else {
+                let spacingDisplayH, spacingDisplayV;
+                if (isImperial) {
+                    spacingDisplayH = metricToImperial(horizontalSpacing);
+                    spacingDisplayV = metricToImperial(verticalSpacing);
+                } else {
+                    spacingDisplayH = horizontalSpacing + " m";
+                    spacingDisplayV = verticalSpacing + " m";
+                }
+                
                 spacingResult = `
                     <br><strong>Vérification de l'espacement des baies :</strong><br>
                     <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                    Espacement horizontal: ${horizontalSpacing} m (minimum requis: 2 m)<br>
-                    Espacement vertical: ${verticalSpacing} m (minimum requis: 2 m)
+                    Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
+                    Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
                 `;
             }
         } else {
@@ -1755,7 +2258,7 @@ function calculate91015() {
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
                 <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
                 prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-                Avec une distance limitative de ${limitingDistance.toFixed(2)} m > 2 m, ces restrictions ne s'appliquent pas.
+                Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
             `;
         }
     }
@@ -1763,13 +2266,20 @@ function calculate91015() {
     // Vérification de la protection des soffites
     let soffitResult = "";
     if (checkSoffit) {
+        let soffitDistanceDisplay;
+        if (isImperial) {
+            soffitDistanceDisplay = metricToImperial(soffit_distance);
+        } else {
+            soffitDistanceDisplay = soffit_distance + " m";
+        }
+        
         if (soffit_distance < 0.45) {
             soffitResult = `
                 <br><strong>Protection des soffites :</strong><br>
                 Selon l'article 9.10.15.5.(8), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
                 lorsque la distance limitative est inférieure à 0,45 m.<br>
                 ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
                     "La distance du soffite est conforme."}
             `;
         } else if (soffit_distance < 1.2) {
@@ -1778,7 +2288,7 @@ function calculate91015() {
                 Selon l'article 9.10.15.5.(9-11), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
                 ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
                 ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffit_distance + " m) est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Une protection est requise.</span>" : 
                     "La distance du soffite est d'au moins 0,45 m."}
                 ${!soffit_protected && soffit_distance < 1.2 ? 
                     "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
@@ -1787,7 +2297,7 @@ function calculate91015() {
         } else {
             soffitResult = `
                <br><strong>Protection des soffites :</strong><br>
-               <span style="color: green;">La distance du soffite (${soffit_distance} m) est supérieure à 1,2 m. 
+               <span style="color: green;">La distance du soffite (${soffitDistanceDisplay}) est supérieure à 1,2 m. 
                Aucune protection spécifique n'est requise.</span>
            `;
        }
@@ -1843,15 +2353,15 @@ function calculate91015() {
    // Afficher les résultats (la partie d'affichage reste la même)
    let resultHTML = `
        <strong>Données de calcul :</strong><br>
-       ${response ? "Distance limitative ajustée : " + limitingDistance.toFixed(2) + " m<br>" : ""}
-       Surface totale de la façade : ${surface.toFixed(2)} m²<br>
+       ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
+       Surface totale de la façade : ${isImperial ? metricToImperial(surface, "area") : surface.toFixed(2) + " m²"}<br>
        Type d'habitation : ${housingType === "standard" ? "Habitation standard" : "Maison comportant un logement accessoire"}<br>
        Type de revêtement : ${revetingType === "combustible" ? "Combustible" : "Incombustible"}<br>
        Protection par gicleurs : ${sprinklersOption === "complete" ? "Complète" : sprinklersOption === "partial" ? "Partielle" : "Aucune"}<br>
        ${glassBrick ? "Majoration pour briques de verre/verre armé appliquée (x2)<br>" : ""}
        <br><strong>Résultats :</strong><br>
        Pourcentage maximal de baies non protégées : ${pourcentage.toFixed(2)}%<br>
-       Surface maximale de baies non protégées : ${maxArea.toFixed(2)} m²
+       Surface maximale de baies non protégées : ${isImperial ? metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)" : maxArea.toFixed(2) + " m²"}
        ${constructionRequirements}
        ${extrapolationInfo}
        ${spacingResult}
@@ -1866,19 +2376,28 @@ function calculate91015() {
        let statusClass = "";
        let comparisonResult = "";
        
+       let proposedAreaDisplay, maxAreaDisplay;
+       if (isImperial) {
+           proposedAreaDisplay = metricToImperial(proposedArea, "area") + " (" + proposedArea.toFixed(2) + " m²)";
+           maxAreaDisplay = metricToImperial(maxArea, "area") + " (" + maxArea.toFixed(2) + " m²)";
+       } else {
+           proposedAreaDisplay = proposedArea.toFixed(2) + " m²";
+           maxAreaDisplay = maxArea.toFixed(2) + " m²";
+       }
+       
        if (proposedPercentage > pourcentage) {
            statusClass = "color: red; font-weight: bold;";
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+               <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
            `;
        } else {
            statusClass = "color: green; font-weight: bold;";
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
-               Votre proposition: ${proposedArea.toFixed(2)} m² (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxArea.toFixed(2)} m² (${pourcentage.toFixed(2)}%).</span>
+               Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
+               <span style="${statusClass}">La surface proposée respecte le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
            `;
        }
        
@@ -1913,11 +2432,27 @@ function openTab(event, tabName) {
 
 // Fonction pour formater les calculs d'interpolation pour CNB - MISE À JOUR pour inclure l'extrapolation
 function formatCNBCalculationSteps() {
+    // Déterminer le système de mesure
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
+    
+    // Obtenir les valeurs des champs
+    let limitingDistance, facadeSurface, length, height;
+    
+    if (isImperial) {
+        limitingDistance = imperialToMetric(document.getElementById('distance_cnb_imperial').value);
+        facadeSurface = imperialToMetric(document.getElementById('surface_cnb_imperial').value, "area");
+        length = imperialToMetric(document.getElementById('length_cnb_imperial').value);
+        height = imperialToMetric(document.getElementById('height_cnb_imperial').value);
+    } else {
+        limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
+        facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
+        length = parseFloat(document.getElementById('length_cnb').value);
+        height = parseFloat(document.getElementById('height_cnb').value);
+    }
+    
     const usage = document.getElementById('usage_cnb').value;
-    const limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
-    const facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
-    const length = parseFloat(document.getElementById('length_cnb').value);
-    const height = parseFloat(document.getElementById('height_cnb').value);
+    const constructionType = document.getElementById('construction_type_cnb').value;
+    const revetementType = document.getElementById('revetement_type_cnb').value;
     const sprinklersOption = document.getElementById('sprinklers_cnb').value;
     const avecGicleurs = sprinklersOption === "complete";
     const glassBrick = document.getElementById('glass_brick_cnb').checked;
@@ -2324,10 +2859,22 @@ function formatCNBCalculationSteps() {
 
 // Fonction pour formater les calculs d'interpolation pour 9.10.14 - MISE À JOUR pour inclure l'extrapolation
 function format91014CalculationSteps() {
+    // Déterminer le système de mesure
+    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
+    
+    // Obtenir les valeurs des champs
+    let limitingDistance, surface;
+    
+    if (isImperial) {
+        limitingDistance = imperialToMetric(document.getElementById('distance_91014_imperial').value);
+        surface = imperialToMetric(document.getElementById('surface_91014_imperial').value, "area");
+    } else {
+        limitingDistance = parseFloat(document.getElementById('distance_91014').value);
+        surface = parseFloat(document.getElementById('surface_91014').value);
+    }
+    
     const usage = document.getElementById('usage_91014').value;
     const buildingType = document.getElementById('building_type_91014').value;
-    let limitingDistance = parseFloat(document.getElementById('distance_91014').value);
-    const surface = parseFloat(document.getElementById('surface_91014').value);
     const sprinklersOption = document.getElementById('sprinklers_91014').value;
     const avecGicleurs = sprinklersOption === "complete";
     const glassBrick = document.getElementById('glass_brick_91014').checked;
@@ -2421,7 +2968,7 @@ function format91014CalculationSteps() {
         // Étape 3: Extrapolation selon les résultats des étapes 1 et 2
         output += `Étape 3: Extrapolation pour la surface réelle (${surface.toFixed(2)}m²):\n`;
         
-        const pourcentageFinal = pourcentageEtape2 + 
+        let pourcentageFinal = pourcentageEtape2 + 
             ((surface - surfacesDisponibles[1]) / (surfacesDisponibles[0] - surfacesDisponibles[1])) * 
             (pourcentageEtape1 - pourcentageEtape2);
         
@@ -2429,9 +2976,9 @@ function format91014CalculationSteps() {
         
         // Appliquer la majoration si nécessaire
         if (avecGicleurs || glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageFinal * 2);
+            pourcentageFinal = Math.min(100, pourcentageFinal * 2);
             output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
-                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageFinal.toFixed(2)}%\n`;
         }
         
         return output;
@@ -2481,19 +3028,19 @@ function format91014CalculationSteps() {
             }
         }
         
-        const pourcentageDistanceMin = tableau91015.surfaces[keyInf][1]; // Index 1 = 1.2m
+        const pourcentageDistanceMin = tableau.surfaces[keyInf][1]; // Index 1 = 1.2m
         output += `- À distance = 1,2m: pourcentage = ${pourcentageDistanceMin}% (pour surface de ${keyInf}m²)\n`;
         
         // Calculer l'extrapolation
         const pente = pourcentageDistanceMin / 1.2; // Pente = % à 1.2m divisé par 1.2
-        const pourcentageExtrapole = pente * adjustedDistance;
+        let pourcentageExtrapole = pente * adjustedDistance;
         
         output += `Formule d'extrapolation linéaire: % = (${pourcentageDistanceMin} ÷ 1,2) × ${adjustedDistance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
         
         if (avecGicleurs || glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
+            pourcentageExtrapole = Math.min(100, pourcentageExtrapole * 2);
             output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
-                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageExtrapole.toFixed(2)}%\n`;
         }
         
         return output;
@@ -2503,9 +3050,9 @@ function format91014CalculationSteps() {
         // Cas d'extrapolation pour surface uniquement
         output += "Extrapolation pour surface de façade inférieure à 30m²:\n";
         
-        const distanceInferieureIndex = tableau91015.distances.indexOf(Math.max(...tableau91015.distances.filter(d => d <= adjustedDistance)));
-        const pourcentageSurfMin = tableau91015.surfaces[surfacesDisponibles[0]][distanceInferieureIndex];
-        const pourcentageSurfSupMin = tableau91015.surfaces[surfacesDisponibles[1]][distanceInferieureIndex];
+        const distanceInferieureIndex = tableau.distances.indexOf(Math.max(...tableau.distances.filter(d => d <= adjustedDistance)));
+        const pourcentageSurfMin = tableau.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
+        const pourcentageSurfSupMin = tableau.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
             
         output += `- Pour surface = ${surfacesDisponibles[0]}m²: pourcentage = ${pourcentageSurfMin}%\n`;
         output += `- Pour surface = ${surfacesDisponibles[1]}m²: pourcentage = ${pourcentageSurfSupMin}%\n`;
@@ -2514,15 +3061,15 @@ function format91014CalculationSteps() {
         const ratio = surfacesDisponibles[0] / surface;
         const facteur = Math.sqrt(ratio);
         const tendance = (pourcentageSurfMin - pourcentageSurfSupMin) * (facteur - 1);
-        const pourcentageExtrapole = Math.min(100, pourcentageSurfMin + tendance);
+        let pourcentageExtrapole = Math.min(100, pourcentageSurfMin + tendance);
         
         output += `Formule d'extrapolation pour surface plus petite: % = ${pourcentageSurfMin} + (${pourcentageSurfMin} - ${pourcentageSurfSupMin}) × (√(${surfacesDisponibles[0]} ÷ ${surface.toFixed(2)}) - 1)\n`;
         output += `% = ${pourcentageSurfMin} + ${tendance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
         
         if (avecGicleurs || glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
+            pourcentageExtrapole = Math.min(100, pourcentageExtrapole * 2);
             output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
-                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageExtrapole.toFixed(2)}%\n`;
         }
         
         return output;
@@ -2534,7 +3081,7 @@ function format91014CalculationSteps() {
         output += "1) Extrapolation pour la plus petite surface du tableau (30m²) avec distance entre 0 et 1,2m:\n";
         output += `- À distance = 0m: pourcentage = 0% (toujours)\n`;
         
-        const pourcentageDistMinSurfMin = tableau91015.surfaces[surfacesDisponibles[0]][1]; // Index 1 = 1.2m
+        const pourcentageDistMinSurfMin = tableau.surfaces[surfacesDisponibles[0].toString()][1]; // Index 1 = 1.2m
         output += `- À distance = 1,2m: pourcentage = ${pourcentageDistMinSurfMin}% (pour surface de ${surfacesDisponibles[0]}m²)\n`;
         
         // Extrapolation distance pour surface min
@@ -2545,7 +3092,7 @@ function format91014CalculationSteps() {
         
         output += "2) Extrapolation pour la surface réelle à partir du résultat précédent:\n";
         
-        const pourcentageSurfSupMin = tableau91015.surfaces[surfacesDisponibles[1]][1]; // 1.2m pour deuxième surface du tableau
+        const pourcentageSurfSupMin = tableau.surfaces[surfacesDisponibles[1].toString()][1]; // 1.2m pour deuxième surface du tableau
             
         // Extrapolation distance pour surface sup min
         const pente2 = pourcentageSurfSupMin / 1.2;
@@ -2558,26 +3105,26 @@ function format91014CalculationSteps() {
         const facteur = Math.sqrt(ratio);
         const pourcentageDistSupMin = (pourcentageSurfSupMin / 1.2) * adjustedDistance;
         const tendance = (pourcentageEtape1 - pourcentageDistSupMin) * (facteur - 1);
-        const pourcentageExtrapole = Math.min(100, pourcentageEtape1 + tendance);
+        let pourcentageExtrapole = Math.min(100, pourcentageEtape1 + tendance);
         
         output += `Étape 2 - Extrapolation surface: % = ${pourcentageEtape1.toFixed(2)} + (${pourcentageEtape1.toFixed(2)} - ${pourcentageDistSupMin.toFixed(2)}) × (√(${surfacesDisponibles[0]} ÷ ${surface.toFixed(2)}) - 1)\n`;
         output += `% = ${pourcentageEtape1.toFixed(2)} + ${tendance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
         
         if (avecGicleurs || glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
+            pourcentageExtrapole = Math.min(100, pourcentageExtrapole * 2);
             output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
-                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
+                       avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (×2): ${pourcentageExtrapole.toFixed(2)}%\n`;
         }
         
         return output;
     }
     
     // Trouver les distances encadrantes
-    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau91015.distances);
+    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau.distances);
     const distanceInferieure = distancesEncadrantes.inferieure;
     const distanceSuperieure = distancesEncadrantes.superieure;
-    const distanceInferieureIndex = tableau91015.distances.indexOf(distanceInferieure);
-    const distanceSuperieureIndex = tableau91015.distances.indexOf(distanceSuperieure);
+    const distanceInferieureIndex = tableau.distances.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = tableau.distances.indexOf(distanceSuperieure);
     
     // Trouver les surfaces encadrantes
     let surfaceInferieure, surfaceSuperieure;
@@ -2603,31 +3150,33 @@ function format91014CalculationSteps() {
         }
     }
     
-    // ÉTAPE 1: Interpolation selon la DL inférieure
+    // ÉTAPE 1: Interpolation selon la DL inférieure - MODIFIÉE
     let pourcentageDistanceInferieure;
     output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
     
     if (keyInf === keySup) {
-        pourcentageDistanceInferieure = tableau91015.surfaces[keyInf][distanceInferieureIndex];
+        pourcentageDistanceInferieure = tableau.surfaces[keyInf][distanceInferieureIndex];
         output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceInferieure}%\n\n`;
     } else {
-        const pourcentageDistInfSurfInf = tableau91015.surfaces[keyInf][distanceInferieureIndex];
-        const pourcentageDistInfSurfSup = tableau91015.surfaces[keySup][distanceInferieureIndex];
+        const pourcentageDistInfSurfInf = tableau.surfaces[keyInf][distanceInferieureIndex];
+        const pourcentageDistInfSurfSup = tableau.surfaces[keySup][distanceInferieureIndex];
         
         output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistInfSurfInf}%\n`;
-        output += `À DL de ${distanceInferieure}m et surface max. de ${keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
+        output += `À DL de ${distanceInferieure}m et surface max. de ${keySup === ">100" ? "plus de 100" : keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
         
         pourcentageDistanceInferieure = pourcentageDistInfSurfSup + 
             ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
         
-        output += `${pourcentageDistInfSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistInfSurfInf} – ${pourcentageDistInfSurfSup}) = `;
+        output += `${pourcentageDistInfSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${keySup === ">100" ? "Surface maximale du tableau" : surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistInfSurfInf} – ${pourcentageDistInfSurfSup}) = `;
         output += `${pourcentageDistInfSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup)).toFixed(3)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
     }
-    
-    // Si les distances sont identiques, pas besoin d'interpolation supplémentaire
+
+    // Si les distances sont identiques, pas besoin d'interpolation complexe
     if (distanceInferieure === distanceSuperieure) {
         let resultat = pourcentageDistanceInferieure;
+        
+        // Appliquer la majoration si nécessaire (briques de verre, verre armé ou gicleurs)
         if (avecGicleurs || glassBrick) {
             output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
             output += `Avec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
@@ -2638,29 +3187,29 @@ function format91014CalculationSteps() {
         return output;
     }
     
-    // ÉTAPE 2: Interpolation selon la DL supérieure
+    // ÉTAPE 2: Interpolation selon la DL supérieure - MODIFIÉE
     let pourcentageDistanceSuperieure;
     output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
     
     if (keyInf === keySup) {
-        pourcentageDistanceSuperieure = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
+        pourcentageDistanceSuperieure = tableau.surfaces[keyInf][distanceSuperieureIndex];
         output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceSuperieure}%\n\n`;
     } else {
-        const pourcentageDistSupSurfInf = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
-        const pourcentageDistSupSurfSup = tableau91015.surfaces[keySup][distanceSuperieureIndex];
+        const pourcentageDistSupSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        const pourcentageDistSupSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
         
         output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistSupSurfInf}%\n`;
-        output += `À DL de ${distanceSuperieure}m et surface max. de ${keySup}m²: ${pourcentageDistSupSurfSup}%\n`;
+        output += `À DL de ${distanceSuperieure}m et surface max. de ${keySup === ">100" ? "plus de 100" : keySup}m²: ${pourcentageDistSupSurfSup}%\n`;
         
         pourcentageDistanceSuperieure = pourcentageDistSupSurfSup + 
             ((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup);
         
-        output += `${pourcentageDistSupSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistSupSurfInf} – ${pourcentageDistSupSurfSup}) = `;
+        output += `${pourcentageDistSupSurfSup} + (${surface.toFixed(2)} – ${surfaceInferieure}) / (${keySup === ">100" ? "Surface maximale du tableau" : surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageDistSupSurfInf} – ${pourcentageDistSupSurfSup}) = `;
         output += `${pourcentageDistSupSurfSup} + ${((surface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup)).toFixed(3)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
     }
     
-    // ÉTAPE 3: Interpolation finale
+    // ÉTAPE 3: Interpolation finale entre les deux résultats d'interpolation précédents
     output += "Étape 3: Interpolation selon les résultats obtenus des deux interpolations précédentes:\n";
     
     let pourcentageFinal = pourcentageDistanceInferieure + 
@@ -2670,7 +3219,7 @@ function format91014CalculationSteps() {
     output += `${pourcentageDistanceInferieure.toFixed(2)} + (${adjustedDistance.toFixed(2)} – ${distanceInferieure}) / (${distanceSuperieure} – ${distanceInferieure}) x (${pourcentageDistanceSuperieure.toFixed(2)} – ${pourcentageDistanceInferieure.toFixed(2)}) = `;
     output += `${pourcentageDistanceInferieure.toFixed(2)} + ${((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure) * (pourcentageDistanceSuperieure - pourcentageDistanceInferieure)).toFixed(2)} = ${pourcentageFinal.toFixed(2)} %\n`;
     
-    // Appliquer la majoration si nécessaire
+    // Appliquer la majoration si nécessaire (briques de verre, verre armé ou gicleurs)
     if (avecGicleurs || glassBrick) {
         output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
                    avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, pourcentageFinal * 2).toFixed(2)}%\n`;
