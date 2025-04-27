@@ -89,26 +89,26 @@
             </div>
             
             <div class="form-group">
-                <label for="distance_cnb">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
-                <input type="number" id="distance_cnb" class="metric-input" value="" min="0" step="0.1">
+                <label for="distance_cnb" class="unit-label">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
+                <input type="number" id="distance_cnb" class="metric-input" value="" min="0" step="0.1" placeholder="Ex: 3,0">
                 <input type="text" id="distance_cnb_imperial" class="imperial-input" placeholder="Ex: 6'-0″">
             </div>
             
             <div class="form-group">
-                <label for="surface_cnb">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
-                <input type="number" id="surface_cnb" class="metric-input" value="" min="0">
+                <label for="surface_cnb" class="unit-label">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
+                <input type="number" id="surface_cnb" class="metric-input" value="" min="0" placeholder="Ex: 100">
                 <input type="text" id="surface_cnb_imperial" class="imperial-input" placeholder="Ex: 200 pi²">
             </div>
             
             <div class="form-group">
-                <label for="length_cnb">Longueur de la façade (m)</label>
-                <input type="number" id="length_cnb" class="metric-input" value="" min="0">
+                <label for="length_cnb" class="unit-label">Longueur de la façade (m)</label>
+                <input type="number" id="length_cnb" class="metric-input" value="" min="0" placeholder="Ex: 10,0">
                 <input type="text" id="length_cnb_imperial" class="imperial-input" placeholder="Ex: 20'-0″">
             </div>
             
             <div class="form-group">
-                <label for="height_cnb">Hauteur de la façade (m)</label>
-                <input type="number" id="height_cnb" class="metric-input" value="" min="0">
+                <label for="height_cnb" class="unit-label">Hauteur de la façade (m)</label>
+                <input type="number" id="height_cnb" class="metric-input" value="" min="0" placeholder="Ex: 3,0">
                 <input type="text" id="height_cnb_imperial" class="imperial-input" placeholder="Ex: 10'-0″">
             </div>
             
@@ -127,13 +127,13 @@
             
             <div id="spacing_options_cnb" style="display: none;">
                 <div class="form-group">
-                    <label for="horizontal_spacing_cnb">Espacement horizontal entre baies (m)</label>
-                    <input type="number" id="horizontal_spacing_cnb" class="metric-input" value="2" min="0" step="0.1">
+                    <label for="horizontal_spacing_cnb" class="unit-label">Espacement horizontal entre baies (m)</label>
+                    <input type="number" id="horizontal_spacing_cnb" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                     <input type="text" id="horizontal_spacing_cnb_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                 </div>
                 <div class="form-group">
-                    <label for="vertical_spacing_cnb">Espacement vertical entre baies (m)</label>
-                    <input type="number" id="vertical_spacing_cnb" class="metric-input" value="2" min="0" step="0.1">
+                    <label for="vertical_spacing_cnb" class="unit-label">Espacement vertical entre baies (m)</label>
+                    <input type="number" id="vertical_spacing_cnb" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                     <input type="text" id="vertical_spacing_cnb_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                 </div>
             </div>
@@ -145,8 +145,8 @@
             
             <div id="soffit_options_cnb" style="display: none;">
                 <div class="form-group">
-                    <label for="soffit_distance_cnb">Distance entre le soffite et la limite de propriété (m)</label>
-                    <input type="number" id="soffit_distance_cnb" class="metric-input" value="0.5" min="0" step="0.01">
+                    <label for="soffit_distance_cnb" class="unit-label">Distance entre le soffite et la limite de propriété (m)</label>
+                    <input type="number" id="soffit_distance_cnb" class="metric-input" value="0.5" min="0" step="0.01" placeholder="Ex: 0,5">
                     <input type="text" id="soffit_distance_cnb_imperial" class="imperial-input" placeholder="Ex: 1'-8″" value="1'-8″">
                 </div>
                 <div class="form-group">
@@ -155,8 +155,8 @@
             </div>
 
             <div class="form-group">
-                <label for="proposed_area_cnb">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
-                <input type="number" id="proposed_area_cnb" class="metric-input" value="" min="0">
+                <label for="proposed_area_cnb" class="unit-label">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
+                <input type="number" id="proposed_area_cnb" class="metric-input" value="" min="0" placeholder="Ex: 50">
                 <input type="text" id="proposed_area_cnb_imperial" class="imperial-input" placeholder="Ex: 100 pi²">
             </div>
 
@@ -193,14 +193,14 @@
             </div>
             
             <div class="form-group">
-                <label for="distance_91014">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
-                <input type="number" id="distance_91014" class="metric-input" value="" min="0" step="0.1">
+                <label for="distance_91014" class="unit-label">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
+                <input type="number" id="distance_91014" class="metric-input" value="" min="0" step="0.1" placeholder="Ex: 3,0">
                 <input type="text" id="distance_91014_imperial" class="imperial-input" placeholder="Ex: 6'-0″">
             </div>
             
             <div class="form-group">
-                <label for="surface_91014">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
-                <input type="number" id="surface_91014" class="metric-input" value="" min="0">
+                <label for="surface_91014" class="unit-label">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
+                <input type="number" id="surface_91014" class="metric-input" value="" min="0" placeholder="Ex: 100">
                 <input type="text" id="surface_91014_imperial" class="imperial-input" placeholder="Ex: 200 pi²">
             </div>
             
@@ -236,8 +236,8 @@
             
             <div id="soffit_options_91014" style="display: none;">
                 <div class="form-group">
-                    <label for="soffit_distance_91014">Distance entre le soffite et la limite de propriété (m)</label>
-                    <input type="number" id="soffit_distance_91014" class="metric-input" value="0.5" min="0" step="0.01">
+                    <label for="soffit_distance_91014" class="unit-label">Distance entre le soffite et la limite de propriété (m)</label>
+                    <input type="number" id="soffit_distance_91014" class="metric-input" value="0.5" min="0" step="0.01" placeholder="Ex: 0,5">
                     <input type="text" id="soffit_distance_91014_imperial" class="imperial-input" placeholder="Ex: 1'-8″" value="1'-8″">
                 </div>
                 <div class="form-group">
@@ -253,13 +253,13 @@
             <div id="spacing_options_91014" style="display: none;">
                 <div class="form-group">
                     <div class="spacing-input">
-                        <label for="horizontal_spacing_91014">Espacement horizontal (m)</label>
-                        <input type="number" id="horizontal_spacing_91014" class="metric-input" value="2" min="0" step="0.1">
+                        <label for="horizontal_spacing_91014" class="unit-label">Espacement horizontal (m)</label>
+                        <input type="number" id="horizontal_spacing_91014" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                         <input type="text" id="horizontal_spacing_91014_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                     </div>
                     <div class="spacing-input">
-                        <label for="vertical_spacing_91014">Espacement vertical (m)</label>
-                        <input type="number" id="vertical_spacing_91014" class="metric-input" value="2" min="0" step="0.1">
+                        <label for="vertical_spacing_91014" class="unit-label">Espacement vertical (m)</label>
+                        <input type="number" id="vertical_spacing_91014" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                         <input type="text" id="vertical_spacing_91014_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                     </div>
                 </div>
@@ -274,8 +274,8 @@
             </div>
 
             <div class="form-group">
-                <label for="proposed_area_91014">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
-                <input type="number" id="proposed_area_91014" class="metric-input" value="" min="0">
+                <label for="proposed_area_91014" class="unit-label">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
+                <input type="number" id="proposed_area_91014" class="metric-input" value="" min="0" placeholder="Ex: 50">
                 <input type="text" id="proposed_area_91014_imperial" class="imperial-input" placeholder="Ex: 100 pi²">
             </div>
           
@@ -298,14 +298,14 @@
             </div>
             
             <div class="form-group">
-                <label for="distance_91015">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
-                <input type="number" id="distance_91015" class="metric-input" value="" min="0" step="0.1">
+                <label for="distance_91015" class="unit-label">Distance limitative (m) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Distance entre la façade de rayonnement et la limite de propriété, l'axe d'une voie publique ou une ligne imaginaire entre deux bâtiments sur le même terrain.</span></div></label>
+                <input type="number" id="distance_91015" class="metric-input" value="" min="0" step="0.1" placeholder="Ex: 3,0">
                 <input type="text" id="distance_91015_imperial" class="imperial-input" placeholder="Ex: 6'-0″">
             </div>
             
             <div class="form-group">
-                <label for="surface_91015">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
-                <input type="number" id="surface_91015" class="metric-input" value="" min="0">
+                <label for="surface_91015" class="unit-label">Surface de la façade de rayonnement (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de la façade extérieure du mur orientée dans une même direction, mesurée à partir du niveau du sol jusqu'au plafond du dernier étage.</span></div></label>
+                <input type="number" id="surface_91015" class="metric-input" value="" min="0" placeholder="Ex: 100">
                 <input type="text" id="surface_91015_imperial" class="imperial-input" placeholder="Ex: 200 pi²">
             </div>
             
@@ -341,8 +341,8 @@
             
             <div id="soffit_options_91015" style="display: none;">
                 <div class="form-group">
-                    <label for="soffit_distance_91015">Distance entre le soffite et la limite de propriété (m)</label>
-                    <input type="number" id="soffit_distance_91015" class="metric-input" value="0.5" min="0" step="0.01">
+                    <label for="soffit_distance_91015" class="unit-label">Distance entre le soffite et la limite de propriété (m)</label>
+                    <input type="number" id="soffit_distance_91015" class="metric-input" value="0.5" min="0" step="0.01" placeholder="Ex: 0,5">
                     <input type="text" id="soffit_distance_91015_imperial" class="imperial-input" placeholder="Ex: 1'-8″" value="1'-8″">
                 </div>
                 <div class="form-group">
@@ -356,13 +356,13 @@
             <div id="spacing_options_91015" style="display: none;">
             <div class="form-group">
                 <div class="spacing-input">
-                    <label for="horizontal_spacing_91015">Espacement horizontal (m)</label>
-                    <input type="number" id="horizontal_spacing_91015" class="metric-input" value="2" min="0" step="0.1">
+                    <label for="horizontal_spacing_91015" class="unit-label">Espacement horizontal (m)</label>
+                    <input type="number" id="horizontal_spacing_91015" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                     <input type="text" id="horizontal_spacing_91015_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                 </div>
                 <div class="spacing-input">
-                    <label for="vertical_spacing_91015">Espacement vertical (m)</label>
-                    <input type="number" id="vertical_spacing_91015" class="metric-input" value="2" min="0" step="0.1">
+                    <label for="vertical_spacing_91015" class="unit-label">Espacement vertical (m)</label>
+                    <input type="number" id="vertical_spacing_91015" class="metric-input" value="2" min="0" step="0.1" placeholder="Ex: 2,0">
                     <input type="text" id="vertical_spacing_91015_imperial" class="imperial-input" placeholder="Ex: 6'-6″" value="6'-6″">
                 </div>
             </div>
@@ -377,8 +377,8 @@
        </div>
 
        <div class="form-group">
-           <label for="proposed_area_91015">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
-           <input type="number" id="proposed_area_91015" class="metric-input" value="" min="0">
+           <label for="proposed_area_91015" class="unit-label">Surface proposée de baies non protégées (m²) <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Surface totale de baies non protégées que vous souhaitez proposer pour cette façade de rayonnement.</span></div></label>
+           <input type="number" id="proposed_area_91015" class="metric-input" value="" min="0" placeholder="Ex: 50">
            <input type="text" id="proposed_area_91015_imperial" class="imperial-input" placeholder="Ex: 100 pi²">
        </div>
   
