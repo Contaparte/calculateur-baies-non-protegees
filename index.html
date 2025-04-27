@@ -35,19 +35,22 @@
         .imperial-input { display: none; }
         /* Modification pour s'assurer que les tooltips restent visibles */
         .unit-label .tooltip { display: inline-block !important; }
-        /* Ajout pour que les inputs impériaux aient des flèches d'incrément */
-        input.imperial-input {
+        /* Ajout pour que tous les inputs numériques aient des flèches d'incrément */
+        input.imperial-input,
+        input.metric-input {
             appearance: textfield;
         }
 
-input.imperial-input::-webkit-inner-spin-button,
-input.imperial-input::-webkit-outer-spin-button {
-    opacity: 1 !important;
-    height: auto !important;
-    appearance: auto !important;
-    -webkit-appearance: auto !important;
-    margin-left: 4px;
-}
+        input.imperial-input::-webkit-inner-spin-button,
+        input.imperial-input::-webkit-outer-spin-button,
+        input.metric-input::-webkit-inner-spin-button,
+        input.metric-input::-webkit-outer-spin-button {
+            opacity: 1 !important;
+            height: auto !important;
+            appearance: auto !important;
+            -webkit-appearance: auto !important;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
