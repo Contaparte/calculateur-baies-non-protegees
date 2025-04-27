@@ -1,208 +1,208 @@
 // Tableau 3.2.3.1.-B - Usages des groupes A, B3, C, D et F3 - Sans gicleurs
-   const tableauGroupesAB3CDF3 = {
-       10: {
-           "< 3:1": [0, 8, 10, 18, 29, 46, 91, 100],
-           "3:1 à 10:1": [0, 8, 12, 21, 33, 50, 96, 100],
-           "> 10:1": [0, 11, 18, 32, 48, 68, 100]
-       },
-       15: {
-           "< 3:1": [0, 7, 9, 14, 22, 33, 63, 100],
-           "3:1 à 10:1": [0, 8, 10, 17, 25, 37, 67, 100],
-           "> 10:1": [0, 10, 15, 26, 39, 53, 87, 100]
-       },
-       20: {
-           "< 3:1": [0, 7, 9, 12, 18, 26, 49, 81, 100],
-           "3:1 à 10:1": [0, 8, 10, 15, 21, 30, 53, 85, 100],
-           "> 10:1": [0, 9, 14, 23, 33, 45, 72, 100]
-       },
-       25: {
-           "< 3:1": [0, 7, 8, 11, 16, 23, 41, 66, 98, 100],
-           "3:1 à 10:1": [0, 8, 9, 13, 19, 26, 45, 70, 100],
-           "> 10:1": [0, 9, 13, 21, 30, 39, 62, 90, 100]
-       },
-       30: {
-           "< 3:1": [0, 7, 8, 11, 15, 20, 35, 56, 83, 100],
-           "3:1 à 10:1": [0, 7, 9, 12, 17, 23, 39, 61, 88, 100],
-           "> 10:1": [0, 8, 12, 19, 27, 36, 56, 79, 100]
-       },
-       40: {
-           "< 3:1": [0, 7, 8, 10, 13, 17, 28, 44, 64, 89, 100],
-           "3:1 à 10:1": [0, 7, 8, 11, 15, 20, 32, 48, 69, 93, 100],
-           "> 10:1": [0, 8, 11, 17, 24, 31, 47, 66, 88, 100]
-       },
-       50: {
-           "< 3:1": [0, 7, 8, 9, 12, 15, 24, 37, 53, 72, 96, 100],
-           "3:1 à 10:1": [0, 7, 8, 10, 14, 18, 28, 41, 57, 77, 100],
-           "> 10:1": [0, 8, 10, 15, 21, 28, 41, 57, 76, 97, 100]
-       },
-       60: {
-           "< 3:1": [0, 7, 8, 9, 11, 14, 21, 32, 45, 62, 81, 100],
-           "3:1 à 10:1": [0, 7, 8, 10, 13, 16, 25, 36, 49, 66, 85, 100],
-           "> 10:1": [0, 8, 10, 14, 20, 25, 38, 51, 67, 85, 100]
-       },
-       80: {
-           "< 3:1": [0, 7, 7, 8, 10, 12, 18, 26, 36, 48, 62, 79, 98, 100],
-           "3:1 à 10:1": [0, 7, 8, 9, 11, 14, 21, 29, 40, 52, 67, 84, 100],
-           "> 10:1": [0, 8, 9, 13, 17, 22, 32, 44, 56, 70, 86, 100]
-       },
-       100: {
-           "< 3:1": [0, 7, 7, 8, 9, 11, 16, 22, 30, 40, 51, 65, 80, 97, 100],
-           "3:1 à 10:1": [0, 7, 8, 9, 11, 13, 18, 25, 34, 44, 56, 69, 84, 100],
-           "> 10:1": [0, 7, 9, 12, 16, 20, 29, 39, 49, 61, 74, 89, 100]
-       },
-       150: {
-           "< 3:1": [0, 7, 7, 8, 9, 10, 13, 17, 22, 29, 37, 46, 56, 67, 79, 93, 100],
-           "3:1 à 10:1": [0, 7, 7, 8, 10, 11, 15, 20, 26, 33, 41, 50, 60, 71, 84, 97, 100],
-           "> 10:1": [0, 7, 8, 11, 13, 17, 24, 31, 39, 48, 57, 68, 79, 91, 100]
-       },
-       250: {
-           "< 3:1": [0, 7, 7, 7, 8, 9, 10, 13, 16, 20, 25, 30, 36, 43, 51, 59, 68, 87, 100],
-           "3:1 à 10:1": [0, 7, 7, 8, 9, 10, 12, 15, 19, 24, 28, 34, 40, 47, 55, 63, 72, 92, 100],
-           "> 10:1": [0, 7, 8, 9, 11, 14, 19, 24, 30, 36, 43, 50, 57, 65, 73, 82, 92, 100]
-       },
-       350: {
-           "< 3:1": [0, 7, 7, 7, 8, 8, 9, 11, 14, 16, 20, 24, 28, 33, 38, 44, 50, 64, 81, 99, 100],
-           "3:1 à 10:1": [0, 7, 7, 8, 8, 9, 11, 13, 16, 19, 23, 27, 32, 37, 42, 48, 55, 69, 85, 100],
-           "> 10:1": [0, 7, 8, 9, 10, 12, 16, 21, 25, 30, 36, 41, 47, 53, 59, 66, 73, 88, 100]
-       },
-       500: {
-           "< 3:1": [0, 7, 7, 7, 7, 8, 9, 10, 12, 14, 16, 19, 22, 25, 29, 33, 37, 47, 59, 71, 100],
-           "3:1 à 10:1": [0, 7, 7, 7, 8, 8, 10, 12, 14, 16, 19, 22, 25, 29, 33, 37, 41, 52, 63, 76, 100],
-           "> 10:1": [0, 7, 7, 8, 9, 11, 14, 18, 22, 25, 30, 34, 38, 43, 48, 53, 58, 70, 82, 96, 100]
-       },
-       1000: {
-           "< 3:1": [0, 7, 7, 7, 7, 7, 8, 9, 9, 10, 12, 13, 14, 16, 18, 20, 22, 27, 33, 39, 58, 82, 100],
-           "3:1 à 10:1": [0, 7, 7, 7, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 21, 23, 26, 31, 37, 43, 63, 86, 100],
-           "> 10:1": [0, 7, 7, 8, 8, 9, 11, 13, 16, 19, 21, 24, 27, 30, 33, 36, 39, 46, 53, 60, 82, 100]
-       },
-       2000: {
-           "< 3:1": [0, 7, 7, 7, 7, 7, 7, 8, 8, 9, 9, 10, 11, 12, 13, 14, 15, 17, 20, 23, 33, 44, 58, 74, 93, 100],
-           "3:1 à 10:1": [0, 7, 7, 7, 7, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23, 27, 37, 49, 63, 79, 97, 100],
-           "> 10:1": [0, 7, 7, 7, 8, 8, 9, 11, 12, 14, 16, 18, 19, 21, 23, 25, 27, 32, 36, 40, 53, 66, 82, 99, 100]
-       }
-   };
-   
-   // Tableau 3.2.3.1.-C - Usages des groupes E, F1 et F2 - Sans gicleurs
-   const tableauGroupesEF1F2 = {
-       10: {
-           "< 3:1": [0, 4, 5, 9, 15, 23, 46, 77, 100],
-           "3:1 à 10:1": [0, 4, 6, 10, 17, 25, 48, 79, 100],
-           "> 10:1": [0, 5, 9, 16, 24, 34, 58, 91, 100]
-       },
-       15: {
-           "< 3:1": [0, 4, 5, 7, 11, 16, 32, 53, 79, 100],
-           "3:1 à 10:1": [0, 4, 5, 8, 13, 18, 34, 55, 82, 100],
-           "> 10:1": [0, 5, 8, 13, 19, 26, 43, 66, 93, 100]
-       },
-       20: {
-           "< 3:1": [0, 4, 4, 6, 9, 13, 25, 40, 61, 85, 100],
-           "3:1 à 10:1": [0, 4, 5, 7, 11, 15, 27, 43, 63, 87, 100],
-           "> 10:1": [0, 5, 7, 11, 17, 22, 36, 53, 74, 99, 100]
-       },
-       25: {
-           "< 3:1": [0, 4, 4, 6, 8, 11, 20, 33, 49, 69, 92, 100],
-           "3:1 à 10:1": [0, 4, 5, 7, 9, 13, 22, 35, 51, 71, 94, 100],
-           "> 10:1": [0, 4, 6, 10, 15, 20, 31, 45, 62, 82, 100]
-       },
-       30: {
-           "< 3:1": [0, 4, 4, 5, 7, 10, 18, 28, 42, 58, 77, 100],
-           "3:1 à 10:1": [0, 4, 4, 6, 9, 12, 20, 30, 44, 60, 80, 100],
-           "> 10:1": [0, 4, 6, 10, 14, 18, 28, 40, 54, 71, 91, 100]
-       },
-       40: {
-           "< 3:1": [0, 4, 4, 5, 6, 8, 14, 22, 32, 44, 59, 76, 94, 100],
-           "3:1 à 10:1": [0, 4, 4, 6, 8, 10, 16, 24, 34, 47, 61, 78, 97, 100],
-           "> 10:1": [0, 4, 5, 8, 12, 15, 23, 33, 44, 57, 72, 89, 100]
-       },
-       50: {
-           "< 3:1": [0, 4, 4, 5, 6, 7, 12, 18, 26, 36, 48, 61, 76, 93, 100],
-           "3:1 à 10:1": [0, 4, 4, 5, 7, 9, 14, 20, 29, 38, 50, 63, 79, 95, 100],
-           "> 10:1": [0, 4, 5, 8, 11, 14, 21, 29, 38, 48, 61, 74, 90, 100]
-       },
-       60: {
-           "< 3:1": [0, 4, 4, 4, 5, 7, 11, 16, 23, 31, 40, 52, 64, 78, 94, 100],
-           "3:1 à 10:1": [0, 4, 4, 5, 6, 8, 12, 18, 25, 33, 43, 54, 66, 81, 96, 100],
-           "> 10:1": [0, 4, 5, 7, 10, 13, 19, 26, 34, 43, 53, 64, 77, 92, 100]
-       },
-       80: {
-           "< 3:1": [0, 4, 4, 4, 5, 6, 9, 13, 18, 24, 31, 40, 49, 60, 71, 84, 98, 100],
-           "3:1 à 10:1": [0, 4, 4, 5, 6, 7, 10, 15, 20, 26, 33, 42, 51, 62, 74, 86, 100],
-           "> 10:1": [0, 4, 5, 6, 9, 11, 16, 22, 28, 35, 43, 52, 62, 73, 85, 98, 100]
-       },
-       100: {
-           "< 3:1": [0, 4, 4, 4, 5, 5, 8, 11, 15, 20, 26, 32, 40, 48, 58, 68, 79, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 5, 6, 9, 13, 17, 22, 28, 35, 42, 51, 60, 70, 81, 100],
-           "> 10:1": [0, 4, 4, 6, 8, 10, 14, 19, 25, 31, 37, 44, 52, 61, 71, 81, 92, 100]
-       },
-       150: {
-           "< 3:1": [0, 4, 4, 4, 4, 5, 6, 8, 11, 14, 18, 23, 28, 33, 40, 46, 54, 70, 89, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 5, 6, 8, 10, 13, 16, 20, 25, 30, 36, 42, 49, 56, 73, 92, 100],
-           "> 10:1": [0, 4, 4, 5, 7, 8, 12, 16, 20, 24, 29, 34, 39, 46, 52, 59, 67, 84, 100]
-       },
-       250: {
-           "< 3:1": [0, 4, 4, 4, 4, 4, 5, 7, 8, 10, 12, 15, 18, 22, 25, 29, 34, 44, 55, 68, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 4, 5, 6, 8, 10, 12, 14, 17, 20, 24, 27, 32, 36, 46, 57, 70, 100],
-         "> 10:1": [0, 4, 4, 5, 6, 7, 9, 12, 15, 18, 21, 25, 28, 32, 37, 41, 46, 56, 68, 81, 100]
-       },
-       350: {
-           "< 3:1": [0, 4, 4, 4, 4, 4, 5, 6, 7, 8, 10, 12, 14, 16, 19, 22, 25, 32, 40, 49, 77, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 5, 7, 8, 10, 12, 14, 16, 18, 21, 24, 27, 34, 43, 52, 79, 100],
-           "> 10:1": [0, 4, 4, 4, 5, 6, 8, 10, 13, 15, 18, 21, 23, 26, 30, 33, 36, 44, 53, 62, 90, 100]
-       },
-       500: {
-           "< 3:1": [0, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 13, 14, 16, 19, 24, 29, 36, 55, 78, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 13, 14, 16, 18, 21, 26, 31, 38, 57, 80, 100],
-           "> 10:1": [0, 4, 4, 4, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 24, 26, 29, 35, 41, 48, 68, 92, 100]
-       },
-       1000: {
-           "< 3:1": [0, 4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 11, 14, 16, 20, 29, 41, 55, 71, 89, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 22, 31, 43, 57, 73, 91, 100],
-           "> 10:1": [0, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 12, 13, 15, 16, 18, 20, 23, 26, 30, 41, 53, 68, 84, 100]
-       },
-       2000: {
-           "< 3:1": [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 9, 10, 12, 16, 22, 29, 37, 46, 56, 68, 80, 94, 100],
-           "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 9, 10, 12, 13, 18, 24, 31, 39, 49, 59, 70, 83, 96, 100],
-           "> 10:1": [0, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 26, 33, 41, 50, 59, 70, 81, 94, 100]
-       }
-   };
-   
-   // Tableau 3.2.3.1.-D - Bâtiment protégé par gicleurs - Usages des groupes A, B, C, D et F3
-   const tableauAvecGicleursGroupesABCDF3 = {
-       10: [0, 16, 24, 42, 66, 100],
-       15: [0, 16, 20, 34, 50, 74, 100],
-       20: [0, 16, 20, 30, 42, 60, 100],
-       25: [0, 16, 18, 26, 38, 52, 90, 100],
-       30: [0, 14, 18, 24, 34, 46, 78, 100],
-       40: [0, 14, 16, 22, 30, 40, 64, 96, 100],
-       50: [0, 14, 16, 20, 28, 36, 56, 82, 100],
-       60: [0, 14, 16, 20, 26, 32, 50, 72, 98, 100],
-       80: [0, 14, 16, 18, 22, 28, 42, 58, 80, 100],
-       100: [0, 14, 16, 18, 22, 26, 36, 50, 68, 88, 100],
-       150: [0, 14, 14, 16, 20, 22, 30, 40, 52, 66, 82, 100]
-   };
-   
-   // Tableau 3.2.3.1.-E - Bâtiment protégé par gicleurs - Usages des groupes E, F1 et F2
-   const tableauAvecGicleursGroupesEF1F2 = {
-       10: [0, 8, 12, 20, 34, 50, 96, 100],
-       15: [0, 8, 10, 16, 26, 36, 68, 100],
-       20: [0, 8, 10, 14, 22, 30, 54, 86, 100],
-       25: [0, 8, 10, 14, 18, 26, 44, 70, 100],
-       30: [0, 8, 8, 12, 18, 24, 40, 60, 88, 100],
-       40: [0, 8, 8, 12, 16, 20, 32, 48, 68, 94, 100],
-       50: [0, 8, 8, 10, 14, 18, 28, 40, 58, 76, 100],
-       60: [0, 8, 8, 10, 12, 16, 24, 36, 50, 66, 86, 100],
-       80: [0, 8, 8, 10, 12, 14, 20, 30, 40, 52, 66, 84, 100],
-       100: [0, 8, 8, 8, 10, 12, 18, 26, 34, 44, 56, 70, 84, 100],
-       150: [0, 8, 8, 8, 10, 12, 16, 20, 26, 32, 40, 50, 60, 72, 84, 98, 100],
-       200: [0, 8, 8, 8, 8, 10, 14, 18, 22, 28, 34, 42,50, 60, 68, 80, 92, 100]
-   };
+const tableauGroupesAB3CDF3 = {
+    10: {
+        "< 3:1": [0, 8, 10, 18, 29, 46, 91, 100],
+        "3:1 à 10:1": [0, 8, 12, 21, 33, 50, 96, 100],
+        "> 10:1": [0, 11, 18, 32, 48, 68, 100]
+    },
+    15: {
+        "< 3:1": [0, 7, 9, 14, 22, 33, 63, 100],
+        "3:1 à 10:1": [0, 8, 10, 17, 25, 37, 67, 100],
+        "> 10:1": [0, 10, 15, 26, 39, 53, 87, 100]
+    },
+    20: {
+        "< 3:1": [0, 7, 9, 12, 18, 26, 49, 81, 100],
+        "3:1 à 10:1": [0, 8, 10, 15, 21, 30, 53, 85, 100],
+        "> 10:1": [0, 9, 14, 23, 33, 45, 72, 100]
+    },
+    25: {
+        "< 3:1": [0, 7, 8, 11, 16, 23, 41, 66, 98, 100],
+        "3:1 à 10:1": [0, 8, 9, 13, 19, 26, 45, 70, 100],
+        "> 10:1": [0, 9, 13, 21, 30, 39, 62, 90, 100]
+    },
+    30: {
+        "< 3:1": [0, 7, 8, 11, 15, 20, 35, 56, 83, 100],
+        "3:1 à 10:1": [0, 7, 9, 12, 17, 23, 39, 61, 88, 100],
+        "> 10:1": [0, 8, 12, 19, 27, 36, 56, 79, 100]
+    },
+    40: {
+        "< 3:1": [0, 7, 8, 10, 13, 17, 28, 44, 64, 89, 100],
+        "3:1 à 10:1": [0, 7, 8, 11, 15, 20, 32, 48, 69, 93, 100],
+        "> 10:1": [0, 8, 11, 17, 24, 31, 47, 66, 88, 100]
+    },
+    50: {
+        "< 3:1": [0, 7, 8, 9, 12, 15, 24, 37, 53, 72, 96, 100],
+        "3:1 à 10:1": [0, 7, 8, 10, 14, 18, 28, 41, 57, 77, 100],
+        "> 10:1": [0, 8, 10, 15, 21, 28, 41, 57, 76, 97, 100]
+    },
+    60: {
+        "< 3:1": [0, 7, 8, 9, 11, 14, 21, 32, 45, 62, 81, 100],
+        "3:1 à 10:1": [0, 7, 8, 10, 13, 16, 25, 36, 49, 66, 85, 100],
+        "> 10:1": [0, 8, 10, 14, 20, 25, 38, 51, 67, 85, 100]
+    },
+    80: {
+        "< 3:1": [0, 7, 7, 8, 10, 12, 18, 26, 36, 48, 62, 79, 98, 100],
+        "3:1 à 10:1": [0, 7, 8, 9, 11, 14, 21, 29, 40, 52, 67, 84, 100],
+        "> 10:1": [0, 8, 9, 13, 17, 22, 32, 44, 56, 70, 86, 100]
+    },
+    100: {
+        "< 3:1": [0, 7, 7, 8, 9, 11, 16, 22, 30, 40, 51, 65, 80, 97, 100],
+        "3:1 à 10:1": [0, 7, 8, 9, 11, 13, 18, 25, 34, 44, 56, 69, 84, 100],
+        "> 10:1": [0, 7, 9, 12, 16, 20, 29, 39, 49, 61, 74, 89, 100]
+    },
+    150: {
+        "< 3:1": [0, 7, 7, 8, 9, 10, 13, 17, 22, 29, 37, 46, 56, 67, 79, 93, 100],
+        "3:1 à 10:1": [0, 7, 7, 8, 10, 11, 15, 20, 26, 33, 41, 50, 60, 71, 84, 97, 100],
+        "> 10:1": [0, 7, 8, 11, 13, 17, 24, 31, 39, 48, 57, 68, 79, 91, 100]
+    },
+    250: {
+        "< 3:1": [0, 7, 7, 7, 8, 9, 10, 13, 16, 20, 25, 30, 36, 43, 51, 59, 68, 87, 100],
+        "3:1 à 10:1": [0, 7, 7, 8, 9, 10, 12, 15, 19, 24, 28, 34, 40, 47, 55, 63, 72, 92, 100],
+        "> 10:1": [0, 7, 8, 9, 11, 14, 19, 24, 30, 36, 43, 50, 57, 65, 73, 82, 92, 100]
+    },
+    350: {
+        "< 3:1": [0, 7, 7, 7, 8, 8, 9, 11, 14, 16, 20, 24, 28, 33, 38, 44, 50, 64, 81, 99, 100],
+        "3:1 à 10:1": [0, 7, 7, 8, 8, 9, 11, 13, 16, 19, 23, 27, 32, 37, 42, 48, 55, 69, 85, 100],
+        "> 10:1": [0, 7, 8, 9, 10, 12, 16, 21, 25, 30, 36, 41, 47, 53, 59, 66, 73, 88, 100]
+    },
+    500: {
+        "< 3:1": [0, 7, 7, 7, 7, 8, 9, 10, 12, 14, 16, 19, 22, 25, 29, 33, 37, 47, 59, 71, 100],
+        "3:1 à 10:1": [0, 7, 7, 7, 8, 8, 10, 12, 14, 16, 19, 22, 25, 29, 33, 37, 41, 52, 63, 76, 100],
+        "> 10:1": [0, 7, 7, 8, 9, 11, 14, 18, 22, 25, 30, 34, 38, 43, 48, 53, 58, 70, 82, 96, 100]
+    },
+    1000: {
+        "< 3:1": [0, 7, 7, 7, 7, 7, 8, 9, 9, 10, 12, 13, 14, 16, 18, 20, 22, 27, 33, 39, 58, 82, 100],
+        "3:1 à 10:1": [0, 7, 7, 7, 7, 8, 9, 10, 11, 12, 14, 15, 17, 19, 21, 23, 26, 31, 37, 43, 63, 86, 100],
+        "> 10:1": [0, 7, 7, 8, 8, 9, 11, 13, 16, 19, 21, 24, 27, 30, 33, 36, 39, 46, 53, 60, 82, 100]
+    },
+    2000: {
+        "< 3:1": [0, 7, 7, 7, 7, 7, 7, 8, 8, 9, 9, 10, 11, 12, 13, 14, 15, 17, 20, 23, 33, 44, 58, 74, 93, 100],
+        "3:1 à 10:1": [0, 7, 7, 7, 7, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 20, 23, 27, 37, 49, 63, 79, 97, 100],
+        "> 10:1": [0, 7, 7, 7, 8, 8, 9, 11, 12, 14, 16, 18, 19, 21, 23, 25, 27, 32, 36, 40, 53, 66, 82, 99, 100]
+    }
+};
 
-   const limitingDistancesNoSprinklers = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
-   const limitingDistancesWithSprinklersABCDF3 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9];
-   const limitingDistancesWithSprinklersEF1F2 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-   const facadeSurfaces = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
-   const facadeSurfacesWithSprinklersABCDF3 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
-   const facadeSurfacesWithSprinklersEF1F2 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 200];
+// Tableau 3.2.3.1.-C - Usages des groupes E, F1 et F2 - Sans gicleurs
+const tableauGroupesEF1F2 = {
+    10: {
+        "< 3:1": [0, 4, 5, 9, 15, 23, 46, 77, 100],
+        "3:1 à 10:1": [0, 4, 6, 10, 17, 25, 48, 79, 100],
+        "> 10:1": [0, 5, 9, 16, 24, 34, 58, 91, 100]
+    },
+    15: {
+        "< 3:1": [0, 4, 5, 7, 11, 16, 32, 53, 79, 100],
+        "3:1 à 10:1": [0, 4, 5, 8, 13, 18, 34, 55, 82, 100],
+        "> 10:1": [0, 5, 8, 13, 19, 26, 43, 66, 93, 100]
+    },
+    20: {
+        "< 3:1": [0, 4, 4, 6, 9, 13, 25, 40, 61, 85, 100],
+        "3:1 à 10:1": [0, 4, 5, 7, 11, 15, 27, 43, 63, 87, 100],
+        "> 10:1": [0, 5, 7, 11, 17, 22, 36, 53, 74, 99, 100]
+    },
+    25: {
+        "< 3:1": [0, 4, 4, 6, 8, 11, 20, 33, 49, 69, 92, 100],
+        "3:1 à 10:1": [0, 4, 5, 7, 9, 13, 22, 35, 51, 71, 94, 100],
+        "> 10:1": [0, 4, 6, 10, 15, 20, 31, 45, 62, 82, 100]
+    },
+    30: {
+        "< 3:1": [0, 4, 4, 5, 7, 10, 18, 28, 42, 58, 77, 100],
+        "3:1 à 10:1": [0, 4, 4, 6, 9, 12, 20, 30, 44, 60, 80, 100],
+        "> 10:1": [0, 4, 6, 10, 14, 18, 28, 40, 54, 71, 91, 100]
+    },
+    40: {
+        "< 3:1": [0, 4, 4, 5, 6, 8, 14, 22, 32, 44, 59, 76, 94, 100],
+        "3:1 à 10:1": [0, 4, 4, 6, 8, 10, 16, 24, 34, 47, 61, 78, 97, 100],
+        "> 10:1": [0, 4, 5, 8, 12, 15, 23, 33, 44, 57, 72, 89, 100]
+    },
+    50: {
+        "< 3:1": [0, 4, 4, 5, 6, 7, 12, 18, 26, 36, 48, 61, 76, 93, 100],
+        "3:1 à 10:1": [0, 4, 4, 5, 7, 9, 14, 20, 29, 38, 50, 63, 79, 95, 100],
+        "> 10:1": [0, 4, 5, 8, 11, 14, 21, 29, 38, 48, 61, 74, 90, 100]
+    },
+    60: {
+        "< 3:1": [0, 4, 4, 4, 5, 7, 11, 16, 23, 31, 40, 52, 64, 78, 94, 100],
+        "3:1 à 10:1": [0, 4, 4, 5, 6, 8, 12, 18, 25, 33, 43, 54, 66, 81, 96, 100],
+        "> 10:1": [0, 4, 5, 7, 10, 13, 19, 26, 34, 43, 53, 64, 77, 92, 100]
+    },
+    80: {
+        "< 3:1": [0, 4, 4, 4, 5, 6, 9, 13, 18, 24, 31, 40, 49, 60, 71, 84, 98, 100],
+        "3:1 à 10:1": [0, 4, 4, 5, 6, 7, 10, 15, 20, 26, 33, 42, 51, 62, 74, 86, 100],
+        "> 10:1": [0, 4, 5, 6, 9, 11, 16, 22, 28, 35, 43, 52, 62, 73, 85, 98, 100]
+    },
+    100: {
+        "< 3:1": [0, 4, 4, 4, 5, 5, 8, 11, 15, 20, 26, 32, 40, 48, 58, 68, 79, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 5, 6, 9, 13, 17, 22, 28, 35, 42, 51, 60, 70, 81, 100],
+        "> 10:1": [0, 4, 4, 6, 8, 10, 14, 19, 25, 31, 37, 44, 52, 61, 71, 81, 92, 100]
+    },
+    150: {
+        "< 3:1": [0, 4, 4, 4, 4, 5, 6, 8, 11, 14, 18, 23, 28, 33, 40, 46, 54, 70, 89, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 5, 6, 8, 10, 13, 16, 20, 25, 30, 36, 42, 49, 56, 73, 92, 100],
+        "> 10:1": [0, 4, 4, 5, 7, 8, 12, 16, 20, 24, 29, 34, 39, 46, 52, 59, 67, 84, 100]
+    },
+    250: {
+        "< 3:1": [0, 4, 4, 4, 4, 4, 5, 7, 8, 10, 12, 15, 18, 22, 25, 29, 34, 44, 55, 68, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 4, 5, 6, 8, 10, 12, 14, 17, 20, 24, 27, 32, 36, 46, 57, 70, 100],
+      "> 10:1": [0, 4, 4, 5, 6, 7, 9, 12, 15, 18, 21, 25, 28, 32, 37, 41, 46, 56, 68, 81, 100]
+    },
+    350: {
+        "< 3:1": [0, 4, 4, 4, 4, 4, 5, 6, 7, 8, 10, 12, 14, 16, 19, 22, 25, 32, 40, 49, 77, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 5, 7, 8, 10, 12, 14, 16, 18, 21, 24, 27, 34, 43, 52, 79, 100],
+        "> 10:1": [0, 4, 4, 4, 5, 6, 8, 10, 13, 15, 18, 21, 23, 26, 30, 33, 36, 44, 53, 62, 90, 100]
+    },
+    500: {
+        "< 3:1": [0, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 13, 14, 16, 19, 24, 29, 36, 55, 78, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 13, 14, 16, 18, 21, 26, 31, 38, 57, 80, 100],
+        "> 10:1": [0, 4, 4, 4, 5, 5, 7, 9, 11, 13, 15, 17, 19, 21, 24, 26, 29, 35, 41, 48, 68, 92, 100]
+    },
+    1000: {
+        "< 3:1": [0, 4, 4, 4, 4, 4, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 11, 14, 16, 20, 29, 41, 55, 71, 89, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 22, 31, 43, 57, 73, 91, 100],
+        "> 10:1": [0, 4, 4, 4, 4, 5, 6, 7, 8, 9, 11, 12, 13, 15, 16, 18, 20, 23, 26, 30, 41, 53, 68, 84, 100]
+    },
+    2000: {
+        "< 3:1": [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 9, 10, 12, 16, 22, 29, 37, 46, 56, 68, 80, 94, 100],
+        "3:1 à 10:1": [0, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 9, 10, 12, 13, 18, 24, 31, 39, 49, 59, 70, 83, 96, 100],
+        "> 10:1": [0, 4, 4, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 26, 33, 41, 50, 59, 70, 81, 94, 100]
+    }
+};
+
+// Tableau 3.2.3.1.-D - Bâtiment protégé par gicleurs - Usages des groupes A, B, C, D et F3
+const tableauAvecGicleursGroupesABCDF3 = {
+    10: [0, 16, 24, 42, 66, 100],
+    15: [0, 16, 20, 34, 50, 74, 100],
+    20: [0, 16, 20, 30, 42, 60, 100],
+    25: [0, 16, 18, 26, 38, 52, 90, 100],
+    30: [0, 14, 18, 24, 34, 46, 78, 100],
+    40: [0, 14, 16, 22, 30, 40, 64, 96, 100],
+    50: [0, 14, 16, 20, 28, 36, 56, 82, 100],
+    60: [0, 14, 16, 20, 26, 32, 50, 72, 98, 100],
+    80: [0, 14, 16, 18, 22, 28, 42, 58, 80, 100],
+    100: [0, 14, 16, 18, 22, 26, 36, 50, 68, 88, 100],
+    150: [0, 14, 14, 16, 20, 22, 30, 40, 52, 66, 82, 100]
+};
+
+// Tableau 3.2.3.1.-E - Bâtiment protégé par gicleurs - Usages des groupes E, F1 et F2
+const tableauAvecGicleursGroupesEF1F2 = {
+    10: [0, 8, 12, 20, 34, 50, 96, 100],
+    15: [0, 8, 10, 16, 26, 36, 68, 100],
+    20: [0, 8, 10, 14, 22, 30, 54, 86, 100],
+    25: [0, 8, 10, 14, 18, 26, 44, 70, 100],
+    30: [0, 8, 8, 12, 18, 24, 40, 60, 88, 100],
+    40: [0, 8, 8, 12, 16, 20, 32, 48, 68, 94, 100],
+    50: [0, 8, 8, 10, 14, 18, 28, 40, 58, 76, 100],
+    60: [0, 8, 8, 10, 12, 16, 24, 36, 50, 66, 86, 100],
+    80: [0, 8, 8, 10, 12, 14, 20, 30, 40, 52, 66, 84, 100],
+    100: [0, 8, 8, 8, 10, 12, 18, 26, 34, 44, 56, 70, 84, 100],
+    150: [0, 8, 8, 8, 10, 12, 16, 20, 26, 32, 40, 50, 60, 72, 84, 98, 100],
+    200: [0, 8, 8, 8, 8, 10, 14, 18, 22, 28, 34, 42,50, 60, 68, 80, 92, 100]
+};
+
+const limitingDistancesNoSprinklers = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
+const limitingDistancesWithSprinklersABCDF3 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9];
+const limitingDistancesWithSprinklersEF1F2 = [0, 1.2, 1.5, 2.0, 2.5, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const facadeSurfaces = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
+const facadeSurfacesWithSprinklersABCDF3 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 250, 350, 500, 1000, 2000];
+const facadeSurfacesWithSprinklersEF1F2 = [10, 15, 20, 25, 30, 40, 50, 60, 80, 100, 150, 200];
 
 // Données du Tableau 9.10.14.4-A
 const tableau91014 = {
@@ -543,11 +543,13 @@ document.addEventListener('DOMContentLoaded', function() {
     measurementSystem.addEventListener('change', function() {
         const isImperial = this.value === 'imperial';
         toggleMeasurementSystem(isImperial);
+        updateUnitLabels(isImperial); // Mise à jour des libellés des unités
     });
     
     // Initialiser le système de mesure au chargement
     const isImperial = measurementSystem.value === 'imperial';
     toggleMeasurementSystem(isImperial);
+    updateUnitLabels(isImperial); // Mise à jour initiale des libellés des unités
 
     // Gestionnaires d'événements pour les checkboxes de vérification d'espacement
     document.getElementById('check_spacing_cnb').addEventListener('change', function() {
@@ -576,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
         
     // Ajouter des écouteurs pour l'onglet CNB
-    const cnbInputs = document.querySelectorAll('#cnb input[type="number"]');
+    const cnbInputs = document.querySelectorAll('#cnb input[type="number"], #cnb input[type="text"]');
     cnbInputs.forEach(input => {
         input.addEventListener('keypress', function(event) {
             handleEnterKey(event, calculateCNB);
@@ -584,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Ajouter des écouteurs pour l'onglet 9.10.14
-    const inputs91014 = document.querySelectorAll('#method91014 input[type="number"]');
+    const inputs91014 = document.querySelectorAll('#method91014 input[type="number"], #method91014 input[type="text"]');
     inputs91014.forEach(input => {
         input.addEventListener('keypress', function(event) {
             handleEnterKey(event, calculate91014);
@@ -592,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Ajouter des écouteurs pour l'onglet 9.10.15
-    const inputs91015 = document.querySelectorAll('#method91015 input[type="number"]');
+    const inputs91015 = document.querySelectorAll('#method91015 input[type="number"], #method91015 input[type="text"]');
     inputs91015.forEach(input => {
         input.addEventListener('keypress', function(event) {
             handleEnterKey(event, calculate91015);
@@ -611,7 +613,95 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Liaison entre les champs métriques et impériaux
     setupMetricImperialInputPairs();
+
+    // Ajouter des placeholders pour les champs métriques
+    setMetricPlaceholders();
+
+    // Configurer l'ajout automatique de ² pour les champs de surface impériaux
+    setupAutomaticSquareSymbol();
 });
+
+// Fonction pour mettre à jour les libellés des unités en fonction du système de mesure
+function updateUnitLabels(isImperial) {
+    const unitLabels = document.querySelectorAll('.unit-label');
+    
+    unitLabels.forEach(label => {
+        const labelText = label.textContent;
+        
+        if (isImperial) {
+            // Remplacer les unités métriques par des unités impériales
+            if (labelText.includes('(m)')) {
+                label.textContent = labelText.replace('(m)', '(pi)');
+            } else if (labelText.includes('(m²)')) {
+                label.textContent = labelText.replace('(m²)', '(pi²)');
+            }
+        } else {
+            // Remplacer les unités impériales par des unités métriques
+            if (labelText.includes('(pi)')) {
+                label.textContent = labelText.replace('(pi)', '(m)');
+            } else if (labelText.includes('(pi²)')) {
+                label.textContent = labelText.replace('(pi²)', '(m²)');
+            }
+        }
+    });
+}
+
+// Fonction pour définir les placeholders pour les champs métriques
+function setMetricPlaceholders() {
+    // Onglet CNB
+    document.getElementById('distance_cnb').placeholder = "Ex: 3,0";
+    document.getElementById('surface_cnb').placeholder = "Ex: 100";
+    document.getElementById('length_cnb').placeholder = "Ex: 10,0";
+    document.getElementById('height_cnb').placeholder = "Ex: 3,0";
+    document.getElementById('horizontal_spacing_cnb').placeholder = "Ex: 2,0";
+    document.getElementById('vertical_spacing_cnb').placeholder = "Ex: 2,0";
+    document.getElementById('soffit_distance_cnb').placeholder = "Ex: 0,5";
+    document.getElementById('proposed_area_cnb').placeholder = "Ex: 50";
+    
+    // Onglet 9.10.14
+    document.getElementById('distance_91014').placeholder = "Ex: 3,0";
+    document.getElementById('surface_91014').placeholder = "Ex: 100";
+    document.getElementById('horizontal_spacing_91014').placeholder = "Ex: 2,0";
+    document.getElementById('vertical_spacing_91014').placeholder = "Ex: 2,0";
+    document.getElementById('soffit_distance_91014').placeholder = "Ex: 0,5";
+    document.getElementById('proposed_area_91014').placeholder = "Ex: 50";
+    
+    // Onglet 9.10.15
+    document.getElementById('distance_91015').placeholder = "Ex: 3,0";
+    document.getElementById('surface_91015').placeholder = "Ex: 100";
+    document.getElementById('horizontal_spacing_91015').placeholder = "Ex: 2,0";
+    document.getElementById('vertical_spacing_91015').placeholder = "Ex: 2,0";
+    document.getElementById('soffit_distance_91015').placeholder = "Ex: 0,5";
+    document.getElementById('proposed_area_91015').placeholder = "Ex: 50";
+}
+
+// Fonction pour configurer l'ajout automatique du symbole ² pour les champs de surface impériaux
+function setupAutomaticSquareSymbol() {
+    const surfaceFields = [
+        'surface_cnb_imperial',
+        'proposed_area_cnb_imperial',
+        'surface_91014_imperial',
+        'proposed_area_91014_imperial',
+        'surface_91015_imperial',
+        'proposed_area_91015_imperial'
+    ];
+    
+    surfaceFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('blur', function() {
+                if (this.value && !this.value.includes('pi²')) {
+                    // Nettoyer d'abord la valeur (enlever pi² s'il existe déjà)
+                    let cleanedValue = this.value.replace(/\s*pi²\s*$/i, '').trim();
+                    // Ajouter le symbole pi² si nécessaire
+                    if (cleanedValue) {
+                        this.value = cleanedValue + ' pi²';
+                    }
+                }
+            });
+        }
+    });
+}
 
 // Fonction pour basculer entre le système métrique et impérial
 function toggleMeasurementSystem(isImperial) {
@@ -2430,435 +2520,9 @@ function openTab(event, tabName) {
     event.currentTarget.classList.add("active");
 }
 
-// Fonction pour formater les calculs d'interpolation pour CNB - MISE À JOUR pour inclure l'extrapolation
-function formatCNBCalculationSteps() {
-    // Déterminer le système de mesure
-    const isImperial = document.getElementById('measurementSystem').value === 'imperial';
-    
-    // Obtenir les valeurs des champs
-    let limitingDistance, facadeSurface, length, height;
-    
-    if (isImperial) {
-        limitingDistance = imperialToMetric(document.getElementById('distance_cnb_imperial').value);
-        facadeSurface = imperialToMetric(document.getElementById('surface_cnb_imperial').value, "area");
-        length = imperialToMetric(document.getElementById('length_cnb_imperial').value);
-        height = imperialToMetric(document.getElementById('height_cnb_imperial').value);
-    } else {
-        limitingDistance = parseFloat(document.getElementById('distance_cnb').value);
-        facadeSurface = parseFloat(document.getElementById('surface_cnb').value);
-        length = parseFloat(document.getElementById('length_cnb').value);
-        height = parseFloat(document.getElementById('height_cnb').value);
-    }
-    
-    const usage = document.getElementById('usage_cnb').value;
-    const constructionType = document.getElementById('construction_type_cnb').value;
-    const revetementType = document.getElementById('revetement_type_cnb').value;
-    const sprinklersOption = document.getElementById('sprinklers_cnb').value;
-    const avecGicleurs = sprinklersOption === "complete";
-    const glassBrick = document.getElementById('glass_brick_cnb').checked;
-    const response = document.getElementById('response_cnb').checked;
-    
-    // Ajustement pour le délai d'intervention
-    const adjustedDistance = response ? limitingDistance / 2 : limitingDistance;
-    
-    // Déterminer le rapport L/H
-    const rapportLH = determinerRapportLH(length, height);
-    
-    // Déterminer les tableaux à utiliser
-    let tableauUtilise, distancesUtilisees, surfacesUtilisees;
-    
-    if (avecGicleurs) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            tableauUtilise = tableauAvecGicleursGroupesABCDF3;
-            distancesUtilisees = limitingDistancesWithSprinklersABCDF3;
-            surfacesUtilisees = facadeSurfacesWithSprinklersABCDF3;
-        } else {
-            tableauUtilise = tableauAvecGicleursGroupesEF1F2;
-            distancesUtilisees = limitingDistancesWithSprinklersEF1F2;
-            surfacesUtilisees = facadeSurfacesWithSprinklersEF1F2;
-        }
-    } else {
-        distancesUtilisees = limitingDistancesNoSprinklers;
-        surfacesUtilisees = facadeSurfaces;
-        if (usage === "groupes_A_B3_C_D_F3") {
-            tableauUtilise = tableauGroupesAB3CDF3;
-        } else {
-            tableauUtilise = tableauGroupesEF1F2;
-        }
-    }
-    
-    // Préparer le texte formaté
-    let output = "Selon les données du ";
-    output += avecGicleurs ? 
-        (usage === "groupes_A_B3_C_D_F3" ? "Tableau 3.2.3.1.-D" : "Tableau 3.2.3.1.-E") : 
-        (usage === "groupes_A_B3_C_D_F3" ? "Tableau 3.2.3.1.-B" : "Tableau 3.2.3.1.-C");
-    output += ":\n\n";
-    
-    // Paramètres
-    output += "Paramètres indiqués:\n";
-    output += `DL: ${adjustedDistance.toFixed(2)}m\n`;
-    output += `Surface de la FDR: ${facadeSurface.toFixed(2)}m²\n`;
-    output += `Proportion L/H : Largeur : ${length.toFixed(2)}m ; Hauteur : ${height.toFixed(2)}m\n`;
-    output += `Le rapport L/H est ${rapportLH}\n\n`;
-    
-    // Cas spécial: surface de façade < surface minimale mais DL >= DL minimale non-nulle
-    const premiereDLNonNulle = distancesUtilisees.find(d => d > 0);
-    if (facadeSurface < surfacesUtilisees[0] && adjustedDistance >= premiereDLNonNulle) {
-        output += `Cas particulier: Surface < ${surfacesUtilisees[0]}m² et DL ≥ ${premiereDLNonNulle}m\n`;
-        output += "Pour ce cas de figure, la méthode d'extrapolation en trois étapes est utilisée:\n\n";
-        
-        // Étape 1: Interpolation selon la 1ère FDR disponible
-        output += `Étape 1: Interpolation selon la 1ère surface de référence (${surfacesUtilisees[0]}m²):\n`;
-        
-        // Trouver les distances encadrantes
-        const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, distancesUtilisees);
-        const distanceInferieure = distancesEncadrantes.inferieure;
-        const distanceSuperieure = distancesEncadrantes.superieure;
-        const distanceInferieureIndex = distancesUtilisees.indexOf(distanceInferieure);
-        const distanceSuperieureIndex = distancesUtilisees.indexOf(distanceSuperieure);
-        
-        let pourcentageEtape1;
-        
-        if (distanceInferieure === distanceSuperieure) {
-            // Pas besoin d'interpolation pour la distance
-            if (!avecGicleurs) {
-                pourcentageEtape1 = tableauUtilise[surfacesUtilisees[0]][rapportLH][distanceInferieureIndex];
-                output += `À DL = ${distanceInferieure}m: ${pourcentageEtape1}%\n\n`;
-            } else {
-                pourcentageEtape1 = tableauUtilise[surfacesUtilisees[0]][distanceInferieureIndex];
-                output += `À DL = ${distanceInferieure}m: ${pourcentageEtape1}%\n\n`;
-            }
-        } else {
-            // Interpolation selon la distance pour la 1ère surface
-            let pourcentageDistInf, pourcentageDistSup;
-            if (!avecGicleurs) {
-                pourcentageDistInf = tableauUtilise[surfacesUtilisees[0]][rapportLH][distanceInferieureIndex];
-                pourcentageDistSup = tableauUtilise[surfacesUtilisees[0]][rapportLH][distanceSuperieureIndex];
-                
-                output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
-                output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
-            } else {
-                pourcentageDistInf = tableauUtilise[surfacesUtilisees[0]][distanceInferieureIndex];
-                pourcentageDistSup = tableauUtilise[surfacesUtilisees[0]][distanceSuperieureIndex];
-                
-                output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
-                output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
-            }
-            
-            pourcentageEtape1 = pourcentageDistInf + 
-                ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-                (pourcentageDistSup - pourcentageDistInf);
-            
-            output += `${pourcentageDistInf} + (${adjustedDistance.toFixed(2)} - ${distanceInferieure}) / (${distanceSuperieure} - ${distanceInferieure}) × (${pourcentageDistSup} - ${pourcentageDistInf}) = ${pourcentageEtape1.toFixed(2)}%\n\n`;
-        }
-        
-        // Étape 2: Interpolation selon la 2ème FDR disponible
-        output += `Étape 2: Interpolation selon la 2ème surface de référence (${surfacesUtilisees[1]}m²):\n`;
-        
-        let pourcentageEtape2;
-        
-        if (distanceInferieure === distanceSuperieure) {
-            // Pas besoin d'interpolation pour la distance
-            if (!avecGicleurs) {
-                pourcentageEtape2 = tableauUtilise[surfacesUtilisees[1]][rapportLH][distanceInferieureIndex];
-                output += `À DL = ${distanceInferieure}m: ${pourcentageEtape2}%\n\n`;
-            } else {
-                pourcentageEtape2 = tableauUtilise[surfacesUtilisees[1]][distanceInferieureIndex];
-                output += `À DL = ${distanceInferieure}m: ${pourcentageEtape2}%\n\n`;
-            }
-        } else {
-            // Interpolation selon la distance pour la 2ème surface
-            let pourcentageDistInf, pourcentageDistSup;
-            if (!avecGicleurs) {
-                pourcentageDistInf = tableauUtilise[surfacesUtilisees[1]][rapportLH][distanceInferieureIndex];
-                pourcentageDistSup = tableauUtilise[surfacesUtilisees[1]][rapportLH][distanceSuperieureIndex];
-                
-                output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
-                output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
-            } else {
-                pourcentageDistInf = tableauUtilise[surfacesUtilisees[1]][distanceInferieureIndex];
-                pourcentageDistSup = tableauUtilise[surfacesUtilisees[1]][distanceSuperieureIndex];
-                
-                output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
-                output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
-            }
-            
-            pourcentageEtape2 = pourcentageDistInf + 
-                ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-                (pourcentageDistSup - pourcentageDistInf);
-            
-            output += `${pourcentageDistInf} + (${adjustedDistance.toFixed(2)} - ${distanceInferieure}) / (${distanceSuperieure} - ${distanceInferieure}) × (${pourcentageDistSup} - ${pourcentageDistInf}) = ${pourcentageEtape2.toFixed(2)}%\n\n`;
-        }
-        
-        // Étape 3: Extrapolation selon les résultats des étapes 1 et 2
-        output += `Étape 3: Extrapolation pour la surface réelle (${facadeSurface.toFixed(2)}m²):\n`;
-        
-        const pourcentageFinal = pourcentageEtape2 + 
-            ((facadeSurface - surfacesUtilisees[1]) / (surfacesUtilisees[0] - surfacesUtilisees[1])) * 
-            (pourcentageEtape1 - pourcentageEtape2);
-        
-        output += `${pourcentageEtape2.toFixed(2)} + (${facadeSurface.toFixed(2)} - ${surfacesUtilisees[1]}) / (${surfacesUtilisees[0]} - ${surfacesUtilisees[1]}) × (${pourcentageEtape1.toFixed(2)} - ${pourcentageEtape2.toFixed(2)}) = ${pourcentageFinal.toFixed(2)}%\n\n`;
-        
-        // Appliquer la majoration pour briques de verre/verre armé si nécessaire
-        if (glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageFinal * 2);
-            output += `Avec majoration pour briques de verre/verre armé (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
-        }
-        
-        return output;
-    }
-    
-    // Vérifier si extrapolation nécessaire
-    const extrapolationSurface = facadeSurface < surfacesUtilisees[0];
-    const extrapolationDistance = adjustedDistance > 0 && adjustedDistance < premiereDLNonNulle;
-    
-    if (extrapolationDistance && !extrapolationSurface) {
-        // Cas d'extrapolation pour distance uniquement
-        output += "Extrapolation pour distance limitative entre 0 et 1,2m:\n";
-        output += `- À distance = 0m: pourcentage = 0% (toujours)\n`;
-        
-        let pourcentageDistanceMin;
-        if (!avecGicleurs) {
-            pourcentageDistanceMin = tableauUtilise[surfacesUtilisees[0]][rapportLH][1]; // Index 1 = 1.2m
-            output += `- À distance = 1,2m: pourcentage = ${pourcentageDistanceMin}% (pour surface de ${surfacesUtilisees[0]}m²)\n`;
-        } else {
-            pourcentageDistanceMin = tableauUtilise[surfacesUtilisees[0]][1]; // Index 1 = 1.2m
-            output += `- À distance = 1,2m: pourcentage = ${pourcentageDistanceMin}% (pour surface de ${surfacesUtilisees[0]}m²)\n`;
-        }
-        
-        // Calculer l'extrapolation
-        const pente = pourcentageDistanceMin / 1.2; // Pente = % à 1.2m divisé par 1.2
-        const pourcentageExtrapole = pente * adjustedDistance;
-        
-        output += `Formule d'extrapolation linéaire: % = (${pourcentageDistanceMin} ÷ 1,2) × ${adjustedDistance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
-        
-        if (glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
-            output += `Avec majoration pour briques de verre/verre armé (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
-        }
-        
-        return output;
-    }
-    
-    if (extrapolationSurface && !extrapolationDistance) {
-        // Cas d'extrapolation pour surface uniquement
-        output += "Extrapolation pour surface de façade inférieure à 10m²:\n";
-        
-        let pourcentageSurfMin, pourcentageSurfSupMin;
-        if (!avecGicleurs) {
-            pourcentageSurfMin = tableauUtilise[surfacesUtilisees[0]][rapportLH][distancesUtilisees.indexOf(Math.max(...distancesUtilisees.filter(d => d <= adjustedDistance)))];
-            pourcentageSurfSupMin = tableauUtilise[surfacesUtilisees[1]][rapportLH][distancesUtilisees.indexOf(Math.max(...distancesUtilisees.filter(d => d <= adjustedDistance)))];
-            
-            output += `- Pour surface = ${surfacesUtilisees[0]}m²: pourcentage = ${pourcentageSurfMin}%\n`;
-            output += `- Pour surface = ${surfacesUtilisees[1]}m²: pourcentage = ${pourcentageSurfSupMin}%\n`;
-        } else {
-            pourcentageSurfMin = tableauUtilise[surfacesUtilisees[0]][distancesUtilisees.indexOf(Math.max(...distancesUtilisees.filter(d => d <= adjustedDistance)))];
-            pourcentageSurfSupMin = tableauUtilise[surfacesUtilisees[1]][distancesUtilisees.indexOf(Math.max(...distancesUtilisees.filter(d => d <= adjustedDistance)))];
-            
-            output += `- Pour surface = ${surfacesUtilisees[0]}m²: pourcentage = ${pourcentageSurfMin}%\n`;
-            output += `- Pour surface = ${surfacesUtilisees[1]}m²: pourcentage = ${pourcentageSurfSupMin}%\n`;
-        }
-        
-        // Extrapolation - plus la surface est petite, plus le pourcentage permis est élevé
-        const ratio = surfacesUtilisees[0] / facadeSurface;
-        const facteur = Math.sqrt(ratio);
-        const tendance = (pourcentageSurfMin - pourcentageSurfSupMin) * (facteur - 1);
-        const pourcentageExtrapole = Math.min(100, pourcentageSurfMin + tendance);
-        
-        output += `Formule d'extrapolation pour surface plus petite: % = ${pourcentageSurfMin} + (${pourcentageSurfMin} - ${pourcentageSurfSupMin}) × (√(${surfacesUtilisees[0]} ÷ ${facadeSurface.toFixed(2)}) - 1)\n`;
-        output += `% = ${pourcentageSurfMin} + ${tendance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
-        
-        if (glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
-            output += `Avec majoration pour briques de verre/verre armé (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
-        }
-        
-        return output;
-    }
-    
-    if (extrapolationSurface && extrapolationDistance) {
-        // Cas de double extrapolation (surface et distance)
-        output += "Double extrapolation (distance et surface):\n";
-        output += "1) Extrapolation pour la plus petite surface du tableau (10m²) avec distance entre 0 et 1,2m:\n";
-        output += `- À distance = 0m: pourcentage = 0% (toujours)\n`;
-        
-        let pourcentageDistMinSurfMin;
-        if (!avecGicleurs) {
-            pourcentageDistMinSurfMin = tableauUtilise[surfacesUtilisees[0]][rapportLH][1]; // Index 1 = 1.2m
-            output += `- À distance = 1,2m: pourcentage = ${pourcentageDistMinSurfMin}% (pour surface de ${surfacesUtilisees[0]}m²)\n`;
-        } else {
-            pourcentageDistMinSurfMin = tableauUtilise[surfacesUtilisees[0]][1]; // Index 1 = 1.2m
-            output += `- À distance = 1,2m: pourcentage = ${pourcentageDistMinSurfMin}% (pour surface de ${surfacesUtilisees[0]}m²)\n`;
-        }
-        
-        // Extrapolation distance pour surface min
-        const pente1 = pourcentageDistMinSurfMin / 1.2;
-        const pourcentageEtape1 = pente1 * adjustedDistance;
-        
-        output += `Étape 1 - Extrapolation distance: % = (${pourcentageDistMinSurfMin} ÷ 1,2) × ${adjustedDistance.toFixed(2)} = ${pourcentageEtape1.toFixed(2)}%\n\n`;
-        
-        output += "2) Extrapolation pour la surface réelle à partir du résultat précédent:\n";
-        
-        let pourcentageSurfSupMin;
-        if (!avecGicleurs) {
-            pourcentageSurfSupMin = tableauUtilise[surfacesUtilisees[1]][rapportLH][1]; // 1.2m pour deuxième surface du tableau
-            
-            // Extrapolation distance pour surface sup min
-            const pente2 = pourcentageSurfSupMin / 1.2;
-            const pourcentageEtape1bis = pente2 * adjustedDistance;
-            
-            output += `- Pour surface = ${surfacesUtilisees[1]}m² à la distance ${adjustedDistance.toFixed(2)}m: % = ${pourcentageEtape1bis.toFixed(2)}%\n`;
-        } else {
-            pourcentageSurfSupMin = tableauUtilise[surfacesUtilisees[1]][1]; // 1.2m pour deuxième surface du tableau
-            
-            // Extrapolation distance pour surface sup min
-            const pente2 = pourcentageSurfSupMin / 1.2;
-            const pourcentageEtape1bis = pente2 * adjustedDistance;
-            
-            output += `- Pour surface = ${surfacesUtilisees[1]}m² à la distance ${adjustedDistance.toFixed(2)}m: % = ${pourcentageEtape1bis.toFixed(2)}%\n`;
-        }
-        
-        // Extrapolation surface
-        const ratio = surfacesUtilisees[0] / facadeSurface;
-        const facteur = Math.sqrt(ratio);
-        const pourcentageDistSupMin = (pourcentageSurfSupMin / 1.2) * adjustedDistance;
-        const tendance = (pourcentageEtape1 - pourcentageDistSupMin) * (facteur - 1);
-        const pourcentageExtrapole = Math.min(100, pourcentageEtape1 + tendance);
-        
-        output += `Étape 2 - Extrapolation surface: % = ${pourcentageEtape1.toFixed(2)} + (${pourcentageEtape1.toFixed(2)} - ${pourcentageDistSupMin.toFixed(2)}) × (√(${surfacesUtilisees[0]} ÷ ${facadeSurface.toFixed(2)}) - 1)\n`;
-        output += `% = ${pourcentageEtape1.toFixed(2)} + ${tendance.toFixed(2)} = ${pourcentageExtrapole.toFixed(2)}%\n\n`;
-        
-        if (glassBrick) {
-            const pourcentageAvecMajoration = Math.min(100, pourcentageExtrapole * 2);
-            output += `Avec majoration pour briques de verre/verre armé (×2): ${pourcentageAvecMajoration.toFixed(2)}%\n`;
-        }
-        
-        return output;
-    }
-    
-    // Si c'est une valeur exacte dans le tableau, pas besoin d'interpoler
-    // Trouver les bornes d'encadrement
-    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, distancesUtilisees);
-    const distanceInferieure = distancesEncadrantes.inferieure;
-    const distanceSuperieure = distancesEncadrantes.superieure;
-    const distanceInferieureIndex = distancesUtilisees.indexOf(distanceInferieure);
-    const distanceSuperieureIndex = distancesUtilisees.indexOf(distanceSuperieure);
-    
-    const surfacesEncadrantes = trouverValeurEncadrantes(facadeSurface, surfacesUtilisees);
-    const surfaceInferieure = surfacesEncadrantes.inferieure;
-    const surfaceSuperieure = surfacesEncadrantes.superieure;
-    
-    if (distanceInferieure === distanceSuperieure && surfaceInferieure === surfaceSuperieure) {
-        let pourcentageFinal;
-        if (!avecGicleurs) {
-            pourcentageFinal = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
-        } else {
-            pourcentageFinal = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
-        }
-        
-        output += `Valeur exacte trouvée dans le tableau: ${pourcentageFinal}%\n`;
-        if (glassBrick) {
-            output += `Avec majoration pour briques de verre/verre armé (x2): ${Math.min(100, pourcentageFinal * 2)}%\n`;
-        }
-        return output;
-    }
-    
-    // Étape 1: Interpolation selon DL inférieure
-    let pourcentageDistanceInferieure;
-    output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
-    
-    if (!avecGicleurs) {
-        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
-        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][rapportLH][distanceInferieureIndex];
-        
-        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistInf}%\n`;
-        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistInf}%\n`;
-        
-        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
-            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
-        
-        output += `${pourcentageSurfSupDistInf} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistInf} – ${pourcentageSurfSupDistInf}) = `;
-        output += `${pourcentageSurfSupDistInf} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf)).toFixed(2)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
-    } else {
-        const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
-        const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][distanceInferieureIndex];
-        
-        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistInf}%\n`;
-        output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistInf}%\n`;
-        
-        pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
-            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
-        
-        output += `${pourcentageSurfSupDistInf} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistInf} – ${pourcentageSurfSupDistInf}) = `;
-        output += `${pourcentageSurfSupDistInf} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf)).toFixed(2)} = ${pourcentageDistanceInferieure.toFixed(2)} %\n\n`;
-    }
-    
-    // Si les distances sont identiques, pas besoin d'interpolation supplémentaire
-    if (distanceInferieure === distanceSuperieure) {
-        if (glassBrick) {
-            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
-            output += `Avec majoration pour briques de verre/verre armé (x2): ${Math.min(100, pourcentageDistanceInferieure * 2).toFixed(2)}%\n`;
-        } else {
-            output += `Résultat final: ${pourcentageDistanceInferieure.toFixed(2)}%\n`;
-        }
-        return output;
-    }
-    
-    // Étape 2: Interpolation selon DL supérieure
-    let pourcentageDistanceSuperieure;
-    output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
-    
-    if (!avecGicleurs) {
-        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][rapportLH][distanceSuperieureIndex];
-        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][rapportLH][distanceSuperieureIndex];
-        
-        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistSup}%\n`;
-        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistSup}%\n`;
-        
-        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
-            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
-        
-        output += `${pourcentageSurfSupDistSup} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistSup} – ${pourcentageSurfSupDistSup}) = `;
-        output += `${pourcentageSurfSupDistSup} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup)).toFixed(2)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
-    } else {
-        const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][distanceSuperieureIndex];
-        const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][distanceSuperieureIndex];
-        
-        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceInferieure}m²: ${pourcentageSurfInfDistSup}%\n`;
-        output += `À DL de ${distanceSuperieure}m et surface max. de ${surfaceSuperieure}m²: ${pourcentageSurfSupDistSup}%\n`;
-        
-        pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
-            ((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
-            (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
-        
-        output += `${pourcentageSurfSupDistSup} + (${facadeSurface.toFixed(2)} – ${surfaceInferieure}) / (${surfaceSuperieure} – ${surfaceInferieure}) x (${pourcentageSurfInfDistSup} – ${pourcentageSurfSupDistSup}) = `;
-        output += `${pourcentageSurfSupDistSup} + ${((facadeSurface - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure) * (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup)).toFixed(2)} = ${pourcentageDistanceSuperieure.toFixed(2)} %\n\n`;
-    }
-    
-    // Étape 3: Interpolation finale
-    output += "Étape 3: Interpolation selon les résultats obtenus des deux interpolations précédentes:\n";
-    
-    const pourcentageFinal = pourcentageDistanceInferieure + 
-        ((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-        (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
-    
-    output += `${pourcentageDistanceInferieure.toFixed(2)} + (${adjustedDistance.toFixed(2)} – ${distanceInferieure}) / (${distanceSuperieure} – ${distanceInferieure}) x (${pourcentageDistanceSuperieure.toFixed(2)} – ${pourcentageDistanceInferieure.toFixed(2)}) = `;
-    output += `${pourcentageDistanceInferieure.toFixed(2)} + ${((adjustedDistance - distanceInferieure) / (distanceSuperieure - distanceInferieure) * (pourcentageDistanceSuperieure - pourcentageDistanceInferieure)).toFixed(2)} = ${pourcentageFinal.toFixed(2)} %\n`;
-    
-    // Appliquer la majoration pour briques de verre/verre armé si nécessaire
-    if (glassBrick) {
-        const pourcentageFinalAvecMajoration = Math.min(100, pourcentageFinal * 2);
-        output += `\nAvec majoration pour briques de verre/verre armé (x2): ${pourcentageFinalAvecMajoration.toFixed(2)}%\n`;
-    }
-    
-    return output;
-}
-
-// Fonction pour formater les calculs d'interpolation pour 9.10.14 - MISE À JOUR pour inclure l'extrapolation
-function format91014CalculationSteps() {
+// Fonction pour formater les calculs d'interpolation pour 9.10.15 - MISE À JOUR pour inclure l'extrapolation
+function format91015CalculationSteps() {
+    // Adaptation de la fonction format91014CalculationSteps pour 9.10.15
     // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
@@ -2866,71 +2530,59 @@ function format91014CalculationSteps() {
     let limitingDistance, surface;
     
     if (isImperial) {
-        limitingDistance = imperialToMetric(document.getElementById('distance_91014_imperial').value);
-        surface = imperialToMetric(document.getElementById('surface_91014_imperial').value, "area");
+        limitingDistance = imperialToMetric(document.getElementById('distance_91015_imperial').value);
+        surface = imperialToMetric(document.getElementById('surface_91015_imperial').value, "area");
     } else {
-        limitingDistance = parseFloat(document.getElementById('distance_91014').value);
-        surface = parseFloat(document.getElementById('surface_91014').value);
+        limitingDistance = parseFloat(document.getElementById('distance_91015').value);
+        surface = parseFloat(document.getElementById('surface_91015').value);
     }
     
-    const usage = document.getElementById('usage_91014').value;
-    const buildingType = document.getElementById('building_type_91014').value;
-    const sprinklersOption = document.getElementById('sprinklers_91014').value;
+    const sprinklersOption = document.getElementById('sprinklers_91015').value;
     const avecGicleurs = sprinklersOption === "complete";
-    const glassBrick = document.getElementById('glass_brick_91014').checked;
-    const response = document.getElementById('response_91014').checked;
-    
-    // Si c'est un garage, ajouter une note spéciale
-    if (buildingType === "garage") {
-        return "Selon les paragraphes 9.10.14.4.(10-12) et 9.10.14.5.(4-5), les garages et bâtiments secondaires " +
-               "qui ne desservent qu'un seul logement peuvent bénéficier d'exemptions importantes pour les baies vitrées " +
-               "et les exigences de construction.";
-    }
+    const glassBrick = document.getElementById('glass_brick_91015').checked;
+    const response = document.getElementById('response_91015').checked;
     
     // Ajustement pour le délai d'intervention
     const adjustedDistance = response ? limitingDistance / 2 : limitingDistance;
     
-    // Récupérer le tableau approprié
-    const tableau = {
-        surfaces: tableau91014[usage].surfaces,
-        distances: tableau91014[usage].distances
-    };
-    
     // Préparer le texte formaté
-    let output = "Selon les données du Tableau 9.10.14.4.-A:\n\n";
+    let output = "Selon les données du Tableau 9.10.15.4:\n\n";
     
     // Paramètres
     output += "Paramètres indiqués:\n";
     output += `DL: ${adjustedDistance.toFixed(2)}m\n`;
-    output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
+    output += `Surface de la FDR: ${surface.toFixed(2)}m²\n`;
+    output += `Protection par gicleurs: ${avecGicleurs ? "Oui" : "Non"}\n`;
+    output += `Majoration pour briques de verre/verre armé: ${glassBrick ? "Oui" : "Non"}\n\n`;
+    
+    // Récupérer les surfaces disponibles et la première DL non-nulle
+    const surfacesDisponibles = Object.keys(tableau91015.surfaces).filter(s => s !== ">100").map(Number);
+    const premiereDLNonNulle = tableau91015.distances.find(d => d > 0);
     
     // Cas spécial: surface de façade < surface minimale mais DL >= DL minimale non-nulle
-    const surfacesDisponibles = Object.keys(tableau.surfaces).filter(s => s !== ">100").map(Number);
-    const premiereDLNonNulle = tableau.distances.find(d => d > 0);
-    
     if (surface < surfacesDisponibles[0] && adjustedDistance >= premiereDLNonNulle) {
         output += `Cas particulier: Surface < ${surfacesDisponibles[0]}m² et DL ≥ ${premiereDLNonNulle}m\n`;
         output += "Pour ce cas de figure, la méthode d'extrapolation en trois étapes est utilisée:\n\n";
         
-        // Étape 1: Interpolation selon la 1ère FDR disponible
+        // Étape 1: Interpolation selon la 1ère surface de référence du tableau
         output += `Étape 1: Interpolation selon la 1ère surface de référence (${surfacesDisponibles[0]}m²):\n`;
         
         // Trouver les distances encadrantes
-        const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau.distances);
+        const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau91015.distances);
         const distanceInferieure = distancesEncadrantes.inferieure;
         const distanceSuperieure = distancesEncadrantes.superieure;
-        const distanceInferieureIndex = tableau.distances.indexOf(distanceInferieure);
-        const distanceSuperieureIndex = tableau.distances.indexOf(distanceSuperieure);
+        const distanceInferieureIndex = tableau91015.distances.indexOf(distanceInferieure);
+        const distanceSuperieureIndex = tableau91015.distances.indexOf(distanceSuperieure);
         
         let pourcentageEtape1;
         
         if (distanceInferieure === distanceSuperieure) {
-            pourcentageEtape1 = tableau.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
+            pourcentageEtape1 = tableau91015.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
             output += `À DL = ${distanceInferieure}m: ${pourcentageEtape1}%\n\n`;
         } else {
             // Interpolation selon la distance pour la 1ère surface
-            const pourcentageDistInf = tableau.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
-            const pourcentageDistSup = tableau.surfaces[surfacesDisponibles[0].toString()][distanceSuperieureIndex];
+            const pourcentageDistInf = tableau91015.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
+            const pourcentageDistSup = tableau91015.surfaces[surfacesDisponibles[0].toString()][distanceSuperieureIndex];
             
             output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
             output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
@@ -2942,18 +2594,18 @@ function format91014CalculationSteps() {
             output += `${pourcentageDistInf} + (${adjustedDistance.toFixed(2)} - ${distanceInferieure}) / (${distanceSuperieure} - ${distanceInferieure}) × (${pourcentageDistSup} - ${pourcentageDistInf}) = ${pourcentageEtape1.toFixed(2)}%\n\n`;
         }
         
-        // Étape 2: Interpolation selon la 2ème FDR disponible
+        // Étape 2: Interpolation selon la 2ème surface de référence
         output += `Étape 2: Interpolation selon la 2ème surface de référence (${surfacesDisponibles[1]}m²):\n`;
         
         let pourcentageEtape2;
         
         if (distanceInferieure === distanceSuperieure) {
-            pourcentageEtape2 = tableau.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
+            pourcentageEtape2 = tableau91015.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
             output += `À DL = ${distanceInferieure}m: ${pourcentageEtape2}%\n\n`;
         } else {
             // Interpolation selon la distance pour la 2ème surface
-            const pourcentageDistInf = tableau.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
-            const pourcentageDistSup = tableau.surfaces[surfacesDisponibles[1].toString()][distanceSuperieureIndex];
+            const pourcentageDistInf = tableau91015.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
+            const pourcentageDistSup = tableau91015.surfaces[surfacesDisponibles[1].toString()][distanceSuperieureIndex];
             
             output += `À DL = ${distanceInferieure}m: ${pourcentageDistInf}%\n`;
             output += `À DL = ${distanceSuperieure}m: ${pourcentageDistSup}%\n`;
@@ -2984,22 +2636,17 @@ function format91014CalculationSteps() {
         return output;
     }
     
-    // Vérifier si extrapolation nécessaire
+    // Autres cas: utiliser la même logique que pour 9.10.14
     const extrapolationSurface = surface < surfacesDisponibles[0];
     const extrapolationDistance = adjustedDistance > 0 && adjustedDistance < premiereDLNonNulle;
     
     // Cas particulier: Formule du carré de la distance
     if (surface > surfacesDisponibles[surfacesDisponibles.length - 1] && adjustedDistance >= 1.2) {
-        if (usage === "habitation") {
-            output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule du carré de la distance:\n`;
-            output += `Pourcentage = (DL)² = (${adjustedDistance.toFixed(2)})² = ${Math.pow(adjustedDistance, 2).toFixed(2)}%\n`;
-        } else { // commercial
-            output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule de la moitié du carré de la distance:\n`;
-            output += `Pourcentage = 0,5 × (DL)² = 0,5 × (${adjustedDistance.toFixed(2)})² = ${(0.5 * Math.pow(adjustedDistance, 2)).toFixed(2)}%\n`;
-        }
+        output += `Surface > ${surfacesDisponibles[surfacesDisponibles.length - 1]}m² et DL ≥ 1,2m: formule du carré de la distance:\n`;
+        output += `Pourcentage = (DL)² = (${adjustedDistance.toFixed(2)})² = ${Math.pow(adjustedDistance, 2).toFixed(2)}%\n`;
         
         // Appliquer la majoration si nécessaire
-        let resultat = usage === "habitation" ? Math.pow(adjustedDistance, 2) : 0.5 * Math.pow(adjustedDistance, 2);
+        let resultat = Math.pow(adjustedDistance, 2);
         if (avecGicleurs || glassBrick) {
             output += `\nAvec majoration ${avecGicleurs && glassBrick ? "pour gicleurs et briques de verre/verre armé" : 
                        avecGicleurs ? "pour gicleurs" : "pour briques de verre/verre armé"} (x2): ${Math.min(100, resultat * 2).toFixed(2)}%\n`;
@@ -3028,7 +2675,7 @@ function format91014CalculationSteps() {
             }
         }
         
-        const pourcentageDistanceMin = tableau.surfaces[keyInf][1]; // Index 1 = 1.2m
+        const pourcentageDistanceMin = tableau91015.surfaces[keyInf][1]; // Index 1 = 1.2m
         output += `- À distance = 1,2m: pourcentage = ${pourcentageDistanceMin}% (pour surface de ${keyInf}m²)\n`;
         
         // Calculer l'extrapolation
@@ -3050,9 +2697,9 @@ function format91014CalculationSteps() {
         // Cas d'extrapolation pour surface uniquement
         output += "Extrapolation pour surface de façade inférieure à 30m²:\n";
         
-        const distanceInferieureIndex = tableau.distances.indexOf(Math.max(...tableau.distances.filter(d => d <= adjustedDistance)));
-        const pourcentageSurfMin = tableau.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
-        const pourcentageSurfSupMin = tableau.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
+        const distanceInferieureIndex = tableau91015.distances.indexOf(Math.max(...tableau91015.distances.filter(d => d <= adjustedDistance)));
+        const pourcentageSurfMin = tableau91015.surfaces[surfacesDisponibles[0].toString()][distanceInferieureIndex];
+        const pourcentageSurfSupMin = tableau91015.surfaces[surfacesDisponibles[1].toString()][distanceInferieureIndex];
             
         output += `- Pour surface = ${surfacesDisponibles[0]}m²: pourcentage = ${pourcentageSurfMin}%\n`;
         output += `- Pour surface = ${surfacesDisponibles[1]}m²: pourcentage = ${pourcentageSurfSupMin}%\n`;
@@ -3081,7 +2728,7 @@ function format91014CalculationSteps() {
         output += "1) Extrapolation pour la plus petite surface du tableau (30m²) avec distance entre 0 et 1,2m:\n";
         output += `- À distance = 0m: pourcentage = 0% (toujours)\n`;
         
-        const pourcentageDistMinSurfMin = tableau.surfaces[surfacesDisponibles[0].toString()][1]; // Index 1 = 1.2m
+        const pourcentageDistMinSurfMin = tableau91015.surfaces[surfacesDisponibles[0].toString()][1]; // Index 1 = 1.2m
         output += `- À distance = 1,2m: pourcentage = ${pourcentageDistMinSurfMin}% (pour surface de ${surfacesDisponibles[0]}m²)\n`;
         
         // Extrapolation distance pour surface min
@@ -3092,7 +2739,7 @@ function format91014CalculationSteps() {
         
         output += "2) Extrapolation pour la surface réelle à partir du résultat précédent:\n";
         
-        const pourcentageSurfSupMin = tableau.surfaces[surfacesDisponibles[1].toString()][1]; // 1.2m pour deuxième surface du tableau
+        const pourcentageSurfSupMin = tableau91015.surfaces[surfacesDisponibles[1].toString()][1]; // 1.2m pour deuxième surface du tableau
             
         // Extrapolation distance pour surface sup min
         const pente2 = pourcentageSurfSupMin / 1.2;
@@ -3120,11 +2767,11 @@ function format91014CalculationSteps() {
     }
     
     // Trouver les distances encadrantes
-    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau.distances);
+    const distancesEncadrantes = trouverValeurEncadrantes(adjustedDistance, tableau91015.distances);
     const distanceInferieure = distancesEncadrantes.inferieure;
     const distanceSuperieure = distancesEncadrantes.superieure;
-    const distanceInferieureIndex = tableau.distances.indexOf(distanceInferieure);
-    const distanceSuperieureIndex = tableau.distances.indexOf(distanceSuperieure);
+    const distanceInferieureIndex = tableau91015.distances.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = tableau91015.distances.indexOf(distanceSuperieure);
     
     // Trouver les surfaces encadrantes
     let surfaceInferieure, surfaceSuperieure;
@@ -3155,11 +2802,11 @@ function format91014CalculationSteps() {
     output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
     
     if (keyInf === keySup) {
-        pourcentageDistanceInferieure = tableau.surfaces[keyInf][distanceInferieureIndex];
+        pourcentageDistanceInferieure = tableau91015.surfaces[keyInf][distanceInferieureIndex];
         output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceInferieure}%\n\n`;
     } else {
-        const pourcentageDistInfSurfInf = tableau.surfaces[keyInf][distanceInferieureIndex];
-        const pourcentageDistInfSurfSup = tableau.surfaces[keySup][distanceInferieureIndex];
+        const pourcentageDistInfSurfInf = tableau91015.surfaces[keyInf][distanceInferieureIndex];
+        const pourcentageDistInfSurfSup = tableau91015.surfaces[keySup][distanceInferieureIndex];
         
         output += `À DL de ${distanceInferieure}m et surface max. de ${keyInf}m²: ${pourcentageDistInfSurfInf}%\n`;
         output += `À DL de ${distanceInferieure}m et surface max. de ${keySup === ">100" ? "plus de 100" : keySup}m²: ${pourcentageDistInfSurfSup}%\n`;
@@ -3192,11 +2839,11 @@ function format91014CalculationSteps() {
     output += "Étape 2: Interpolation selon la DL encadrante supérieure (" + distanceSuperieure + "m):\n";
     
     if (keyInf === keySup) {
-        pourcentageDistanceSuperieure = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        pourcentageDistanceSuperieure = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
         output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistanceSuperieure}%\n\n`;
     } else {
-        const pourcentageDistSupSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
-        const pourcentageDistSupSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
+        const pourcentageDistSupSurfInf = tableau91015.surfaces[keyInf][distanceSuperieureIndex];
+        const pourcentageDistSupSurfSup = tableau91015.surfaces[keySup][distanceSuperieureIndex];
         
         output += `À DL de ${distanceSuperieure}m et surface max. de ${keyInf}m²: ${pourcentageDistSupSurfInf}%\n`;
         output += `À DL de ${distanceSuperieure}m et surface max. de ${keySup === ">100" ? "plus de 100" : keySup}m²: ${pourcentageDistSupSurfSup}%\n`;
