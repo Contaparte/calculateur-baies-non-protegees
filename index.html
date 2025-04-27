@@ -36,11 +36,18 @@
         /* Modification pour s'assurer que les tooltips restent visibles */
         .unit-label .tooltip { display: inline-block !important; }
         /* Ajout pour que les inputs impériaux aient des flèches d'incrément */
-        input[type="text"].imperial-input::-webkit-inner-spin-button,
-        input[type="text"].imperial-input::-webkit-outer-spin-button {
-            opacity: 1;
-            height: auto;
+        input.imperial-input {
+            appearance: textfield;
         }
+
+input.imperial-input::-webkit-inner-spin-button,
+input.imperial-input::-webkit-outer-spin-button {
+    opacity: 1 !important;
+    height: auto !important;
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    margin-left: 4px;
+}
     </style>
 </head>
 <body>
