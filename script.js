@@ -2532,8 +2532,8 @@ function openTab(event, tabName) {
     event.currentTarget.classList.add("active");
 }
 
-// Fonction pour formater les calculs d'interpolation pour le CNB selon le format demandé
-function formatCNBCalculationSteps() {
+// Fonction pour formater les calculs d'interpolation pour le  selon le format demandé
+function formatCalculationSteps() {
     // Déterminer le système de mesure et récupérer les valeurs
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
