@@ -1807,62 +1807,6 @@ function calculateCNB() {
     document.getElementById('copy_cnb').style.display = 'inline-block';
 }
 
-function determineConstructionRequirements(percentage, usage, constructionType, revetementType) {
-    // Déterminer le degré de résistance au feu et les exigences de construction selon 3.2.3.7
-    let degre = "";
-    let constructionExigence = "";
-    let revetementExigence = "";
-    
-    if (percentage <= 10) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            degre = "1 h";
-        } else { // groupes_E_F1_F2
-            degre = "2 h";
-        }
-        constructionExigence = "Incombustible";
-        revetementExigence = "Incombustible";
-    } else if (percentage <= 25) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            degre = "1 h";
-        } else { // groupes_E_F1_F2
-            degre = "2 h";
-        }
-        constructionExigence = "Combustible ou incombustible";
-        revetementExigence = "Incombustible";
-     } else if (percentage <= 50) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            degre = "45 min";
-        } else { // groupes_E_F1_F2
-            degre = "1 h";
-        }
-        constructionExigence = "Combustible ou incombustible";
-        revetementExigence = "Incombustible";
-    } else if (percentage < 100) {
-        if (usage === "groupes_A_B3_C_D_F3") {
-            degre = "45 min";
-        } else { // groupes_E_F1_F2
-            degre = "1 h";
-        }
-        constructionExigence = "Combustible ou incombustible";
-        revetementExigence = "Combustible ou incombustible";
-    }
-    
-    // Si la construction actuelle n'est pas conforme, ajouter un avertissement
-    let warningMsg = "";
-    if ((constructionExigence === "Incombustible" && constructionType === "combustible") ||
-        (revetementExigence === "Incombustible" && revetementType === "combustible")) {
-        warningMsg = "<br>⚠️ <strong>Attention :</strong> La construction ou le revêtement sélectionné ne respecte pas les exigences minimales du tableau 3.2.3.7.";
-    }
-    
-    return `
-        <br><strong>Exigences de construction (tableau 3.2.3.7):</strong><br>
-        Pour ${percentage.toFixed(2)}% de baies non protégées:<br>
-        - Degré de résistance au feu minimal: ${degre}<br>
-        - Type de construction exigé: ${constructionExigence}<br>
-        - Type de revêtement exigé: ${revetementExigence}${warningMsg}
-    `;
-}
-
 function calculate91014() {
     // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
