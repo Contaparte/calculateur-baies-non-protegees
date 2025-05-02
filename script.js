@@ -2593,9 +2593,6 @@ function formatCNBCalculationSteps() {
         }
     }
     
-    output += "FDR = façade de rayonnement\n";
-    output += "DL = distance limitative\n";
-    output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${facadeSurface.toFixed(2)}m²\n`;
     
