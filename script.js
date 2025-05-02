@@ -3109,7 +3109,6 @@ function format91014CalculationSteps() {
     
     // Préparer le texte formaté
     let output = "Tableau 9.10.14.4.-A:\n";
-    output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
     
@@ -3503,7 +3502,6 @@ function format91015CalculationSteps() {
     
     // Préparer le texte formaté
     let output = "Tableau 9.10.15.4.:\n";
-    output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${surface.toFixed(2)}m²\n\n`;
     
