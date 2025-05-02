@@ -811,7 +811,7 @@ function determinerRapportLH(longueur, hauteur) {
     return "> 10:1";
 }
 
-// Fonction pour trouver les valeurs encadrantes dans un tableau - MODIFIÉE pour extrapolation
+// Fonction pour trouver les valeurs encadrantes dans un tableau
 function trouverValeurEncadrantes(valeur, tableau) {
     // Cas particulier: valeur exactement 0
     if (valeur === 0) {
@@ -832,8 +832,7 @@ function trouverValeurEncadrantes(valeur, tableau) {
     // Si la valeur est inférieure au premier élément (et non nulle)
     if (valeur <= tableau[0]) {
         return { inferieure: tableau[0], superieure: tableau[0], extrapolation: false };
-
-   }
+    }
     
     // Si la valeur est supérieure au dernier élément
     if (valeur >= tableau[tableau.length - 1]) {
@@ -851,100 +850,29 @@ function trouverValeurEncadrantes(valeur, tableau) {
     return { inferieure: tableau[0], superieure: tableau[1], extrapolation: false };
 }
 
-// Fonction pour l'extrapolation des valeurs entre 0 et la première valeur non-nulle
-function extrapolerPourcentage(pourcentage0, pourcentageMin, distanceMin, distanceExacte) {
-    // Avec distanceExacte entre 0 et distanceMin
-    // Pourcentage à 0 est généralement 0 dans les tableaux
-    const pente = (pourcentageMin - pourcentage0) / distanceMin;
-    const pourcentageExtrapole = pourcentage0 + (pente * distanceExacte);
-    return Math.max(0, pourcentageExtrapole); // Ne jamais retourner un pourcentage négatif
-}
-
-// Fonction pour l'extrapolation des valeurs pour des surfaces inférieures au minimum du tableau
-function extrapolerPourcentageSurface(pourcentageSurfaceMin, pourcentageSurfaceSupMin, surfaceMin, surfaceExacte) {
-    if (surfaceExacte >= surfaceMin) return pourcentageSurfaceMin;
+// Fonction pour calculer le pourcentage de baies non protégées selon CNB
+function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, length, height, avecGicleurs, glassBrick) {
+    // Déterminer le rapport L/H
+    const rapportLH = determinerRapportLH(length, height);
     
-    // Tendance observée: plus la surface est petite, plus le pourcentage permis est élevé
-    // On utilise une extrapolation linéaire inverse
-    const ratio = surfaceMin / surfaceExacte;
-    const facteur = Math.sqrt(ratio); // Facteur modérateur pour éviter une croissance trop rapide
+    // Calculer le pourcentage de base
+    let pourcentage = interpolationCNB(
+        usage, 
+        distanceLimitative, 
+        surfaceFacade, 
+        rapportLH, 
+        avecGicleurs
+    );
     
-    // En se basant sur la différence entre les pourcentages aux deux premières surfaces du tableau
-    const tendance = (pourcentageSurfaceMin - pourcentageSurfaceSupMin) * (facteur - 1);
-    return Math.min(100, pourcentageSurfaceMin + tendance); // Limitée à 100%
-}
-
-// Nouvelle fonction pour le cas spécial: FDR petite et DL >= DL minimale
-function extrapolerFDRPetiteDLNormale(tableauUtilise, distanceLimitative, surfaceFacade, 
-                                      surfaceMin, surfaceSupMin, distancesUtilisees, 
-                                      rapportLH, avecGicleurs) {
-    // Étape 1: Interpolation selon la 1ère FDR disponible
-    let pourcentageEtape1;
-    // Trouver les distances encadrantes
-    const distancesEncadrantes = trouverValeurEncadrantes(distanceLimitative, distancesUtilisees);
-    const distanceInferieure = distancesEncadrantes.inferieure;
-    const distanceSuperieure = distancesEncadrantes.superieure;
-    const distanceInferieureIndex = distancesUtilisees.indexOf(distanceInferieure);
-    const distanceSuperieureIndex = distancesUtilisees.indexOf(distanceSuperieure);
-    
-    if (distanceInferieure === distanceSuperieure) {
-        // Pas besoin d'interpolation pour la distance
-        if (!avecGicleurs) {
-            pourcentageEtape1 = tableauUtilise[surfaceMin][rapportLH][distanceInferieureIndex];
-        } else {
-            pourcentageEtape1 = tableauUtilise[surfaceMin][distanceInferieureIndex];
-        }
-    } else {
-        // Interpolation selon la distance pour la 1ère surface
-        let pourcentageDistInf, pourcentageDistSup;
-        if (!avecGicleurs) {
-            pourcentageDistInf = tableauUtilise[surfaceMin][rapportLH][distanceInferieureIndex];
-            pourcentageDistSup = tableauUtilise[surfaceMin][rapportLH][distanceSuperieureIndex];
-        } else {
-            pourcentageDistInf = tableauUtilise[surfaceMin][distanceInferieureIndex];
-            pourcentageDistSup = tableauUtilise[surfaceMin][distanceSuperieureIndex];
-        }
-        
-        pourcentageEtape1 = pourcentageDistInf + 
-            ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-            (pourcentageDistSup - pourcentageDistInf);
+    // Appliquer la majoration pour briques de verre/verre armé si nécessaire
+    if (glassBrick) {
+        pourcentage = Math.min(100, pourcentage * 2);
     }
     
-    // Étape 2: Interpolation selon la 2ème FDR disponible
-    let pourcentageEtape2;
-    
-    if (distanceInferieure === distanceSuperieure) {
-        // Pas besoin d'interpolation pour la distance
-        if (!avecGicleurs) {
-            pourcentageEtape2 = tableauUtilise[surfaceSupMin][rapportLH][distanceInferieureIndex];
-        } else {
-            pourcentageEtape2 = tableauUtilise[surfaceSupMin][distanceInferieureIndex];
-        }
-    } else {
-        // Interpolation selon la distance pour la 2ème surface
-        let pourcentageDistInf, pourcentageDistSup;
-        if (!avecGicleurs) {
-            pourcentageDistInf = tableauUtilise[surfaceSupMin][rapportLH][distanceInferieureIndex];
-            pourcentageDistSup = tableauUtilise[surfaceSupMin][rapportLH][distanceSuperieureIndex];
-        } else {
-            pourcentageDistInf = tableauUtilise[surfaceSupMin][distanceInferieureIndex];
-            pourcentageDistSup = tableauUtilise[surfaceSupMin][distanceSuperieureIndex];
-        }
-        
-        pourcentageEtape2 = pourcentageDistInf + 
-            ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
-            (pourcentageDistSup - pourcentageDistInf);
-    }
-    
-    // Étape 3: Extrapolation selon les résultats obtenus des deux interpolations précédentes
-    const pourcentageFinal = pourcentageEtape2 + 
-        ((surfaceFacade - surfaceSupMin) / (surfaceMin - surfaceSupMin)) * 
-        (pourcentageEtape1 - pourcentageEtape2);
-    
-    return Math.max(0, Math.min(100, pourcentageFinal));
+    return pourcentage;
 }
 
-// Fonction d'interpolation principale MODIFIÉE avec extrapolation
+// Fonction d'interpolation principale pour CNB
 function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, avecGicleurs) {
     // Déterminer les tableaux à utiliser en fonction de l'usage et de la présence de gicleurs
     let tableauUtilise, distancesUtilisees, surfacesUtilisees;
@@ -989,7 +917,7 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
         );
     }
     
-    // ÉTAPE 0: Trouver les bornes d'encadrement pour la distance limitative
+    // Trouver les bornes d'encadrement pour la distance limitative
     const distancesEncadrantes = trouverValeurEncadrantes(distanceLimitative, distancesUtilisees);
     const distanceInferieure = distancesEncadrantes.inferieure;
     const distanceSuperieure = distancesEncadrantes.superieure;
@@ -1095,14 +1023,13 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
                distanceSuperieureIndex, rapportLH, avecGicleurs);
     }
     
-    // ÉTAPE 1: Interpolation selon la DL inférieure - MODIFIÉE
+    // ÉTAPE 1: Interpolation selon la DL inférieure
     let pourcentageDistanceInferieure;
     
     if (!avecGicleurs) {
         const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][rapportLH][distanceInferieureIndex];
         const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][rapportLH][distanceInferieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
         pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
@@ -1110,20 +1037,18 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
         const pourcentageSurfInfDistInf = tableauUtilise[surfaceInferieure][distanceInferieureIndex];
         const pourcentageSurfSupDistInf = tableauUtilise[surfaceSuperieure][distanceInferieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
         pourcentageDistanceInferieure = pourcentageSurfSupDistInf + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageSurfInfDistInf - pourcentageSurfSupDistInf);
     }
     
-    // ÉTAPE 2: Interpolation selon la DL supérieure - MODIFIÉE
+    // ÉTAPE 2: Interpolation selon la DL supérieure
     let pourcentageDistanceSuperieure;
     
     if (!avecGicleurs) {
         const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][rapportLH][distanceSuperieureIndex];
         const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][rapportLH][distanceSuperieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
         pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
@@ -1131,7 +1056,6 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
         const pourcentageSurfInfDistSup = tableauUtilise[surfaceInferieure][distanceSuperieureIndex];
         const pourcentageSurfSupDistSup = tableauUtilise[surfaceSuperieure][distanceSuperieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
         pourcentageDistanceSuperieure = pourcentageSurfSupDistSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageSurfInfDistSup - pourcentageSurfSupDistSup);
@@ -1143,6 +1067,99 @@ function interpolationCNB(usage, distanceLimitative, surfaceFacade, rapportLH, a
         (pourcentageDistanceSuperieure - pourcentageDistanceInferieure);
     
     // Limiter le pourcentage final entre 0 et 100
+    return Math.max(0, Math.min(100, pourcentageFinal));
+}
+
+// Fonction pour l'extrapolation des valeurs entre 0 et la première valeur non-nulle
+function extrapolerPourcentage(pourcentage0, pourcentageMin, distanceMin, distanceExacte) {
+    // Avec distanceExacte entre 0 et distanceMin
+    // Pourcentage à 0 est généralement 0 dans les tableaux
+    const pente = (pourcentageMin - pourcentage0) / distanceMin;
+    const pourcentageExtrapole = pourcentage0 + (pente * distanceExacte);
+    return Math.max(0, pourcentageExtrapole); // Ne jamais retourner un pourcentage négatif
+}
+
+// Fonction pour l'extrapolation des valeurs pour des surfaces inférieures au minimum du tableau
+function extrapolerPourcentageSurface(pourcentageSurfaceMin, pourcentageSurfaceSupMin, surfaceMin, surfaceExacte) {
+    if (surfaceExacte >= surfaceMin) return pourcentageSurfaceMin;
+    
+    // Tendance observée: plus la surface est petite, plus le pourcentage permis est élevé
+    // On utilise une extrapolation linéaire inverse
+    const ratio = surfaceMin / surfaceExacte;
+    const facteur = Math.sqrt(ratio); // Facteur modérateur pour éviter une croissance trop rapide
+    
+    // En se basant sur la différence entre les pourcentages aux deux premières surfaces du tableau
+    const tendance = (pourcentageSurfaceMin - pourcentageSurfaceSupMin) * (facteur - 1);
+    return Math.min(100, pourcentageSurfaceMin + tendance); // Limitée à 100%
+}
+
+// Fonction pour le cas spécial: FDR petite et DL >= DL minimale
+function extrapolerFDRPetiteDLNormale(tableauUtilise, distanceLimitative, surfaceFacade, 
+                                      surfaceMin, surfaceSupMin, distancesUtilisees, 
+                                      rapportLH, avecGicleurs) {
+    // Étape 1: Interpolation selon la 1ère FDR disponible
+    let pourcentageEtape1;
+    // Trouver les distances encadrantes
+    const distancesEncadrantes = trouverValeurEncadrantes(distanceLimitative, distancesUtilisees);
+    const distanceInferieure = distancesEncadrantes.inferieure;
+    const distanceSuperieure = distancesEncadrantes.superieure;
+    const distanceInferieureIndex = distancesUtilisees.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = distancesUtilisees.indexOf(distanceSuperieure);
+    
+    if (distanceInferieure === distanceSuperieure) {
+        // Pas besoin d'interpolation pour la distance
+        if (!avecGicleurs) {
+            pourcentageEtape1 = tableauUtilise[surfaceMin][rapportLH][distanceInferieureIndex];
+        } else {
+            pourcentageEtape1 = tableauUtilise[surfaceMin][distanceInferieureIndex];
+        }
+    } else {
+        // Interpolation selon la distance pour la 1ère surface
+        let pourcentageDistInf, pourcentageDistSup;
+        if (!avecGicleurs) {
+            pourcentageDistInf = tableauUtilise[surfaceMin][rapportLH][distanceInferieureIndex];
+            pourcentageDistSup = tableauUtilise[surfaceMin][rapportLH][distanceSuperieureIndex];
+        } else {
+            pourcentageDistInf = tableauUtilise[surfaceMin][distanceInferieureIndex];
+            pourcentageDistSup = tableauUtilise[surfaceMin][distanceSuperieureIndex];
+        }
+        
+        pourcentageEtape1 = pourcentageDistInf + 
+            ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+            (pourcentageDistSup - pourcentageDistInf);
+    }
+    
+    // Étape 2: Interpolation selon la 2ème FDR disponible
+    let pourcentageEtape2;
+    
+    if (distanceInferieure === distanceSuperieure) {
+        // Pas besoin d'interpolation pour la distance
+        if (!avecGicleurs) {
+            pourcentageEtape2 = tableauUtilise[surfaceSupMin][rapportLH][distanceInferieureIndex];
+        } else {
+            pourcentageEtape2 = tableauUtilise[surfaceSupMin][distanceInferieureIndex];
+        }
+    } else {
+        // Interpolation selon la distance pour la 2ème surface
+        let pourcentageDistInf, pourcentageDistSup;
+        if (!avecGicleurs) {
+            pourcentageDistInf = tableauUtilise[surfaceSupMin][rapportLH][distanceInferieureIndex];
+            pourcentageDistSup = tableauUtilise[surfaceSupMin][rapportLH][distanceSuperieureIndex];
+        } else {
+            pourcentageDistInf = tableauUtilise[surfaceSupMin][distanceInferieureIndex];
+            pourcentageDistSup = tableauUtilise[surfaceSupMin][distanceSuperieureIndex];
+        }
+        
+        pourcentageEtape2 = pourcentageDistInf + 
+            ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+            (pourcentageDistSup - pourcentageDistInf);
+    }
+    
+    // Étape 3: Extrapolation selon les résultats obtenus des deux interpolations précédentes
+    const pourcentageFinal = pourcentageEtape2 + 
+        ((surfaceFacade - surfaceSupMin) / (surfaceMin - surfaceSupMin)) * 
+        (pourcentageEtape1 - pourcentageEtape2);
+    
     return Math.max(0, Math.min(100, pourcentageFinal));
 }
 
@@ -1186,7 +1203,7 @@ function interpolationSurfaceUniquement(tableauUtilise, surfaceFacade, surfaceIn
         return pourcentageSurfInf;
     }
     
-    // Interpolation linéaire entre les surfaces - CORRIGÉE selon méthodologie
+    // Interpolation linéaire entre les surfaces
     return pourcentageSurfSup + 
         ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
         (pourcentageSurfInf - pourcentageSurfSup);
@@ -1233,7 +1250,7 @@ function interpolationDistanceUniquement(tableauUtilise, distanceLimitative, dis
         return pourcentageDistInf;
     }
     
-    // Interpolation linéaire entre les distances - CORRIGÉE selon méthodologie
+    // Interpolation linéaire entre les distances
     return pourcentageDistInf + 
         ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
         (pourcentageDistSup - pourcentageDistInf);
@@ -1292,7 +1309,7 @@ function extrapolerFDRPetiteDLNormale910x(tableau, distanceLimitative, surfaceFa
     return Math.max(0, Math.min(100, pourcentageFinal));
 }
 
-// Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4 - MODIFIÉE avec extrapolation
+// Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4
 function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     const distances = tableau.distances;
     
@@ -1428,7 +1445,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         return Math.max(0, Math.min(100, pourcentageFinal));
     }
     
-    // ÉTAPE 1: Interpolation selon la DL inférieure - MODIFIÉE
+    // ÉTAPE 1: Interpolation selon la DL inférieure
     let pourcentageDistanceInferieure;
     
     if (keyInf === keySup) {
@@ -1437,7 +1454,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         const pourcentageDistInfSurfInf = tableau.surfaces[keyInf][distanceInferieureIndex];
         const pourcentageDistInfSurfSup = tableau.surfaces[keySup][distanceInferieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
+        // Interpolation selon la méthodologie de référence
         pourcentageDistanceInferieure = pourcentageDistInfSurfSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
@@ -1455,7 +1472,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         return resultat;
     }
     
-    // ÉTAPE 2: Interpolation selon la DL supérieure - MODIFIÉE
+    // ÉTAPE 2: Interpolation selon la DL supérieure
     let pourcentageDistanceSuperieure;
     
     if (keyInf === keySup) {
@@ -1464,7 +1481,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         const pourcentageDistSupSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
         const pourcentageDistSupSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
         
-        // Formule MODIFIÉE selon la méthodologie de référence
+        // Interpolation selon la méthodologie de référence
         pourcentageDistanceSuperieure = pourcentageDistSupSurfSup + 
             ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
             (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup);
@@ -1494,29 +1511,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
     return Math.max(0, Math.min(100, pourcentageFinal));
 }
 
-// Fonction pour calculer le pourcentage de baies non protégées selon CNB
-function calculerPourcentageCNB(usage, distanceLimitative, surfaceFacade, length, height, avecGicleurs, glassBrick) {
-    // Déterminer le rapport L/H
-    const rapportLH = determinerRapportLH(length, height);
-    
-    // Calculer le pourcentage de base
-    let pourcentage = interpolationCNB(
-        usage, 
-        distanceLimitative, 
-        surfaceFacade, 
-        rapportLH, 
-        avecGicleurs
-    );
-    
-    // Appliquer la majoration pour briques de verre/verre armé si nécessaire
-    if (glassBrick) {
-        pourcentage = Math.min(100, pourcentage * 2);
-    }
-    
-    return pourcentage;
-}
-
-// Version spécifique pour 9.10.14 - MODIFIÉE pour utiliser la fonction calculerPourcentage910x corrigée
+// Version spécifique pour 9.10.14
 function calculerPourcentage91014(usage, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     const tableau = {
         usages: usage,
@@ -1527,69 +1522,12 @@ function calculerPourcentage91014(usage, distanceLimitative, surfaceFacade, avec
     return calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration);
 }
 
-// Version spécifique pour 9.10.15 - MODIFIÉE pour utiliser la fonction calculerPourcentage910x corrigée
+// Version spécifique pour 9.10.15
 function calculerPourcentage91015(distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     return calculerPourcentage910x(tableau91015, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration);
 }
 
-// Fonction pour déterminer les exigences de construction selon 3.2.3.7
-function determineConstructionRequirements(pourcentage, usage, constructionType, revetementType) {
-    let requirements = "<br><strong>Exigences de construction (selon 3.2.3.7):</strong><br>";
-    
-    if (usage === "groupes_A_B3_C_D_F3") {
-        if (pourcentage <= 10) {
-            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
-            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else if (pourcentage <= 25) {
-            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else if (pourcentage <= 50) {
-            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else {
-            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
-        }
-    } else { // groupes_E_F1_F2
-        if (pourcentage <= 10) {
-            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
-            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else if (pourcentage <= 25) {
-            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else if (pourcentage <= 50) {
-            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
-        } else {
-            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
-            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
-            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
-        }
-    }
-    
-    requirements += "<br>Votre construction: ";
-    if ((pourcentage <= 50 && revetementType === "combustible") || 
-        (pourcentage <= 10 && constructionType === "combustible")) {
-        if (pourcentage <= 10 && constructionType === "combustible") {
-            requirements += "<span style='color: red;'>⚠️ La construction combustible ne respecte pas les exigences</span><br>";
-        }
-        if (pourcentage <= 50 && revetementType === "combustible") {
-            requirements += "<span style='color: red;'>⚠️ Le revêtement combustible ne respecte pas les exigences</span><br>";
-        }
-    } else {
-        requirements += "<span style='color: green;'>✓ La construction et le revêtement respectent les exigences</span><br>";
-    }
-    
-    return requirements;
-}
-
+// Fonction principale de calcul CNB
 function calculateCNB() {
     // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
@@ -1684,7 +1622,7 @@ function calculateCNB() {
         limitingDistance = limitingDistance / 2;
     }
 
-    // Utiliser la nouvelle méthode de calcul CNB
+    // Utiliser la méthode de calcul CNB
     const avecGicleurs = sprinklersOption === "complete";
     let pourcentage = calculerPourcentageCNB(
         usage, 
@@ -1695,21 +1633,6 @@ function calculateCNB() {
         avecGicleurs, 
         glassBrick
     );
-    
-    // Ajouter les précisions concernant 3.1.7.2. 1) et 3.2.3.1. 9) lorsque la distance limitative est < 1,2 m
-    let rayonnementInfo = "";
-    if (limitingDistance < 1.2) {
-        rayonnementInfo = `
-            <br><strong>Note concernant le rayonnement thermique :</strong><br>
-            Selon l'article 3.1.7.2. 1), la limite d'élévation de température sur la face non exposée d'une construction ne s'applique pas 
-            à un mur extérieur ayant une distance limitative de 1,2 m ou plus, pourvu que le rayonnement émis par la face non exposée 
-            soit pris en compte pour effectuer une correction conformément au paragraphe 3.2.3.1. 9).<br>
-            <br>
-            Selon le paragraphe 3.2.3.1. 9), si la température superficielle de la face non exposée d'un mur dépasse les valeurs établies 
-            par les essais normalisés de résistance au feu, il faut tenir compte du rayonnement émis par la face non exposée du mur en 
-            ajoutant une surface équivalente de baies non protégées.
-        `;
-    }
     
     // Calculer la surface maximale de baies non protégées
     const maxArea = (pourcentage / 100) * facadeSurface;
@@ -1809,7 +1732,22 @@ function calculateCNB() {
         `;
     }
 
-   // Afficher les résultats détaillés avec les calculs intermédiaires
+    // Ajouter des précisions concernant 3.1.7.2. 1) et 3.2.3.1. 9) lorsque la distance limitative est < 1,2 m
+    let rayonnementInfo = "";
+    if (limitingDistance < 1.2) {
+        rayonnementInfo = `
+            <br><strong>Note concernant le rayonnement thermique :</strong><br>
+            Selon l'article 3.1.7.2. 1), la limite d'élévation de température sur la face non exposée d'une construction ne s'applique pas 
+            à un mur extérieur ayant une distance limitative de 1,2 m ou plus, pourvu que le rayonnement émis par la face non exposée 
+            soit pris en compte pour effectuer une correction conformément au paragraphe 3.2.3.1. 9).<br>
+            <br>
+            Selon le paragraphe 3.2.3.1. 9), si la température superficielle de la face non exposée d'un mur dépasse les valeurs établies 
+            par les essais normalisés de résistance au feu, il faut tenir compte du rayonnement émis par la face non exposée du mur en 
+            ajoutant une surface équivalente de baies non protégées.
+        `;
+    }
+
+   // Afficher les résultats détaillés
    let resultHTML = `
    <strong>Données de calcul :</strong><br>
    ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
@@ -1880,6 +1818,7 @@ function calculateCNB() {
     document.getElementById('copy_cnb').style.display = 'inline-block';
 }
 
+// Fonction de calcul pour 9.10.14
 function calculate91014() {
     // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
@@ -1955,7 +1894,7 @@ function calculate91014() {
         checkSpacing = true; // S'assurer que la vérification sera effectuée
     }
 
-    // Utiliser la nouvelle méthode de calcul 9.10.14
+    // Utiliser la méthode de calcul 9.10.14
     const avecGicleurs = sprinklersOption === "complete";
     const pourcentage = calculerPourcentage91014(
         usage, 
@@ -2170,7 +2109,7 @@ function calculate91014() {
          }
      }
 
-     // Afficher les résultats (la partie d'affichage reste la même)
+     // Afficher les résultats
      let resultHTML = `
           <strong>Données de calcul :</strong><br>
           ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
@@ -2234,6 +2173,7 @@ function calculate91014() {
      document.getElementById('copy_91014').style.display = 'inline-block';
 }
 
+// Fonction de calcul pour 9.10.15
 function calculate91015() {
     // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
@@ -2278,7 +2218,7 @@ function calculate91015() {
         limitingDistance = limitingDistance / 2;
     }
 
-    // Utiliser la nouvelle méthode de calcul 9.10.15
+    // Utiliser la méthode de calcul 9.10.15
     const avecGicleurs = sprinklersOption === "complete";
     const pourcentage = calculerPourcentage91015(
         limitingDistance, 
@@ -2469,7 +2409,7 @@ function calculate91015() {
        }
    }
 
-   // Afficher les résultats (la partie d'affichage reste la même)
+   // Afficher les résultats
    let resultHTML = `
        <strong>Données de calcul :</strong><br>
        ${response ? "Distance limitative ajustée : " + (isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m") + "<br>" : ""}
@@ -2489,7 +2429,7 @@ function calculate91015() {
        ${distinctionInfo}
    `;
 
-   // Ajouter la comparaison avec la surface proposée si existe
+   // Ajouter la comparaison avec la surface proposée
    if (!isNaN(proposedArea) && proposedArea > 0) {
        const proposedPercentage = (proposedArea / surface) * 100;
        let statusClass = "";
@@ -2536,6 +2476,65 @@ function calculate91015() {
    document.getElementById('copy_91015').style.display = 'inline-block';
 }
 
+// Fonction pour déterminer les exigences de construction selon 3.2.3.7
+function determineConstructionRequirements(pourcentage, usage, constructionType, revetementType) {
+    let requirements = "<br><strong>Exigences de construction (selon 3.2.3.7):</strong><br>";
+    
+    if (usage === "groupes_A_B3_C_D_F3") {
+        if (pourcentage <= 10) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 25) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 50) {
+            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else {
+            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
+        }
+    } else { // groupes_E_F1_F2
+        if (pourcentage <= 10) {
+            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
+            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 25) {
+            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 50) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
+        }
+    }
+    
+    requirements += "<br>Votre construction: ";
+    if ((pourcentage <= 50 && revetementType === "combustible") || 
+        (pourcentage <= 10 && constructionType === "combustible")) {
+        if (pourcentage <= 10 && constructionType === "combustible") {
+            requirements += "<span style='color: red;'>⚠️ La construction combustible ne respecte pas les exigences</span><br>";
+        }
+        if (pourcentage <= 50 && revetementType === "combustible") {
+            requirements += "<span style='color: red;'>⚠️ Le revêtement combustible ne respecte pas les exigences</span><br>";
+        }
+    } else {
+        requirements += "<span style='color: green;'>✓ La construction et le revêtement respectent les exigences</span><br>";
+    }
+    
+    return requirements;
+}
+
+// Fonction pour l'ouverture des onglets
 function openTab(event, tabName) {
     var tabcontent = document.getElementsByClassName("tab-content");
     for (var i = 0; i < tabcontent.length; i++) {
@@ -2549,7 +2548,7 @@ function openTab(event, tabName) {
     event.currentTarget.classList.add("active");
 }
 
-// Fonction pour formater les calculs d'interpolation pour le CNB selon le format demandé
+// Fonction pour formater les calculs pour le CNB
 function formatCNBCalculationSteps() {
     // Déterminer le système de mesure et récupérer les valeurs
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
@@ -2730,7 +2729,7 @@ function formatCNBCalculationSteps() {
 
 // Fonction pour formater les calculs pour la méthode 9.10.14
 function format91014CalculationSteps() {
-    // Déterminer le système de mesure et récupérer les valeurs
+    // Récupérer les valeurs
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
     let limitingDistance, surface;
@@ -2876,7 +2875,7 @@ function format91014CalculationSteps() {
 
 // Fonction pour formater les calculs pour la méthode 9.10.15
 function format91015CalculationSteps() {
-    // Déterminer le système de mesure et récupérer les valeurs
+    // Récupérer les valeurs
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
     let limitingDistance, surface;
