@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handleEnterKey(event, calculate91015);
         });
     });
-
+    
     // Écouteurs d'événements pour le calcul automatique des dimensions
     document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
     document.getElementById('length_cnb').addEventListener('input', updateDimensions);
@@ -2564,15 +2564,36 @@ function formatCNBCalculationSteps() {
     rapportLH = determinerRapportLH(length, height);
     
     // Préparer le texte formaté pour le presse-papier selon les exemples fournis
-    let output = "Tableau 3.2.3.1.-B:\n";
+    let output = "";
+    
+    // Utiliser le tableau approprié selon la protection par gicleurs
+    if (sprinklersOption === "complete") {
+        // Bâtiment entièrement protégé par gicleurs
+        if (usage === "groupes_A_B3_C_D_F3") {
+            output = "Tableau 3.2.3.1.-D:\n";
+        } else { // groupes_E_F1_F2
+            output = "Tableau 3.2.3.1.-E:\n";
+        }
+    } else {
+        // Bâtiment sans protection complète par gicleurs
+        if (usage === "groupes_A_B3_C_D_F3") {
+            output = "Tableau 3.2.3.1.-B:\n";
+        } else { // groupes_E_F1_F2
+            output = "Tableau 3.2.3.1.-C:\n";
+        }
+    }
+    
     output += "FDR = façade de rayonnement\n";
     output += "DL = distance limitative\n";
     output += "Paramètres indiqués par l'utilisateur:\n";
     output += `DL: ${limitingDistance.toFixed(2)}m\n`;
     output += `Surface de la FDR: ${facadeSurface.toFixed(2)}m²\n`;
-    output += `Proportion L/H : Largeur : ${length.toFixed(2)}m ; \n`;
-    output += `Hauteur : ${height.toFixed(2)}m\n`;
-    output += `Le rapport L/H est situé ${rapportLH}\n`;
+    
+    // Ajouter les proportions L/H seulement pour les tableaux sans gicleurs
+    if (sprinklersOption !== "complete") {
+        output += `Proportion L/H : Largeur : ${length.toFixed(2)}m ; Hauteur : ${height.toFixed(2)}m\n`;
+        output += `Le rapport L/H est situé ${rapportLH}\n`;
+    }
     
     // Déterminer les tableaux à utiliser
     const avecGicleurs = sprinklersOption === "complete";
@@ -2609,7 +2630,7 @@ function formatCNBCalculationSteps() {
     const surfaceSuperieure = surfacesEncadrantes.superieure;
     
     // ÉTAPE 1: Interpolation selon la DL inférieure
-    output += "Étape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
+    output += "\nÉtape 1: Interpolation selon la DL encadrante inférieure (" + distanceInferieure + "m):\n";
     
     if (!avecGicleurs) {
         output += `À DL de ${distanceInferieure}m et surface max. de ${surfaceInferieure}m²: ${tableauUtilise[surfaceInferieure][rapportLH][distancesUtilisees.indexOf(distanceInferieure)]}%\n`;
