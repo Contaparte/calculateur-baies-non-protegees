@@ -1895,6 +1895,18 @@ function calculate91014() {
         soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value) || 0.5;
     }
     
+    // Récupérer les autres paramètres du formulaire
+    const sprinklersOption = document.getElementById('sprinklers_91014').value;
+    const glassBrick = document.getElementById('glass_brick_91014').checked;
+    const response = document.getElementById('response_91014').checked;
+    const usage = document.getElementById('usage_91014').value;
+    const buildingType = document.getElementById('building_type_91014').value;
+    const exteriorFinish = document.getElementById('exterior_finish_91014').value;
+    const checkSpacing = document.getElementById('check_spacing_91014').checked;
+    const checkSoffit = document.getElementById('check_soffit_91014').checked;
+    const soffit_protected = document.getElementById('soffit_protected_91014').checked;
+    const distinction = document.getElementById('distinction_91014').value;
+    
     // Vérification des entrées - Ajout de valeurs par défaut si nulles
     if (isNaN(limitingDistance) || limitingDistance < 0) limitingDistance = 0;
     if (isNaN(surface) || surface <= 0) {
@@ -1934,7 +1946,6 @@ function calculate91014() {
         // Activer la case à cocher et afficher les options d'espacement
         document.getElementById('check_spacing_91014').checked = true;
         document.getElementById('spacing_options_91014').style.display = 'block';
-        checkSpacing = true; // S'assurer que la vérification sera effectuée
     }
 
     // Utiliser la nouvelle méthode de calcul 9.10.14
