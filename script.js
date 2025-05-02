@@ -329,20 +329,21 @@ function imperialToMetric(imperialValue, unit = "length") {
     
     // Conversion pour les longueurs (pieds/pouces -> m)
     if (unit === "length") {
-        // Gestion de différents formats de pieds et pouces
+        // Normaliser la chaîne d'entrée
         imperialValue = imperialValue.toString().trim();
-        
-        // Vérifier si c'est juste une valeur numérique (interprétée comme des pouces)
-        if (/^\d+(?:\.\d+)?$/.test(imperialValue)) {
-            const inches = parseFloat(imperialValue);
-            return inches * 0.0254; // Convertir les pouces en mètres
-        }
+        imperialValue = imperialValue.replace(/[''′]/g, "'").replace(/\s*(['-/"])\s*/g, '$1');
         
         // Format pi²
         if (/^\d+(?:\.\d+)?\s*pi(?:ed|²|2)?s?$/i.test(imperialValue)) {
             const match = imperialValue.match(/^(\d+(?:\.\d+)?)/);
             const sqFeet = parseFloat(match[1]);
             return sqFeet / 10.7639; // Convertir les pi² en m²
+        }
+        
+        // Vérifier si c'est juste une valeur numérique (interprétée comme des pouces)
+        if (/^\d+(?:\.\d+)?$/.test(imperialValue)) {
+            const inches = parseFloat(imperialValue);
+            return inches * 0.0254; // Convertir les pouces en mètres
         }
         
         // Motifs pour capture des pieds et pouces
@@ -394,6 +395,13 @@ function imperialToMetric(imperialValue, unit = "length") {
             return totalInches * 0.0254; // Convertir en mètres
         }
         
+        // Si aucun format reconnu, essayer d'extraire les nombres
+        const numbers = imperialValue.match(/\d+(?:\.\d+)?/g);
+        if (numbers && numbers.length > 0) {
+            // Supposer que c'est des pouces
+            return parseFloat(numbers[0]) * 0.0254;
+        }
+        
         return null; // Format non reconnu
     }
     // Conversion pour les surfaces (pi² -> m²)
@@ -409,6 +417,13 @@ function imperialToMetric(imperialValue, unit = "length") {
         if (areaMatch) {
             const sqFeet = parseFloat(areaMatch[1]);
             return sqFeet / 10.7639; // Convertir en m²
+        }
+        
+        // Si aucun format reconnu, essayer d'extraire les nombres
+        const numbers = imperialValue.match(/\d+(?:\.\d+)?/g);
+        if (numbers && numbers.length > 0) {
+            // Supposer que c'est des pi²
+            return parseFloat(numbers[0]) / 10.7639;
         }
         
         return null; // Format non reconnu
@@ -1515,6 +1530,64 @@ function calculerPourcentage91014(usage, distanceLimitative, surfaceFacade, avec
 // Version spécifique pour 9.10.15 - MODIFIÉE pour utiliser la fonction calculerPourcentage910x corrigée
 function calculerPourcentage91015(distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     return calculerPourcentage910x(tableau91015, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration);
+}
+
+// Fonction pour déterminer les exigences de construction selon 3.2.3.7
+function determineConstructionRequirements(pourcentage, usage, constructionType, revetementType) {
+    let requirements = "<br><strong>Exigences de construction (selon 3.2.3.7):</strong><br>";
+    
+    if (usage === "groupes_A_B3_C_D_F3") {
+        if (pourcentage <= 10) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 25) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 50) {
+            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else {
+            requirements += "- Degré de résistance au feu: <strong>45 min</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
+        }
+    } else { // groupes_E_F1_F2
+        if (pourcentage <= 10) {
+            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
+            requirements += "- Type de construction: <strong>Incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 25) {
+            requirements += "- Degré de résistance au feu: <strong>2 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else if (pourcentage <= 50) {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Incombustible</strong><br>";
+        } else {
+            requirements += "- Degré de résistance au feu: <strong>1 h</strong><br>";
+            requirements += "- Type de construction: <strong>Combustible ou incombustible</strong><br>";
+            requirements += "- Type de revêtement: <strong>Combustible ou incombustible</strong><br>";
+        }
+    }
+    
+    requirements += "<br>Votre construction: ";
+    if ((pourcentage <= 50 && revetementType === "combustible") || 
+        (pourcentage <= 10 && constructionType === "combustible")) {
+        if (pourcentage <= 10 && constructionType === "combustible") {
+            requirements += "<span style='color: red;'>⚠️ La construction combustible ne respecte pas les exigences</span><br>";
+        }
+        if (pourcentage <= 50 && revetementType === "combustible") {
+            requirements += "<span style='color: red;'>⚠️ Le revêtement combustible ne respecte pas les exigences</span><br>";
+        }
+    } else {
+        requirements += "<span style='color: green;'>✓ La construction et le revêtement respectent les exigences</span><br>";
+    }
+    
+    return requirements;
 }
 
 function calculateCNB() {
