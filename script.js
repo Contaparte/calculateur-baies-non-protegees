@@ -2556,9 +2556,10 @@ function openTab(event, tabName) {
 
 // Fonction pour formater les calculs pour le CNB
 function formatCNBCalculationSteps() {
-    // Déterminer le système de mesure et récupérer les valeurs
+    // Déterminer le système de mesure
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
+    // Obtenir les valeurs des champs
     let facadeSurface, length, height, limitingDistance, rapportLH;
     
     if (isImperial) {
@@ -2585,8 +2586,14 @@ function formatCNBCalculationSteps() {
 
     rapportLH = determinerRapportLH(length, height);
     
+    // Déterminer quel tableau est utilisé - CORRECTION ICI
+    let tableauReference = "Tableau 3.2.3.1.-B";
+    if (usage === "groupes_E_F1_F2") {
+        tableauReference = "Tableau 3.2.3.1.-C";
+    }
+    
     // Préparer le texte formaté pour le presse-papier selon les exemples fournis
-    let output = "Tableau 3.2.3.1.-B:\n";
+    let output = tableauReference + ":\n"; // CORRECTION ICI
     output += "FDR = façade de rayonnement\n";
     output += "DL = distance limitative\n";
     output += "Paramètres indiqués par l'utilisateur:\n";
