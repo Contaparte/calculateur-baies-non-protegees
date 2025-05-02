@@ -578,28 +578,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
         
     // Ajouter des écouteurs pour l'onglet CNB
-    const cnbInputs = document.querySelectorAll('#cnb input[type="number"], #cnb input[type="text"]');
-    cnbInputs.forEach(input => {
-        input.addEventListener('keypress', function(event) {
-            handleEnterKey(event, calculateCNB);
-        });
+const cnbInputs = document.querySelectorAll('#cnb input[type="number"], #cnb input[type="text"]');
+cnbInputs.forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculateCNB();
+        }
     });
+});
 
-    // Ajouter des écouteurs pour l'onglet 9.10.14
-    const inputs91014 = document.querySelectorAll('#method91014 input[type="number"], #method91014 input[type="text"]');
-    inputs91014.forEach(input => {
-        input.addEventListener('keypress', function(event) {
-            handleEnterKey(event, calculate91014);
-        });
+// Ajouter des écouteurs pour l'onglet 9.10.14
+const inputs91014 = document.querySelectorAll('#method91014 input[type="number"], #method91014 input[type="text"]');
+inputs91014.forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculate91014();
+        }
     });
+});
 
-    // Ajouter des écouteurs pour l'onglet 9.10.15
-    const inputs91015 = document.querySelectorAll('#method91015 input[type="number"], #method91015 input[type="text"]');
-    inputs91015.forEach(input => {
-        input.addEventListener('keypress', function(event) {
-            handleEnterKey(event, calculate91015);
-        });
+// Ajouter des écouteurs pour l'onglet 9.10.15
+const inputs91015 = document.querySelectorAll('#method91015 input[type="number"], #method91015 input[type="text"]');
+inputs91015.forEach(input => {
+    input.addEventListener('keydown', function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            calculate91015();
+        }
     });
+});
     
     // Écouteurs d'événements pour le calcul automatique des dimensions
     document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
@@ -1873,33 +1882,23 @@ function calculate91014() {
     if (isImperial) {
         limitingDistance = imperialToMetric(document.getElementById('distance_91014_imperial').value);
         surface = imperialToMetric(document.getElementById('surface_91014_imperial').value, "area");
-        proposedArea = imperialToMetric(document.getElementById('proposed_area_91014_imperial').value, "area");
-        horizontalSpacing = imperialToMetric(document.getElementById('horizontal_spacing_91014_imperial').value);
-        verticalSpacing = imperialToMetric(document.getElementById('vertical_spacing_91014_imperial').value);
-        soffit_distance = imperialToMetric(document.getElementById('soffit_distance_91014_imperial').value);
+        proposedArea = imperialToMetric(document.getElementById('proposed_area_91014_imperial').value, "area") || 0;
+        horizontalSpacing = imperialToMetric(document.getElementById('horizontal_spacing_91014_imperial').value) || 2;
+        verticalSpacing = imperialToMetric(document.getElementById('vertical_spacing_91014_imperial').value) || 2;
+        soffit_distance = imperialToMetric(document.getElementById('soffit_distance_91014_imperial').value) || 0.5;
     } else {
         limitingDistance = parseFloat(document.getElementById('distance_91014').value);
         surface = parseFloat(document.getElementById('surface_91014').value);
-        proposedArea = parseFloat(document.getElementById('proposed_area_91014').value);
-        horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value);
-        verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value);
-        soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value);
+        proposedArea = parseFloat(document.getElementById('proposed_area_91014').value) || 0;
+        horizontalSpacing = parseFloat(document.getElementById('horizontal_spacing_91014').value) || 2;
+        verticalSpacing = parseFloat(document.getElementById('vertical_spacing_91014').value) || 2;
+        soffit_distance = parseFloat(document.getElementById('soffit_distance_91014').value) || 0.5;
     }
     
-    const usage = document.getElementById('usage_91014').value;
-    const buildingType = document.getElementById('building_type_91014').value;
-    const exteriorFinish = document.getElementById('exterior_finish_91014').value;
-    const sprinklersOption = document.getElementById('sprinklers_91014').value;
-    const glassBrick = document.getElementById('glass_brick_91014').checked;
-    const response = document.getElementById('response_91014').checked;
-    const checkSpacing = document.getElementById('check_spacing_91014').checked;
-    const checkSoffit = document.getElementById('check_soffit_91014').checked;
-    const soffit_protected = document.getElementById('soffit_protected_91014').checked;
-    const distinction = document.getElementById('distinction_91014').value;
-
-    // Vérification des entrées
-    if (isNaN(limitingDistance) || isNaN(surface) || limitingDistance < 0 || surface <= 0) {
-        document.getElementById('method91014-result').innerHTML = "Erreur : Veuillez entrer des valeurs numériques valides.";
+    // Vérification des entrées - Ajout de valeurs par défaut si nulles
+    if (isNaN(limitingDistance) || limitingDistance < 0) limitingDistance = 0;
+    if (isNaN(surface) || surface <= 0) {
+        document.getElementById('method91014-result').innerHTML = "Erreur : Veuillez entrer une surface de façade valide.";
         return;
     }
 
@@ -3052,11 +3051,4 @@ function copyToClipboard(elementId) {
         .catch(err => {
             console.error('Impossible de copier le texte:', err);
         });
-}
-
-// Fonction pour gérer l'appui sur la touche Enter
-function handleEnterKey(event, calculationFunction) {
-    if (event.key === "Enter") {
-        calculationFunction();
-    }
 }
