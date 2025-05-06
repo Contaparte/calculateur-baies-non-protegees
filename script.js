@@ -1790,7 +1790,7 @@ function calculateCNB() {
             comparisonResult = `
                 <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                 Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
+                <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxAreaDisplay} (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
             `;
         } else {
             statusClass = "color: green; font-weight: bold;";
@@ -2201,7 +2201,7 @@ function calculate91014() {
              comparisonResult = `
                  <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                  Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
-                 <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
+                 <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxAreaDisplay} (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
              `;
          } else {
              statusClass = "color: green; font-weight: bold;";
@@ -2502,7 +2502,7 @@ function calculate91015() {
            comparisonResult = `
                <br><br><strong>Comparaison avec la surface proposée:</strong><br>
                Votre proposition: ${proposedAreaDisplay} (${proposedPercentage.toFixed(2)}% de la façade)<br>
-               <span style="${statusClass}">⚠️ La surface proposée dépasse le maximum autorisé de ${maxAreaDisplay} (${pourcentage.toFixed(2)}%).</span>
+               <span style="${statusClass}">⚠️ La surface proposée dépasse ${maxAreaDisplay} (${pourcentage.toFixed(2)}% de la façade de rayonnement).</span>
            `;
        } else {
            statusClass = "color: green; font-weight: bold;";
