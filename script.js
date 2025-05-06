@@ -3854,7 +3854,6 @@ function format91015CalculationSteps() {
     return output;
 }
 
-// Fonction pour copier le contenu dans le presse-papier
 function copyToClipboard(elementId) {
     let text = "";
     
@@ -3871,23 +3870,61 @@ function copyToClipboard(elementId) {
         text = element.innerText;
     }
     
-    navigator.clipboard.writeText(text)
-        .then(() => {
-            // Pour "method91014-result" ou "method91015-result", extrait "91014" ou "91015"
-            let buttonId;
-            if (elementId.startsWith('method')) {
-                buttonId = elementId.split('-')[0].replace('method', '');
+    // Méthode 1: Utiliser l'API Clipboard avec fallback
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+            .then(showCopiedFeedback)
+            .catch(err => {
+                console.error('Erreur Clipboard API:', err);
+                fallbackCopyMethod(text, showCopiedFeedback);
+            });
+    } else {
+        // Méthode 2: Fallback pour les contextes non-sécurisés ou navigateurs plus anciens
+        fallbackCopyMethod(text, showCopiedFeedback);
+    }
+    
+    function showCopiedFeedback() {
+        // Obtenir l'ID du bouton
+        let buttonId;
+        if (elementId.startsWith('method')) {
+            buttonId = elementId.split('-')[0].replace('method', '');
+        } else {
+            buttonId = elementId.split('-')[0];
+        }
+        
+        const copyButton = document.getElementById(`copy_${buttonId}`);
+        const originalButtonText = copyButton.innerHTML;
+        copyButton.innerHTML = "✓ Copié!";
+        setTimeout(() => {
+            copyButton.innerHTML = originalButtonText;
+        }, 2000);
+    }
+    
+    function fallbackCopyMethod(text, callback) {
+        // Créer un élément textarea temporaire
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Rendre l'élément invisible mais présent dans le DOM
+        textArea.style.position = "fixed";
+        textArea.style.opacity = 0;
+        document.body.appendChild(textArea);
+        
+        // Sélectionner et copier le texte
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                callback();
             } else {
-                buttonId = elementId.split('-')[0];
+                console.error('La copie a échoué');
             }
-            
-            const originalButtonText = document.getElementById(`copy_${buttonId}`).innerHTML;
-            document.getElementById(`copy_${buttonId}`).innerHTML = "✓ Copié!";
-            setTimeout(() => {
-                document.getElementById(`copy_${buttonId}`).innerHTML = originalButtonText;
-            }, 2000);
-        })
-        .catch(err => {
-            console.error('Impossible de copier le texte:', err);
-        });
+        } catch (err) {
+            console.error('Erreur lors de la copie:', err);
+        }
+        
+        // Nettoyer
+        document.body.removeChild(textArea);
+    }
 }
