@@ -1654,11 +1654,12 @@ function calculateCNB() {
     let constructionRequirements = determineConstructionRequirements(pourcentage, usage, constructionType, revetementType);
     
     // Vérification de l'espacement des baies
-    let spacingResult = "";
-    if (checkSpacing) {
-        const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
-        const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
-        
+let spacingResult = "";
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 3.2.3.1.(6)
+    const minVerticalSpacing = 2.0;   // En mètres selon 3.2.3.1.(6)
+    
+    if (limitingDistance <= 2.0) {
         if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
             let spacingDisplayH, spacingDisplayV;
             if (isImperial) {
@@ -1693,7 +1694,16 @@ function calculateCNB() {
                 Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
             `;
         }
+    } else {
+        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement des baies 
+            prévues au paragraphe 3.2.3.1.(6) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+            Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
+        `;
     }
+}
     
     // Vérification de la protection des soffites
     let soffitResult = "";
@@ -1976,114 +1986,56 @@ function calculate91014() {
     }
 
     // Vérification de l'espacement des baies
-    let spacingResult = "";
-    if (checkSpacing) {
-        const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
-        const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
-        
-        if (limitingDistance <= 2.0) {
-            // Calcul de la surface maximale de chaque baie selon 9.10.14.4.(3)
-            let maxBaieArea = 0;
-            let maxBaieInfo = "";
-            let formulaArea = 0;
-            
-            let maxBaieDisplay, formulaAreaDisplay;
-            
-            if (limitingDistance < 1.2) {
-                maxBaieArea = 0.35;
-                if (isImperial) {
-                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
-                } else {
-                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
-                }
-                maxBaieInfo = `Selon le tableau 9.10.14.4.-B, pour une distance limitative < 1,2 m, chaque baie ne doit pas dépasser ${maxBaieDisplay}.`;
-            } else if (limitingDistance <= 1.5) {
-                maxBaieArea = 0.78;
-                formulaArea = Math.pow(limitingDistance, 2);
-                
-                if (isImperial) {
-                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
-                    formulaAreaDisplay = metricToImperial(formulaArea, "area") + " (" + formulaArea.toFixed(2) + " m²)";
-                } else {
-                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
-                    formulaAreaDisplay = formulaArea.toFixed(2) + " m²";
-                }
-                
-                if (formulaArea > maxBaieArea) {
-                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaAreaDisplay} (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieDisplay}).`;
-                } else {
-                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieDisplay} (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaAreaDisplay}).`;
-                }
-            } else if (limitingDistance <= 2.0) {
-                maxBaieArea = 1.88;
-                formulaArea = Math.pow(limitingDistance, 2);
-                
-                if (isImperial) {
-                    maxBaieDisplay = metricToImperial(maxBaieArea, "area") + " (" + maxBaieArea.toFixed(2) + " m²)";
-                    formulaAreaDisplay = metricToImperial(formulaArea, "area") + " (" + formulaArea.toFixed(2) + " m²)";
-                } else {
-                    maxBaieDisplay = maxBaieArea.toFixed(2) + " m²";
-                    formulaAreaDisplay = formulaArea.toFixed(2) + " m²";
-                }
-                
-                if (formulaArea > maxBaieArea) {
-                    maxBaieInfo = `Selon la formule du paragraphe 9.10.14.4.(3)b), chaque baie ne doit pas dépasser ${formulaAreaDisplay} (méthode alternative selon le tableau 9.10.14.4.-B: ${maxBaieDisplay}).`;
-                } else {
-                    maxBaieInfo = `Selon le tableau 9.10.14.4.-B, chaque baie ne doit pas dépasser ${maxBaieDisplay} (méthode alternative selon la formule du paragraphe 9.10.14.4.(3)b): ${formulaAreaDisplay}).`;
-                }
-            }
-            
-            spacingResult = `
-                <br><strong>Vérification de l'espacement des baies :</strong><br>
-                <strong>Restrictions selon 9.10.14.4.(3) :</strong><br>
-                ${maxBaieInfo}<br>
-            `;
-            
-            // Vérification de l'espacement
-            if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                let spacingDisplayH, spacingDisplayV;
-                if (isImperial) {
-                    spacingDisplayH = metricToImperial(horizontalSpacing);
-                    spacingDisplayV = metricToImperial(verticalSpacing);
-                } else {
-                    spacingDisplayH = horizontalSpacing + " m";
-                    spacingDisplayV = verticalSpacing + " m";
-                }
-                
-                spacingResult += `
-                    <strong>Espacement des baies :</strong><br>
-                    ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                    Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
-                    - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
-                    - 2 m verticalement (valeur saisie: ${spacingDisplayV})
-                `;
+let spacingResult = "";
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.14.4.(4)
+    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.14.4.(4)
+    
+    if (limitingDistance <= 2.0) {
+        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
             } else {
-                let spacingDisplayH, spacingDisplayV;
-                if (isImperial) {
-                    spacingDisplayH = metricToImperial(horizontalSpacing);
-                    spacingDisplayV = metricToImperial(verticalSpacing);
-                } else {
-                    spacingDisplayH = horizontalSpacing + " m";
-                    spacingDisplayV = verticalSpacing + " m";
-                }
-                
-                spacingResult += `
-                    <strong>Espacement des baies :</strong><br>
-                    <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                    Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
-                    Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
-                `;
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
             }
-        } else {
-            // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+            
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
-                <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
-                prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-                Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
+                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                Selon l'article 9.10.14.4.(4), l'espacement des baies non protégées desservant une même pièce doit être d'au moins :<br>
+                - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
+                - 2 m verticalement (valeur saisie: ${spacingDisplayV})
+            `;
+        } else {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
+            } else {
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
+            }
+            
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
+                Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
             `;
         }
+    } else {
+        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement des baies 
+            prévues aux paragraphes 9.10.14.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+            Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
+        `;
     }
+}
      
      // Vérification de la protection des soffites
      let soffitResult = "";
@@ -2324,96 +2276,56 @@ function calculate91015() {
     }
     
     // Vérification de l'espacement des baies
-    let spacingResult = "";
-    if (checkSpacing) {
-        const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
-        const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
-        
-        if (limitingDistance <= 2.0) {
-            if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
-                let spacingDisplayH, spacingDisplayV;
-                if (isImperial) {
-                    spacingDisplayH = metricToImperial(horizontalSpacing);
-                    spacingDisplayV = metricToImperial(verticalSpacing);
-                } else {
-                    spacingDisplayH = horizontalSpacing + " m";
-                    spacingDisplayV = verticalSpacing + " m";
-                }
-                
-                spacingResult = `
-                    <br><strong>Vérification de l'espacement des baies :</strong><br>
-                    ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
-                    Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
-                    - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
-                    - 2 m verticalement (valeur saisie: ${spacingDisplayV})
-                `;
+let spacingResult = "";
+if (checkSpacing) {
+    const minHorizontalSpacing = 2.0; // En mètres selon 9.10.15.4.(4)
+    const minVerticalSpacing = 2.0;   // En mètres selon 9.10.15.4.(4)
+    
+    if (limitingDistance <= 2.0) {
+        if (horizontalSpacing < minHorizontalSpacing || verticalSpacing < minVerticalSpacing) {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
             } else {
-                let spacingDisplayH, spacingDisplayV;
-                if (isImperial) {
-                    spacingDisplayH = metricToImperial(horizontalSpacing);
-                    spacingDisplayV = metricToImperial(verticalSpacing);
-                } else {
-                    spacingDisplayH = horizontalSpacing + " m";
-                    spacingDisplayV = verticalSpacing + " m";
-                }
-                
-                spacingResult = `
-                    <br><strong>Vérification de l'espacement des baies :</strong><br>
-                    <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
-                    Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
-                    Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
-                `;
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
             }
-        } else {
-            // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+            
             spacingResult = `
                 <br><strong>Vérification de l'espacement des baies :</strong><br>
-                <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement et de taille des baies 
-                prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
-                Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
+                ⚠️ <span style="color: red;">NON CONFORME</span> - L'espacement des baies ne respecte pas les exigences minimales.<br>
+                Selon l'article 9.10.15.4.(4), l'espacement des baies vitrées desservant une même pièce doit être d'au moins :<br>
+                - 2 m horizontalement (valeur saisie: ${spacingDisplayH})<br>
+                - 2 m verticalement (valeur saisie: ${spacingDisplayV})
+            `;
+        } else {
+            let spacingDisplayH, spacingDisplayV;
+            if (isImperial) {
+                spacingDisplayH = metricToImperial(horizontalSpacing);
+                spacingDisplayV = metricToImperial(verticalSpacing);
+            } else {
+                spacingDisplayH = horizontalSpacing + " m";
+                spacingDisplayV = verticalSpacing + " m";
+            }
+            
+            spacingResult = `
+                <br><strong>Vérification de l'espacement des baies :</strong><br>
+                <span style="color: green;">CONFORME</span> - L'espacement des baies respecte les exigences minimales.<br>
+                Espacement horizontal: ${spacingDisplayH} (minimum requis: 2 m)<br>
+                Espacement vertical: ${spacingDisplayV} (minimum requis: 2 m)
             `;
         }
+    } else {
+        // Pour les distances > 2.0 m, indiquer que les restrictions ne s'appliquent pas
+        spacingResult = `
+            <br><strong>Vérification de l'espacement des baies :</strong><br>
+            <span style="color: green;">NON APPLICABLE</span> - Les restrictions d'espacement des baies 
+            prévues aux paragraphes 9.10.15.4.(3) et (4) ne s'appliquent que si la distance limitative est d'au plus 2 m.<br>
+            Avec une distance limitative de ${isImperial ? metricToImperial(limitingDistance) : limitingDistance.toFixed(2) + " m"} > 2 m, ces restrictions ne s'appliquent pas.
+        `;
     }
-    
-    // Vérification de la protection des soffites
-    let soffitResult = "";
-    if (checkSoffit) {
-        let soffitDistanceDisplay;
-        if (isImperial) {
-            soffitDistanceDisplay = metricToImperial(soffit_distance);
-        } else {
-            soffitDistanceDisplay = soffit_distance + " m";
-        }
-        
-        if (soffit_distance < 0.45) {
-            soffitResult = `
-                <br><strong>Protection des soffites :</strong><br>
-                Selon l'article 9.10.15.5.(8), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
-                lorsque la distance limitative est inférieure à 0,45 m.<br>
-                ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
-                    "La distance du soffite est conforme."}
-            `;
-        } else if (soffit_distance < 1.2) {
-            soffitResult = `
-                <br><strong>Protection des soffites :</strong><br>
-                Selon l'article 9.10.15.5.(9-11), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
-                ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
-                ${soffit_distance < 0.45 ? 
-                    "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Une protection est requise.</span>" : 
-                    "La distance du soffite est d'au moins 0,45 m."}
-                ${!soffit_protected && soffit_distance < 1.2 ? 
-                    "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
-                    soffit_protected ? "<br><span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
-            `;
-        } else {
-            soffitResult = `
-               <br><strong>Protection des soffites :</strong><br>
-               <span style="color: green;">La distance du soffite (${soffitDistanceDisplay}) est supérieure à 1,2 m. 
-               Aucune protection spécifique n'est requise.</span>
-           `;
-       }
-   }
+}
    
    // Ajouter des informations spécifiques au type d'habitation
    let housingInfo = "";
