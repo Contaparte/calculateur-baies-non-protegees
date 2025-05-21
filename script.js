@@ -2327,6 +2327,46 @@ if (checkSpacing) {
     }
 }
    
+   // Vérification de la protection des soffites
+   let soffitResult = "";
+   if (checkSoffit) {
+       let soffitDistanceDisplay;
+       if (isImperial) {
+           soffitDistanceDisplay = metricToImperial(soffit_distance);
+       } else {
+           soffitDistanceDisplay = soffit_distance + " m";
+       }
+       
+       if (soffit_distance < 0.45) {
+           soffitResult = `
+               <br><strong>Protection des soffites :</strong><br>
+               Selon l'article 9.10.15.5.(8), aucun soffite ne doit faire saillie au-dessus de la façade de rayonnement
+               lorsque la distance limitative est inférieure à 0,45 m.<br>
+               ${soffit_distance < 0.45 ? 
+                   "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Aucun soffite n'est autorisé.</span>" : 
+                   "La distance du soffite est conforme."}
+           `;
+       } else if (soffit_distance < 1.2) {
+           soffitResult = `
+               <br><strong>Protection des soffites :</strong><br>
+               Selon l'article 9.10.15.5.(9-11), si la distance limitative est entre 0,45 m et 1,2 m, les soffites de toit 
+               ne doivent pas faire saillie à moins de 0,45 m de la limite de propriété, ou doivent être protégés.<br>
+               ${soffit_distance < 0.45 ? 
+                   "⚠️ <span style=\"color: red;\">La distance du soffite (" + soffitDistanceDisplay + ") est inférieure à 0,45 m. Une protection est requise.</span>" : 
+                   "La distance du soffite est d'au moins 0,45 m."}
+               ${!soffit_protected && soffit_distance < 1.2 ? 
+                   "<br>⚠️ <span style=\"color: red;\">Le soffite n'est pas protégé selon les exigences.</span>" : 
+                   soffit_protected ? "<br><span style=\"color: green;\">Le soffite est protégé selon les exigences.</span>" : ""}
+           `;
+       } else {
+           soffitResult = `
+               <br><strong>Protection des soffites :</strong><br>
+               <span style="color: green;">La distance du soffite (${soffitDistanceDisplay}) est supérieure à 1,2 m. 
+               Aucune protection spécifique n'est requise.</span>
+           `;
+       }
+   }
+   
    // Ajouter des informations spécifiques au type d'habitation
    let housingInfo = "";
    if (housingType === "accessoire") {
