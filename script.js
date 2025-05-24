@@ -398,6 +398,9 @@ function imperialToMetric(imperialValue, unit = "length") {
     }
     // Conversion pour les surfaces (pi² -> m²)
     else if (unit === "area") {
+        // Normaliser les virgules en points pour les décimales
+        imperialValue = imperialValue.toString().replace(',', '.');
+        
         // Si c'est simplement un nombre (supposé être en pi²)
         if (/^\d+(?:\.\d+)?$/.test(imperialValue)) {
             const sqFeet = parseFloat(imperialValue);
@@ -405,9 +408,9 @@ function imperialToMetric(imperialValue, unit = "length") {
         }
         
         // Si le format est "X pi²" ou "X sq ft"
-        const areaMatch = imperialValue.match(/^(\d+(?:\.\d+)?)\s*(?:pi²|pi2|sq\s*ft|pi(?:ed)?s?²?)$/i);
+        const areaMatch = imperialValue.match(/^(\d+(?:[,.]?\d+)?)\s*(?:pi²|pi2|sq\s*ft|pi(?:ed)?s?²?)$/i);
         if (areaMatch) {
-            const sqFeet = parseFloat(areaMatch[1]);
+            const sqFeet = parseFloat(areaMatch[1].replace(',', '.'));
             return sqFeet / 10.7639; // Convertir en m²
         }
         
@@ -425,31 +428,43 @@ function updateDimensions(event) {
     const changedField = event.target.id;
     const isImperial = document.getElementById('measurementSystem').value === 'imperial';
     
+    // Déterminer l'onglet actuel basé sur l'ID du champ
+    let tabSuffix = '';
+    if (changedField.includes('_cnb')) {
+        tabSuffix = '_cnb';
+    } else if (changedField.includes('_91014')) {
+        tabSuffix = '_91014';
+    } else if (changedField.includes('_91015')) {
+        tabSuffix = '_91015';
+    } else {
+        return; // Si on ne peut pas déterminer l'onglet, on sort
+    }
+    
     let surfaceField, lengthField, heightField;
     let surfaceValue, lengthValue, heightValue;
     
     if (isImperial) {
-        surfaceField = document.getElementById('surface_cnb_imperial');
-        lengthField = document.getElementById('length_cnb_imperial');
-        heightField = document.getElementById('height_cnb_imperial');
+        surfaceField = document.getElementById(`surface${tabSuffix}_imperial`);
+        lengthField = document.getElementById(`length${tabSuffix}_imperial`);
+        heightField = document.getElementById(`height${tabSuffix}_imperial`);
         
         // Convertir les valeurs impériales en métriques pour le calcul
-        surfaceValue = imperialToMetric(surfaceField.value, "area");
-        lengthValue = imperialToMetric(lengthField.value);
-        heightValue = imperialToMetric(heightField.value);
+        surfaceValue = imperialToMetric(surfaceField?.value, "area");
+        lengthValue = imperialToMetric(lengthField?.value);
+        heightValue = imperialToMetric(heightField?.value);
     } else {
-        surfaceField = document.getElementById('surface_cnb');
-        lengthField = document.getElementById('length_cnb');
-        heightField = document.getElementById('height_cnb');
+        surfaceField = document.getElementById(`surface${tabSuffix}`);
+        lengthField = document.getElementById(`length${tabSuffix}`);
+        heightField = document.getElementById(`height${tabSuffix}`);
         
-        surfaceValue = parseFloat(surfaceField.value);
-        lengthValue = parseFloat(lengthField.value);
-        heightValue = parseFloat(heightField.value);
+        surfaceValue = parseFloat(surfaceField?.value);
+        lengthValue = parseFloat(lengthField?.value);
+        heightValue = parseFloat(heightField?.value);
     }
     
-    const metricSurfaceField = document.getElementById('surface_cnb');
-    const metricLengthField = document.getElementById('length_cnb');
-    const metricHeightField = document.getElementById('height_cnb');
+    const metricSurfaceField = document.getElementById(`surface${tabSuffix}`);
+    const metricLengthField = document.getElementById(`length${tabSuffix}`);
+    const metricHeightField = document.getElementById(`height${tabSuffix}`);
 
     // Ne pas faire de calcul si le champ actif est vidé
     if (event.target.value === "") {
@@ -457,17 +472,17 @@ function updateDimensions(event) {
     }
     
     // Ajuster selon le champ qui a été modifié
-    if (changedField === 'surface_cnb' || changedField === 'surface_cnb_imperial') {
+    if (changedField === `surface${tabSuffix}` || changedField === `surface${tabSuffix}_imperial`) {
         // Si la surface est modifiée et que la longueur ou la hauteur existe, mettre à jour l'autre dimension
         if (lengthValue && lengthValue > 0) {
             // Calculer la hauteur
             const calculatedHeight = surfaceValue / lengthValue;
             
             // Mettre à jour les champs métriques
-            metricHeightField.value = calculatedHeight.toFixed(2);
+            if (metricHeightField) metricHeightField.value = calculatedHeight.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && heightField) {
                 heightField.value = metricToImperial(calculatedHeight);
             }
         } else if (heightValue && heightValue > 0) {
@@ -475,24 +490,24 @@ function updateDimensions(event) {
             const calculatedLength = surfaceValue / heightValue;
             
             // Mettre à jour les champs métriques
-            metricLengthField.value = calculatedLength.toFixed(2);
+            if (metricLengthField) metricLengthField.value = calculatedLength.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && lengthField) {
                 lengthField.value = metricToImperial(calculatedLength);
             }
         }
-    } else if (changedField === 'length_cnb' || changedField === 'length_cnb_imperial') {
+    } else if (changedField === `length${tabSuffix}` || changedField === `length${tabSuffix}_imperial`) {
         // Si la longueur est modifiée
         if (surfaceValue && surfaceValue > 0) {
             // Calculer la hauteur basée sur la surface
             const calculatedHeight = surfaceValue / lengthValue;
             
             // Mettre à jour les champs métriques
-            metricHeightField.value = calculatedHeight.toFixed(2);
+            if (metricHeightField) metricHeightField.value = calculatedHeight.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && heightField) {
                 heightField.value = metricToImperial(calculatedHeight);
             }
         } else if (heightValue && heightValue > 0) {
@@ -500,24 +515,24 @@ function updateDimensions(event) {
             const calculatedSurface = lengthValue * heightValue;
             
             // Mettre à jour les champs métriques
-            metricSurfaceField.value = calculatedSurface.toFixed(2);
+            if (metricSurfaceField) metricSurfaceField.value = calculatedSurface.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && surfaceField) {
                 surfaceField.value = metricToImperial(calculatedSurface, "area");
             }
         }
-    } else if (changedField === 'height_cnb' || changedField === 'height_cnb_imperial') {
+    } else if (changedField === `height${tabSuffix}` || changedField === `height${tabSuffix}_imperial`) {
         // Si la hauteur est modifiée
         if (surfaceValue && surfaceValue > 0) {
             // Calculer la longueur basée sur la surface
             const calculatedLength = surfaceValue / heightValue;
             
             // Mettre à jour les champs métriques
-            metricLengthField.value = calculatedLength.toFixed(2);
+            if (metricLengthField) metricLengthField.value = calculatedLength.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && lengthField) {
                 lengthField.value = metricToImperial(calculatedLength);
             }
         } else if (lengthValue && lengthValue > 0) {
@@ -525,10 +540,10 @@ function updateDimensions(event) {
             const calculatedSurface = lengthValue * heightValue;
             
             // Mettre à jour les champs métriques
-            metricSurfaceField.value = calculatedSurface.toFixed(2);
+            if (metricSurfaceField) metricSurfaceField.value = calculatedSurface.toFixed(2);
             
             // Mettre à jour les champs impériaux si nécessaire
-            if (isImperial) {
+            if (isImperial && surfaceField) {
                 surfaceField.value = metricToImperial(calculatedSurface, "area");
             }
         }
@@ -610,15 +625,45 @@ inputs91015.forEach(input => {
     });
 });
     
-    // Écouteurs d'événements pour le calcul automatique des dimensions
+    // Écouteurs d'événements pour le calcul automatique des dimensions - Onglet CNB
     document.getElementById('surface_cnb').addEventListener('input', updateDimensions);
     document.getElementById('length_cnb').addEventListener('input', updateDimensions);
     document.getElementById('height_cnb').addEventListener('input', updateDimensions);
     
-    // Écouteurs pour les champs impériaux
+    // Écouteurs pour les champs impériaux CNB
     document.getElementById('surface_cnb_imperial').addEventListener('input', updateDimensions);
     document.getElementById('length_cnb_imperial').addEventListener('input', updateDimensions);
     document.getElementById('height_cnb_imperial').addEventListener('input', updateDimensions);
+    
+    // Écouteurs d'événements pour le calcul automatique des dimensions - Onglet 9.10.14
+    const surface91014 = document.getElementById('surface_91014');
+    const length91014 = document.getElementById('length_91014');  
+    const height91014 = document.getElementById('height_91014');
+    const surface91014Imperial = document.getElementById('surface_91014_imperial');
+    const length91014Imperial = document.getElementById('length_91014_imperial');
+    const height91014Imperial = document.getElementById('height_91014_imperial');
+    
+    if (surface91014) surface91014.addEventListener('input', updateDimensions);
+    if (length91014) length91014.addEventListener('input', updateDimensions);
+    if (height91014) height91014.addEventListener('input', updateDimensions);
+    if (surface91014Imperial) surface91014Imperial.addEventListener('input', updateDimensions);
+    if (length91014Imperial) length91014Imperial.addEventListener('input', updateDimensions);
+    if (height91014Imperial) height91014Imperial.addEventListener('input', updateDimensions);
+    
+    // Écouteurs d'événements pour le calcul automatique des dimensions - Onglet 9.10.15
+    const surface91015 = document.getElementById('surface_91015');
+    const length91015 = document.getElementById('length_91015');
+    const height91015 = document.getElementById('height_91015');
+    const surface91015Imperial = document.getElementById('surface_91015_imperial');
+    const length91015Imperial = document.getElementById('length_91015_imperial');
+    const height91015Imperial = document.getElementById('height_91015_imperial');
+    
+    if (surface91015) surface91015.addEventListener('input', updateDimensions);
+    if (length91015) length91015.addEventListener('input', updateDimensions);
+    if (height91015) height91015.addEventListener('input', updateDimensions);
+    if (surface91015Imperial) surface91015Imperial.addEventListener('input', updateDimensions);
+    if (length91015Imperial) length91015Imperial.addEventListener('input', updateDimensions);
+    if (height91015Imperial) height91015Imperial.addEventListener('input', updateDimensions);
     
     // Liaison entre les champs métriques et impériaux
     setupMetricImperialInputPairs();
