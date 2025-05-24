@@ -731,6 +731,15 @@ function toggleMeasurementSystem(isImperial) {
         input.style.display = isImperial ? 'block' : 'none';
     });
     
+    // NOUVEAU : Convertir les valeurs existantes lors du changement de système
+    if (isImperial) {
+        // Convertir de métrique vers impérial
+        convertExistingValuesToImperial();
+    } else {
+        // Convertir d'impérial vers métrique
+        convertExistingValuesToMetric();
+    }
+    
     // Assurer que les tooltips restent visibles en mode impérial
     const tooltips = document.querySelectorAll('.unit-label .tooltip');
     tooltips.forEach(tooltip => {
@@ -738,6 +747,91 @@ function toggleMeasurementSystem(isImperial) {
     });
 }
 
+// NOUVELLE FONCTION : Convertir les valeurs métriques existantes vers impérial
+function convertExistingValuesToImperial() {
+    const conversions = [
+        // Onglet CNB
+        { metric: 'distance_cnb', imperial: 'distance_cnb_imperial', unit: 'length' },
+        { metric: 'surface_cnb', imperial: 'surface_cnb_imperial', unit: 'area' },
+        { metric: 'length_cnb', imperial: 'length_cnb_imperial', unit: 'length' },
+        { metric: 'height_cnb', imperial: 'height_cnb_imperial', unit: 'length' },
+        { metric: 'horizontal_spacing_cnb', imperial: 'horizontal_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_cnb', imperial: 'vertical_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'soffit_distance_cnb', imperial: 'soffit_distance_cnb_imperial', unit: 'length' },
+        { metric: 'proposed_area_cnb', imperial: 'proposed_area_cnb_imperial', unit: 'area' },
+        
+        // Onglet 9.10.14
+        { metric: 'distance_91014', imperial: 'distance_91014_imperial', unit: 'length' },
+        { metric: 'surface_91014', imperial: 'surface_91014_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91014', imperial: 'horizontal_spacing_91014_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91014', imperial: 'vertical_spacing_91014_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91014', imperial: 'soffit_distance_91014_imperial', unit: 'length' },
+        { metric: 'proposed_area_91014', imperial: 'proposed_area_91014_imperial', unit: 'area' },
+        
+        // Onglet 9.10.15
+        { metric: 'distance_91015', imperial: 'distance_91015_imperial', unit: 'length' },
+        { metric: 'surface_91015', imperial: 'surface_91015_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91015', imperial: 'horizontal_spacing_91015_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91015', imperial: 'vertical_spacing_91015_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91015', imperial: 'soffit_distance_91015_imperial', unit: 'length' },
+        { metric: 'proposed_area_91015', imperial: 'proposed_area_91015_imperial', unit: 'area' }
+    ];
+    
+    conversions.forEach(conversion => {
+        const metricInput = document.getElementById(conversion.metric);
+        const imperialInput = document.getElementById(conversion.imperial);
+        
+        if (metricInput && imperialInput && metricInput.value && metricInput.value.trim() !== '') {
+            const metricValue = parseFloat(metricInput.value);
+            if (!isNaN(metricValue)) {
+                imperialInput.value = metricToImperial(metricValue, conversion.unit);
+            }
+        }
+    });
+}
+
+// NOUVELLE FONCTION : Convertir les valeurs impériales existantes vers métrique
+function convertExistingValuesToMetric() {
+    const conversions = [
+        // Onglet CNB
+        { metric: 'distance_cnb', imperial: 'distance_cnb_imperial', unit: 'length' },
+        { metric: 'surface_cnb', imperial: 'surface_cnb_imperial', unit: 'area' },
+        { metric: 'length_cnb', imperial: 'length_cnb_imperial', unit: 'length' },
+        { metric: 'height_cnb', imperial: 'height_cnb_imperial', unit: 'length' },
+        { metric: 'horizontal_spacing_cnb', imperial: 'horizontal_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_cnb', imperial: 'vertical_spacing_cnb_imperial', unit: 'length' },
+        { metric: 'soffit_distance_cnb', imperial: 'soffit_distance_cnb_imperial', unit: 'length' },
+        { metric: 'proposed_area_cnb', imperial: 'proposed_area_cnb_imperial', unit: 'area' },
+        
+        // Onglet 9.10.14
+        { metric: 'distance_91014', imperial: 'distance_91014_imperial', unit: 'length' },
+        { metric: 'surface_91014', imperial: 'surface_91014_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91014', imperial: 'horizontal_spacing_91014_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91014', imperial: 'vertical_spacing_91014_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91014', imperial: 'soffit_distance_91014_imperial', unit: 'length' },
+        { metric: 'proposed_area_91014', imperial: 'proposed_area_91014_imperial', unit: 'area' },
+        
+        // Onglet 9.10.15
+        { metric: 'distance_91015', imperial: 'distance_91015_imperial', unit: 'length' },
+        { metric: 'surface_91015', imperial: 'surface_91015_imperial', unit: 'area' },
+        { metric: 'horizontal_spacing_91015', imperial: 'horizontal_spacing_91015_imperial', unit: 'length' },
+        { metric: 'vertical_spacing_91015', imperial: 'vertical_spacing_91015_imperial', unit: 'length' },
+        { metric: 'soffit_distance_91015', imperial: 'soffit_distance_91015_imperial', unit: 'length' },
+        { metric: 'proposed_area_91015', imperial: 'proposed_area_91015_imperial', unit: 'area' }
+    ];
+    
+    conversions.forEach(conversion => {
+        const metricInput = document.getElementById(conversion.metric);
+        const imperialInput = document.getElementById(conversion.imperial);
+        
+        if (metricInput && imperialInput && imperialInput.value && imperialInput.value.trim() !== '') {
+            const imperialValue = imperialToMetric(validateImperialInput(imperialInput.value), conversion.unit);
+            if (imperialValue !== null) {
+                metricInput.value = conversion.unit === 'area' ? imperialValue.toFixed(2) : imperialValue.toFixed(2);
+            }
+        }
+    });
+}
 // Fonction pour configurer les paires d'entrées métriques/impériales
 function setupMetricImperialInputPairs() {
     // Liste des paires de champs (métrique et impérial)
