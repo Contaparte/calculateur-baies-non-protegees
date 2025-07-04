@@ -1475,7 +1475,7 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         }
     } else if (surfaceFacade > surfacesDisponibles[surfacesDisponibles.length - 1]) {
         surfaceInferieure = surfacesDisponibles[surfacesDisponibles.length - 1];
-        surfaceSuperieure = Infinity;
+        surfaceSuperieure = surfaceFacade;
         keyInf = surfacesDisponibles[surfacesDisponibles.length - 1].toString();
         keySup = ">100";
     } else {
