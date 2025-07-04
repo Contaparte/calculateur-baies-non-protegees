@@ -1425,7 +1425,8 @@ function extrapolerFDRPetiteDLNormale910x(tableau, distanceLimitative, surfaceFa
     return Math.max(0, Math.min(100, pourcentageFinal));
 }
 
-// Fonction pour le calcul selon 9.10.14.4 ou 9.10.15.4 - MODIFIÉE avec extrapolation
+// Fonction CORRIGÉE pour le calcul selon 9.10.14.4 ou 9.10.15.4
+// REMPLACEZ SEULEMENT CETTE FONCTION dans votre script.js d'origine
 function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, avecGicleurs, avecMajoration) {
     const distances = tableau.distances;
     
@@ -1434,8 +1435,8 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
         return 100; // 100% de baies non protégées autorisées
     }
     
-    // Déterminer les surfaces disponibles dans le tableau
-    const surfacesDisponibles = Object.keys(tableau.surfaces).filter(s => s !== ">100").map(Number);
+    // Déterminer les surfaces disponibles dans le tableau (exclure les clés spéciales)
+    const surfacesDisponibles = Object.keys(tableau.surfaces).filter(s => s !== ">100" && s !== "Plus de 100").map(Number);
     
     // Cas spécial: surface de façade < surface minimale mais DL >= DL minimale non-nulle
     const premiereDLNonNulle = distances.find(d => d > 0);
@@ -1448,6 +1449,189 @@ function calculerPourcentage910x(tableau, distanceLimitative, surfaceFacade, ave
             avecMajoration
         );
     }
+    
+    // Trouver les distances encadrantes
+    const distancesEncadrantes = trouverValeurEncadrantes(distanceLimitative, distances);
+    const distanceInferieure = distancesEncadrantes.inferieure;
+    const distanceSuperieure = distancesEncadrantes.superieure;
+    const distanceInferieureIndex = distances.indexOf(distanceInferieure);
+    const distanceSuperieureIndex = distances.indexOf(distanceSuperieure);
+    const extrapolationDistance = distancesEncadrantes.extrapolation;
+    const distanceExacte = distancesEncadrantes.valeurExacte;
+    
+    // Trouver les surfaces encadrantes
+    let surfaceInferieure, surfaceSuperieure;
+    let keyInf, keySup;
+    
+    if (surfaceFacade <= surfacesDisponibles[0]) {
+        // Cas spécial: extrapolation pour petites surfaces (< 30m²)
+        if (surfaceFacade < surfacesDisponibles[0]) {
+            surfaceInferieure = surfaceFacade;
+            surfaceSuperieure = surfacesDisponibles[0];
+            keyInf = "extrapolation";
+            keySup = surfacesDisponibles[0].toString();
+        } else {
+            surfaceInferieure = surfaceSuperieure = surfacesDisponibles[0];
+            keyInf = keySup = surfacesDisponibles[0].toString();
+        }
+    } else if (surfaceFacade > surfacesDisponibles[surfacesDisponibles.length - 1]) {
+        // CORRECTION PRINCIPALE: Pour les surfaces > 100m², utiliser directement la ligne ">100" ou "Plus de 100"
+        // sans extrapolation, car ces valeurs limites s'appliquent à TOUTES les surfaces > 100m²
+        surfaceInferieure = surfaceSuperieure = surfaceFacade; // Pas d'interpolation
+        keyInf = keySup = Object.keys(tableau.surfaces).find(k => k === ">100" || k === "Plus de 100");
+    } else {
+        for (let i = 0; i < surfacesDisponibles.length - 1; i++) {
+            if (surfaceFacade > surfacesDisponibles[i] && surfaceFacade <= surfacesDisponibles[i + 1]) {
+                surfaceInferieure = surfacesDisponibles[i];
+                surfaceSuperieure = surfacesDisponibles[i + 1];
+                keyInf = surfaceInferieure.toString();
+                keySup = surfaceSuperieure.toString();
+                break;
+            }
+        }
+    }
+    
+    // Cas spécial: extrapolation pour distance limitative entre 0 et 1.2m
+    if (extrapolationDistance) {
+        let pourcentageDistance0 = 0; // Toujours 0% quand DL=0
+        let pourcentageDistanceMin;
+        
+        // Vérifier si on a aussi une extrapolation de surface
+        if (keyInf === "extrapolation") {
+            // Double extrapolation (distance et surface)
+            
+            // D'abord déterminer le pourcentage pour la surface minimale du tableau à la distance minimale
+            const pourcentageDistMinSurfMin = tableau.surfaces[keySup][distanceSuperieureIndex];
+            const pourcentageDistMinSurfSupMin = tableau.surfaces[Object.keys(tableau.surfaces)[1]][distanceSuperieureIndex];
+            
+            // Extrapolation pour surface plus petite (avec la plus petite distance non-nulle)
+            pourcentageDistanceMin = extrapolerPourcentageSurface(
+                pourcentageDistMinSurfMin,
+                pourcentageDistMinSurfSupMin,
+                surfaceSuperieure,
+                surfaceFacade
+            );
+        } else if (keyInf === keySup) {
+            // Pas d'interpolation de surface (surface dans le tableau ou >100)
+            pourcentageDistanceMin = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        } else {
+            // Extrapolation de distance et interpolation de surface
+            const pourcentageDistMinSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
+            const pourcentageDistMinSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
+            
+            // Interpolation entre les surfaces à la distance minimale
+            pourcentageDistanceMin = pourcentageDistMinSurfSup + 
+                ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+                (pourcentageDistMinSurfInf - pourcentageDistMinSurfSup);
+        }
+        
+        // Extrapolation entre 0 et la première distance non-nulle
+        let pourcentageFinal = extrapolerPourcentage(
+            pourcentageDistance0,
+            pourcentageDistanceMin,
+            distanceSuperieure,
+            distanceExacte
+        );
+        
+        // Appliquer la majoration si nécessaire
+        if (avecMajoration || avecGicleurs) {
+            pourcentageFinal = Math.min(100, pourcentageFinal * 2);
+        }
+        
+        return Math.max(0, Math.min(100, pourcentageFinal));
+    }
+    
+    // Cas spécial: extrapolation pour petites surfaces (< 30m²)
+    if (keyInf === "extrapolation") {
+        const pourcentageDistInfSurfMin = tableau.surfaces[keySup][distanceInferieureIndex];
+        const pourcentageDistInfSurfSupMin = tableau.surfaces[Object.keys(tableau.surfaces)[1]][distanceInferieureIndex];
+        
+        // Extrapolation pour surface plus petite
+        let pourcentageFinal = extrapolerPourcentageSurface(
+            pourcentageDistInfSurfMin,
+            pourcentageDistInfSurfSupMin,
+            surfaceSuperieure,
+            surfaceFacade
+        );
+        
+        // Si on a deux distances différentes
+        if (distanceInferieure !== distanceSuperieure) {
+            const pourcentageDistSupSurfMin = tableau.surfaces[keySup][distanceSuperieureIndex];
+            const pourcentageDistSupSurfSupMin = tableau.surfaces[Object.keys(tableau.surfaces)[1]][distanceSuperieureIndex];
+            
+            const pourcentageDistSup = extrapolerPourcentageSurface(
+                pourcentageDistSupSurfMin,
+                pourcentageDistSupSurfSupMin,
+                surfaceSuperieure,
+                surfaceFacade
+            );
+            
+            // Interpolation entre les distances
+            pourcentageFinal = pourcentageFinal + 
+                ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+                (pourcentageDistSup - pourcentageFinal);
+        }
+        
+        // Appliquer la majoration si nécessaire
+        if (avecMajoration || avecGicleurs) {
+            pourcentageFinal = Math.min(100, pourcentageFinal * 2);
+        }
+        
+        return Math.max(0, Math.min(100, pourcentageFinal));
+    }
+    
+    // Cas normal: interpolation/lecture directe
+    let pourcentageFinal;
+    
+    if (keyInf === keySup) {
+        // Cas où la surface correspond exactement à une ligne du tableau ou >100
+        if (distanceExacte) {
+            pourcentageFinal = tableau.surfaces[keyInf][distanceInferieureIndex];
+        } else {
+            const pourcentageDistInf = tableau.surfaces[keyInf][distanceInferieureIndex];
+            const pourcentageDistSup = tableau.surfaces[keyInf][distanceSuperieureIndex];
+            
+            pourcentageFinal = pourcentageDistInf + 
+                ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+                (pourcentageDistSup - pourcentageDistInf);
+        }
+    } else {
+        // Interpolation normale entre deux surfaces du tableau
+        
+        // ÉTAPE 1: Interpolation selon la DL inférieure
+        const pourcentageDistInfSurfInf = tableau.surfaces[keyInf][distanceInferieureIndex];
+        const pourcentageDistInfSurfSup = tableau.surfaces[keySup][distanceInferieureIndex];
+        
+        const pourcentageEtape1 = pourcentageDistInfSurfSup + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistInfSurfInf - pourcentageDistInfSurfSup);
+        
+        // ÉTAPE 2: Interpolation selon la DL supérieure
+        const pourcentageDistSupSurfInf = tableau.surfaces[keyInf][distanceSuperieureIndex];
+        const pourcentageDistSupSurfSup = tableau.surfaces[keySup][distanceSuperieureIndex];
+        
+        const pourcentageEtape2 = pourcentageDistSupSurfSup + 
+            ((surfaceFacade - surfaceInferieure) / (surfaceSuperieure - surfaceInferieure)) * 
+            (pourcentageDistSupSurfInf - pourcentageDistSupSurfSup);
+        
+        // ÉTAPE 3: Interpolation finale
+        if (distanceExacte) {
+            pourcentageFinal = pourcentageEtape1;
+        } else {
+            pourcentageFinal = pourcentageEtape1 + 
+                ((distanceLimitative - distanceInferieure) / (distanceSuperieure - distanceInferieure)) * 
+                (pourcentageEtape2 - pourcentageEtape1);
+        }
+    }
+    
+    // Appliquer la majoration si nécessaire (briques de verre, verre armé ou gicleurs)
+    if (avecMajoration || avecGicleurs) {
+        pourcentageFinal = Math.min(100, pourcentageFinal * 2);
+    }
+    
+    // Limiter le pourcentage final entre 0 et 100
+    return Math.max(0, Math.min(100, pourcentageFinal));
+}
     
     // Trouver les distances encadrantes
     const distancesEncadrantes = trouverValeurEncadrantes(distanceLimitative, distances);
