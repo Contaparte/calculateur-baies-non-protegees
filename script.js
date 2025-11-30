@@ -1956,9 +1956,10 @@ if (checkSpacing) {
     
     // Ajouter le message de dégagement de responsabilité
     resultHTML += `
-    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-    <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
+    <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
+    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+    <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
     </div>
 `;           
     document.getElementById('cnb-result').innerHTML = resultHTML;
@@ -2309,9 +2310,10 @@ if (checkSpacing) {
      
      // Ajouter le message de dégagement de responsabilité
      resultHTML += `
-     <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-     <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-     L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+     <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
+     <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
+     L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+     <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
      </div>
 `;           
      document.getElementById('method91014-result').innerHTML = resultHTML;
@@ -2610,9 +2612,10 @@ if (checkSpacing) {
    
    // Ajouter le message de dégagement de responsabilité
    resultHTML += `
-   <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px;">
-   <strong>Avis de non-responsabilité:</strong> Les résultats générés par cet outil sont fournis à titre indicatif uniquement. 
-   L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié ou de l'autorité compétente en matière de sécurité incendie.
+   <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
+   <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
+   L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+   <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
    </div>
 `;
    
@@ -3948,6 +3951,19 @@ function format91015CalculationSteps() {
 function copyToClipboard(elementId) {
     let text = "";
     
+    // Avis de non-responsabilité à ajouter à la fin du texte copié
+    const avisNonResponsabilite = `
+─────────────────────────────────────────
+AVIS DE NON-RESPONSABILITÉ
+
+Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.
+
+L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.
+
+Note : Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte.
+Pour plus d'informations : https://www.oaq.com/application-loi-architectes/
+─────────────────────────────────────────`;
+    
     // Déterminer quelle méthode utiliser
     if (elementId === 'cnb-result') {
         text = formatCNBCalculationSteps();
@@ -3960,6 +3976,9 @@ function copyToClipboard(elementId) {
         const element = document.getElementById(elementId);
         text = element.innerText;
     }
+    
+    // Ajouter l'avis de non-responsabilité au texte copié
+    text += avisNonResponsabilite;
     
     // Méthode 1: Utiliser l'API Clipboard avec fallback
     if (navigator.clipboard && window.isSecureContext) {
