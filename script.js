@@ -1958,7 +1958,7 @@ if (checkSpacing) {
     resultHTML += `
     <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
     <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
-    L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+    L'utilisateur demeure responsable de valider la conformité des résultats générés par cet outil auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
     <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
     </div>
 `;           
@@ -2312,7 +2312,7 @@ if (checkSpacing) {
      resultHTML += `
      <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
      <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
-     L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+     L'utilisateur demeure responsable de valider la conformité des résultats générés par cet outil auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
      <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
      </div>
 `;           
@@ -2614,7 +2614,7 @@ if (checkSpacing) {
    resultHTML += `
    <br><br><div style="font-style: italic; padding: 10px; border-top: 1px solid #ccc; margin-top: 10px; background-color: #f9f9f9;">
    <strong>Avis de non-responsabilité :</strong> Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.<br><br>
-   L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
+   L'utilisateur demeure responsable de valider la conformité des résultats générés par cet outil auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.<br><br>
    <strong>Note :</strong> Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte. Pour plus d'informations : <a href="https://www.oaq.com/application-loi-architectes/" target="_blank">oaq.com/loi</a>
    </div>
 `;
@@ -3958,7 +3958,7 @@ AVIS DE NON-RESPONSABILITÉ
 
 Les résultats générés par cet outil sont fournis à titre indicatif et éducatif uniquement. Cet outil n'est pas un rapport d'expertise professionnel.
 
-L'utilisateur demeure responsable de valider leur conformité auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.
+L'utilisateur demeure responsable de valider la conformité des résultats générés par cet outil auprès d'un professionnel qualifié (architecte, ingénieur ou technologue professionnel selon le type de bâtiment) ou de l'autorité compétente en matière de sécurité incendie.
 
 Note : Selon la Loi sur les architectes du Québec, certains types de bâtiments (notamment les établissements de réunion, de soins ou industriels à risques élevés) requièrent obligatoirement l'intervention d'un architecte.
 Pour plus d'informations : https://www.oaq.com/application-loi-architectes/
